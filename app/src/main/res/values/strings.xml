@@ -21,4 +21,10 @@
     <string name="phone_number_title">Телефон</string>
     <string name="create_account">Создать аккаунт</string>
     <string name="cancel">Отмена</string>
+    <string name="dont_have_account">У меня нет аккаунта. </string>
+    <string name="TV_register">Зарегистрироваться.</string>
+    <string name="tv_forgorPassword">Забыли пароль?</string>
+    <string name="tv_admin_login">Вход для администратора</string>
+    <string name="already_have_account_string">Уже есть аккаунт?</string>
+    <string name="tv_return_to_login_page">На страницу входа</string>
 </resources>

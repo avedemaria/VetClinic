@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "552374810661",
+    "project_id": "vet-clinic-be80b",
+    "storage_bucket": "vet-clinic-be80b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552374810661:android:25ea937991a899ece0e7cc",
+        "android_client_info": {
+          "package_name": "com.example.vetclinic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCeBjFix_lUn-82inrgMTbcjFyEW5PgVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.example.vetclinic
+package com.example.vetclinic.presentation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,7 +14,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
-            "FragmentVideoRecorderBinding is null"
+            "FragmentLoginBinding is null"
         )
 
 
@@ -33,12 +33,23 @@ class LoginFragment : Fragment() {
             launchMainFragment()
         }
 
+        binding.tvRegister.setOnClickListener {
+            launchCreateAccountFragment()
+        }
+
     }
 
     private fun launchMainFragment() {
         findNavController().navigate(
             LoginFragmentDirections
                 .actionLoginFragmentToMainFragment()
+        )
+    }
+
+    private fun launchCreateAccountFragment() {
+        findNavController().navigate(
+            LoginFragmentDirections
+                .actionLoginFragmentToCreateAccountFragment()
         )
     }
 
