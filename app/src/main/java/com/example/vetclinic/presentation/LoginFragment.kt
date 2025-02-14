@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.tvRegister.setOnClickListener {
-            launchCreateAccountFragment()
+            launchRegistrationFragment()
         }
 
     }
@@ -46,10 +46,10 @@ class LoginFragment : Fragment() {
         )
     }
 
-    private fun launchCreateAccountFragment() {
+    private fun launchRegistrationFragment() {
         findNavController().navigate(
             LoginFragmentDirections
-                .actionLoginFragmentToCreateAccountFragment()
+                .actionLoginFragmentToRegistrationFragment()
         )
     }
 

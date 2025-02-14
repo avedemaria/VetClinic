@@ -1,11 +1,11 @@
 package com.example.vetclinic.DI
 
 import android.app.Application
-import com.example.vetclinic.presentation.CreateAccountFragment
 import com.example.vetclinic.presentation.InfoFragment
 import com.example.vetclinic.presentation.LoginFragment
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.MainFragment
+import com.example.vetclinic.presentation.RegistrationFragment
 import com.example.vetclinic.presentation.SelectionFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -18,7 +18,7 @@ interface AppComponent {
 
     fun inject(mainFragment: MainFragment)
 
-    fun inject(createAccountFragment: CreateAccountFragment)
+    fun inject(registrationFragment: RegistrationFragment)
 
     fun inject(loginFragment: LoginFragment)
 

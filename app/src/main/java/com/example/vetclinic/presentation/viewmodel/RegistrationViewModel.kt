@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.User
 import com.example.vetclinic.domain.usecases.AddUserToFirebaseDb
 import com.example.vetclinic.domain.usecases.RegisterUserUseCase
-import com.google.firebase.auth.AuthResult
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -34,21 +32,20 @@ class RegistrationViewModel @Inject constructor(
 
         viewModelScope.launch {
             registerUserUseCase.registerUser(email, password)
-                .onSuccess { firebaseUser ->
-                    val user = User(
-                        firebaseUser.uid,
+                .onSuccess { supabaseUser ->
+                  val user =  User(
+                        supabaseUser.user?.id ?: "",
                         userName,
                         userLastName,
                         petName,
                         phoneNumber,
-                        email,
+                        email
                     )
-                    addUserToFirebaseDb.addUserToFirebaseDb(firebaseUser)
-                    _registrationState.value = RegistrationState.Result(firebaseUser)
+                    addUserToFirebaseDb.addUserToSupabaseDb(supabaseUser)
+                    _registrationState.value = RegistrationState.Result(user)
                 }
                 .onFailure { error ->
                     _registrationState.value = RegistrationState.Error(error.message)
-
                 }
         }
     }

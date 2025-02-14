@@ -5,11 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.vetclinic.databinding.FragmentCreateAccountBinding
+import androidx.lifecycle.ViewModelProvider
+import com.example.vetclinic.databinding.FragmentRegistrationBinding
+
+import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 
 
-class CreateAccountFragment : Fragment() {
-    private var _binding: FragmentCreateAccountBinding? = null
+class RegistrationFragment : Fragment() {
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[RegistrationViewModel::class.java]
+    }
+
+
+    private var _binding: FragmentRegistrationBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
             "FragmentCreateAccountBinding is null"
@@ -20,7 +29,7 @@ class CreateAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCreateAccountBinding.inflate(inflater, container, false)
+        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
 
     }

@@ -2,11 +2,12 @@ package com.example.vetclinic.domain.usecases
 
 import com.example.vetclinic.domain.Repository
 import com.google.firebase.auth.FirebaseUser
+import io.github.jan.supabase.auth.user.UserInfo
 import jakarta.inject.Inject
 
-class GetCurrentUserUseCase @Inject constructor(private val authRepository: Repository) {
+class GetCurrentUserUseCase @Inject constructor(private val repository: Repository) {
 
-    fun getCurrentUser(): FirebaseUser? {
-        return authRepository.getCurrentUser()
+    fun getCurrentUser(): UserInfo {
+        return repository.getCurrentUser()
     }
 }
