@@ -1,17 +1,23 @@
 package com.example.vetclinic.data
 
+import android.util.Log
+import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
-
 
 
 class RepositoryImpl(
     private val supabaseClient: SupabaseClient,
-    private val supabaseApiService: SupabaseApiService
+    private val supabaseApiService: SupabaseApiService,
+    private val vetClinicDao: VetClinicDao,
+    private val mapper: UserMapper
 ) : Repository {
 
 
@@ -65,9 +71,9 @@ class RepositoryImpl(
         supabaseClient.auth.currentUserOrNull() ?: throw Exception("No authenticated user found")
 
 
-    override suspend fun addUserToFirebaseDb(user: FirebaseUser) {
-        val userReference = firebaseDb.getReference("Users")
-        userReference.child(user.uid).setValue(user).await()
+    override suspend fun addUserToSupabaseDb(user: User) {
+        val userDto = mapper.userEntityToUserDto(user)
+        supabaseApiService.addUser(userDto)
     }
 
 }

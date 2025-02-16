@@ -1,6 +1,7 @@
 package com.example.vetclinic.data.network
 
 import com.example.vetclinic.BuildConfig
+import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -21,9 +22,12 @@ object SupabaseApiFactory {
         }
         .build()
 
+    private val moshi = Moshi.Builder().add(SingleUserAdapter())
+        .build()
+
     private val retrofit = Retrofit.Builder()
         .client(client)
-        .addConverterFactory(MoshiConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
         .build()
 

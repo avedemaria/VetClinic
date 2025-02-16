@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.User
-import com.example.vetclinic.domain.usecases.AddUserToFirebaseDb
+import com.example.vetclinic.domain.usecases.AddUserToSupabaseDb
 import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel @Inject constructor(
-    private val addUserToFirebaseDb: AddUserToFirebaseDb,
+    private val addUserToSupabaseDb: AddUserToSupabaseDb,
     private val registerUserUseCase: RegisterUserUseCase// Репозиторий для регистрации
 ) : ViewModel() {
 
@@ -41,7 +41,7 @@ class RegistrationViewModel @Inject constructor(
                         phoneNumber,
                         email
                     )
-                    addUserToFirebaseDb.addUserToSupabaseDb(supabaseUser)
+                    addUserToSupabaseDb.addUserToSupabaseDb(supabaseUser)
                     _registrationState.value = RegistrationState.Result(user)
                 }
                 .onFailure { error ->

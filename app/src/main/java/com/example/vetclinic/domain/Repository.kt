@@ -1,6 +1,5 @@
 package com.example.vetclinic.domain
 
-import com.google.firebase.auth.FirebaseUser
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 
@@ -18,6 +17,6 @@ interface Repository {
     fun getCurrentUser(): UserInfo
 
 
-    suspend fun addUserToFirebaseDb (user: FirebaseUser)
+    suspend fun addUserToSupabaseDb (user: User)
 
 }
