@@ -68,10 +68,9 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun registerUser(email: String, password: String): Result<UserSession> {
         return try {
-            // Create a deferred value to hold our result
+
             val deferred = CompletableDeferred<UserSession>()
 
-            // Call signUp with the deferred
             Email.signUp(
                 supabaseClient,
                 onSuccess = { session ->
@@ -82,7 +81,6 @@ class RepositoryImpl @Inject constructor(
                 this.password = password
             }
 
-            // Wait for and return the result
             Result.success(deferred.await())
         } catch (e: Exception) {
             Result.failure(e)
@@ -97,36 +95,35 @@ class RepositoryImpl @Inject constructor(
     override fun getCurrentUser(): io.github.jan.supabase.auth.user.UserInfo =
         supabaseClient.auth.currentUserOrNull() ?: throw Exception("No authenticated user found")
 
-//    override suspend fun addUserToSupabaseDb(user: User) {
-//
-//        withContext(Dispatchers.IO) {
-//            supabaseClient.from("users").insert(user)
-//        }
-//    }
-
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
 
         return try {
-            Log.d("UserRepository", "Starting to add user: ${user.uid}")
+            Log.d(TAG, "Starting to add user: ${user.uid}")
             val userDto = mapper.userEntityToUserDto(user)
-            Log.d("UserRepository", "Mapped to DTO: $userDto")
+            Log.d(TAG, "Mapped to DTO: $userDto")
             val response = supabaseApiService.addUser(userDto)
 
             if (response.isSuccessful) {
-                Log.d("UserRepository", "Successfully added user to Supabase DB")
+                Log.d(TAG, "Successfully added user to Supabase DB")
                 Result.success(Unit)
             } else {
                 val errorBody = response.errorBody()?.string()
-                Log.e("UserRepository", "Failed to add user. Error: $errorBody")
+                Log.e(TAG, "Failed to add user. Error: $errorBody")
                 Result.failure(Exception("Failed to add user: ${response.code()} - $errorBody"))
             }
         } catch (e: Exception) {
-            Log.e("UserRepository", "Exception while adding user", e)
+            Log.e(TAG, "Exception while adding user", e)
             Result.failure(e)
         }
     }
+
+    companion object {
+        const val TAG = "RepositoryImpl"
+    }
 }
+
+
 
 
 

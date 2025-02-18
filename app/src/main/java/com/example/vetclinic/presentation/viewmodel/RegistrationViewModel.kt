@@ -35,17 +35,13 @@ class RegistrationViewModel @Inject constructor(
             return
         }
 
-
-//        _registrationState.value = RegistrationState.Loading
-
-
         try {
-            Log.d("RegistrationVM", "Starting registration process")
+            Log.d(TAG, "Starting registration process")
             viewModelScope.launch(Dispatchers.IO) {
                 registerUserUseCase.registerUser(email, password)
                     .onSuccess { supabaseUser ->
                         Log.d(
-                            "RegistrationVM",
+                            TAG,
                             "Auth successful, creating user with ID: ${supabaseUser.user?.id}"
                         )
                         val user = User(
@@ -59,25 +55,25 @@ class RegistrationViewModel @Inject constructor(
 
 
                         addUserToSupabaseDb.addUserToSupabaseDb(user).onSuccess {
-                            Log.d("RegistrationVM", "user added to supabase $user")
+                            Log.d(TAG, "user added to supabase $user")
                             _registrationState.postValue(RegistrationState.Result(user))
                         }.onFailure { error ->
-                            Log.e("RegistrationVM", "Failed to add user to DB", error)
+                            Log.e(TAG, "Failed to add user to DB", error)
                             _registrationState.postValue(
                                 RegistrationState.Error(
-                                    error.message ?: "Failed to create user profile"
+                                    error.message ?: "Failed to add user to DB"
                                 )
                             )
                         }
 
                     }
                     .onFailure { error ->
-                        Log.e("RegistrationVM", "Failed to add user to DB", error)
+                        Log.e(TAG, "Failed to register", error)
                         _registrationState.postValue(RegistrationState.Error(error.message))
                     }
             }
         } catch (e: Exception) {
-            Log.e("RegistrationVM", "unexpected error", e)
+            Log.e(TAG, "unexpected error", e)
             _registrationState.postValue(RegistrationState.Error("Unexpected error ${e.message}"))
         }
 
@@ -127,4 +123,8 @@ class RegistrationViewModel @Inject constructor(
         return true
     }
 
+
+    companion object {
+        const val TAG = "RegistrationVM"
+    }
 }

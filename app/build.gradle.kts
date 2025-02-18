@@ -67,6 +67,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 
     implementation("io.ktor:ktor-client-android:3.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")  // OkHttp core
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
 
 
