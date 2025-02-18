@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation
+package com.example.vetclinic.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

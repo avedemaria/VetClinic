@@ -1,4 +1,4 @@
-package com.example.vetclinic.DI
+package com.example.vetclinic.di
 
 import com.example.vetclinic.data.RepositoryImpl
 import com.example.vetclinic.domain.Repository

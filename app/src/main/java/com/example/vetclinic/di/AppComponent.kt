@@ -1,16 +1,18 @@
-package com.example.vetclinic.DI
+package com.example.vetclinic.di
 
 import android.app.Application
-import com.example.vetclinic.presentation.InfoFragment
-import com.example.vetclinic.presentation.LoginFragment
+import com.example.vetclinic.presentation.fragment.InfoFragment
+import com.example.vetclinic.presentation.fragment.LoginFragment
 import com.example.vetclinic.presentation.MainActivity
-import com.example.vetclinic.presentation.MainFragment
-import com.example.vetclinic.presentation.RegistrationFragment
-import com.example.vetclinic.presentation.SelectionFragment
+import com.example.vetclinic.presentation.fragment.MainFragment
+import com.example.vetclinic.presentation.fragment.RegistrationFragment
+import com.example.vetclinic.presentation.fragment.SelectionFragment
 import dagger.BindsInstance
 import dagger.Component
+import jakarta.inject.Singleton
 
-@Component(modules = [DataModule::class, DomainModule::class])
+@Singleton
+@Component(modules = [DataModule::class, DomainModule::class, ViewModelModule::class])
 interface AppComponent {
 
 

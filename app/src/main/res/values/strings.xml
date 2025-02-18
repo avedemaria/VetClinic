@@ -27,4 +27,5 @@
     <string name="tv_admin_login">Вход для администратора</string>
     <string name="already_have_account_string">Уже есть аккаунт?</string>
     <string name="tv_return_to_login_page">На страницу входа</string>
+    <string name="company_logo">Логотип компании</string>
 </resources>

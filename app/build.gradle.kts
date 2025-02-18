@@ -10,6 +10,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "com.example.vetclinic"
     compileSdk = 35
@@ -61,23 +62,26 @@ android {
 dependencies {
     implementation(libs.firebase.bom)
 
-    implementation(libs.bom)
-    implementation(libs.postgrest.kt)
-    implementation(libs.auth.kt)
-    implementation(libs.gotrue.kt)
-    implementation(libs.realtime.kt)
+    implementation("io.ktor:ktor-client-core:3.0.0")
+    implementation("io.ktor:ktor-client-okhttp:3.0.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 
+    implementation("io.ktor:ktor-client-android:3.0.0")
+
+
+
+
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.postgrest.kt)
+    implementation(libs.realtime.kt)
+    implementation(libs.storage.kt)
+    implementation(libs.functions.kt)
 
     implementation(libs.retrofit)
 
-    // Конвертер JSON → Kotlin-объект через Moshi
     implementation(libs.converter.moshi)
-
-    // Moshi (для работы с JSON)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-
-    // Логирование HTTP-запросов
     implementation(libs.logging.interceptor)
 
 

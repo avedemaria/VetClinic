@@ -1,6 +1,8 @@
 package com.example.vetclinic.data.network
 
 import com.example.vetclinic.data.network.model.UserDTO
+import io.github.jan.supabase.auth.mfa.FactorType
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -14,7 +16,7 @@ interface SupabaseApiService {
 
 
     @POST ("users")
-    suspend fun addUser (@Body user: UserDTO)
+    suspend fun addUser (@Body user: UserDTO): Response<Unit>
 
 }
 

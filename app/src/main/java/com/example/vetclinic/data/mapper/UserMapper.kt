@@ -3,8 +3,9 @@ package com.example.vetclinic.data.mapper
 import com.example.vetclinic.data.database.model.UserDbModel
 import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.User
+import jakarta.inject.Inject
 
-class UserMapper {
+class UserMapper @Inject constructor() {
 
     fun userEntityToUserDto(entity: User): UserDTO {
 

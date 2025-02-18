@@ -13,12 +13,12 @@ data class User(
 
     ): Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString()
+        parcel.readString()?:"",
+        parcel.readString()?:"",
+        parcel.readString()?:"",
+        parcel.readString()?:"",
+        parcel.readString()?:"",
+        parcel.readString()?:""
     ) {
     }
 

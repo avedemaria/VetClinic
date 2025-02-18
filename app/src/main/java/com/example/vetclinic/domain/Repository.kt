@@ -17,6 +17,5 @@ interface Repository {
     fun getCurrentUser(): UserInfo
 
 
-    suspend fun addUserToSupabaseDb (user: User)
-
+    suspend fun addUserToSupabaseDb (user: User): Result<Unit>
 }

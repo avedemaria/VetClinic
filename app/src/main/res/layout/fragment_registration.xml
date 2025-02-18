@@ -16,7 +16,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="50dp"
-            android:contentDescription="Логотип компании"
+            android:contentDescription="@string/company_logo"
             android:src="@drawable/modern_pet_veterinary_clinic" />
 
         <TextView
@@ -26,76 +26,101 @@
             android:text="@string/account_registration"
             android:textSize="22sp" />
 
-        <EditText
-            android:id="@+id/et_first_name"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/name"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            android:layout_marginTop="8dp">
 
-        <EditText
-            android:id="@+id/et_last_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/last_name"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:inputType="textCapWords"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_patronim"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/pets_name"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+           >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name"
+                android:inputType="textCapWords"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_phone"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_petName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/phone_number_title"
-            android:inputType="phone"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_petName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pets_name"
+                android:inputType="textCapWords"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_last_phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number_title"
+                android:inputType="numberDecimal"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_password"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@android:color/darker_gray"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <Button
             android:id="@+id/btn_create_account"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/dark_blue"

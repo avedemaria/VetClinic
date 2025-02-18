@@ -7,7 +7,7 @@ import jakarta.inject.Inject
 
 class AddUserToSupabaseDb @Inject constructor(private val repository: Repository) {
 
-    suspend fun addUserToSupabaseDb(user: User) {
-        repository.addUserToSupabaseDb(user)
+    suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
+       return repository.addUserToSupabaseDb(user)
     }
 }

@@ -9,11 +9,14 @@ import com.example.vetclinic.domain.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
+import jakarta.inject.Inject
+import kotlinx.coroutines.CompletableDeferred
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
-class RepositoryImpl(
+class RepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val supabaseApiService: SupabaseApiService,
     private val vetClinicDao: VetClinicDao,
@@ -41,22 +44,46 @@ class RepositoryImpl(
     }
 
 
-    override suspend fun registerUser(
-        email: String,
-        password: String
-    ): Result<UserSession> {
+//    override suspend fun registerUser(
+//        email: String,
+//        password: String
+//    ): Result<UserSession> {
+//        return try {
+//            val userSession = suspendCoroutine { continuation ->
+//                Email.signUp(
+//                    supabaseClient,
+//                    onSuccess = { session ->
+//                        continuation.resume(session)
+//                    }
+//                ) {
+//                    this.email = email
+//                    this.password = password
+//                }
+//            }
+//            Result.success(userSession)
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+//    }
+
+    override suspend fun registerUser(email: String, password: String): Result<UserSession> {
         return try {
-            var userSession: UserSession? = null
+            // Create a deferred value to hold our result
+            val deferred = CompletableDeferred<UserSession>()
+
+            // Call signUp with the deferred
             Email.signUp(
                 supabaseClient,
                 onSuccess = { session ->
-                    userSession = session
+                    deferred.complete(session)
                 }
             ) {
                 this.email = email
                 this.password = password
             }
-            userSession?.let { Result.success(it) } ?: Result.failure(Exception("Session is null"))
+
+            // Wait for and return the result
+            Result.success(deferred.await())
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -70,13 +97,38 @@ class RepositoryImpl(
     override fun getCurrentUser(): io.github.jan.supabase.auth.user.UserInfo =
         supabaseClient.auth.currentUserOrNull() ?: throw Exception("No authenticated user found")
 
+//    override suspend fun addUserToSupabaseDb(user: User) {
+//
+//        withContext(Dispatchers.IO) {
+//            supabaseClient.from("users").insert(user)
+//        }
+//    }
 
-    override suspend fun addUserToSupabaseDb(user: User) {
-        val userDto = mapper.userEntityToUserDto(user)
-        supabaseApiService.addUser(userDto)
+
+    override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
+
+        return try {
+            Log.d("UserRepository", "Starting to add user: ${user.uid}")
+            val userDto = mapper.userEntityToUserDto(user)
+            Log.d("UserRepository", "Mapped to DTO: $userDto")
+            val response = supabaseApiService.addUser(userDto)
+
+            if (response.isSuccessful) {
+                Log.d("UserRepository", "Successfully added user to Supabase DB")
+                Result.success(Unit)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e("UserRepository", "Failed to add user. Error: $errorBody")
+                Result.failure(Exception("Failed to add user: ${response.code()} - $errorBody"))
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Exception while adding user", e)
+            Result.failure(e)
+        }
     }
-
 }
+
+
 
 
 
