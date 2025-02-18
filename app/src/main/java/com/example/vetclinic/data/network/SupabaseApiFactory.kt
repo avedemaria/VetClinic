@@ -18,46 +18,20 @@ object SupabaseApiFactory {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+
+
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor { chain ->
             val request = chain.request()
 
-
-            Log.d("Request", "Запрос: ${request.method} ${request.url}")
-            Log.d("Request", "Заголовки: ${request.headers}")
-
-
-            request.body?.let {
-                val buffer = okio.Buffer()
-                it.writeTo(buffer)
-                Log.d("Request", "Тело запроса: ${buffer.readUtf8()}")  // Логируем строку тела
-            } ?: Log.d("Request", "Тело запроса: нет")
-
-
-            val newRequest = request.newBuilder()
+                .newBuilder()
                 .addHeader("apikey", API_KEY)
                 .addHeader("Authorization", "Bearer $API_KEY")
                 .build()
-
-            return@addInterceptor chain.proceed(newRequest)
+            chain.proceed(request)
         }
         .build()
-
-
-
-//    private val client = OkHttpClient.Builder()
-//        .addInterceptor(loggingInterceptor)
-//        .addInterceptor { chain ->
-//            val request = chain.request()
-//
-//                .newBuilder()
-//                .addHeader("apikey", API_KEY)
-//                .addHeader("Authorization", "Bearer $API_KEY")
-//                .build()
-//            chain.proceed(request)
-//        }
-//        .build()
 
     private val moshi = Moshi.Builder().add(SingleUserAdapter())
         .build()
