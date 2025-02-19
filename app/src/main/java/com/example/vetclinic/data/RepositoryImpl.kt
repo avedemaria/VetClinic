@@ -2,25 +2,27 @@ package com.example.vetclinic.data
 
 import android.util.Log
 import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.domain.Repository
-import com.example.vetclinic.domain.User
+import com.example.vetclinic.domain.authFeature.User
+import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 class RepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val supabaseApiService: SupabaseApiService,
     private val vetClinicDao: VetClinicDao,
-    private val mapper: UserMapper
+    private val userMapper: UserMapper,
+    private val doctorMapper: DoctorMapper
 ) : Repository {
 
 
@@ -99,10 +101,14 @@ class RepositoryImpl @Inject constructor(
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
 
         return try {
-            Log.d(TAG, "Starting to add user: ${user.uid}")
-            val userDto = mapper.userEntityToUserDto(user)
-            Log.d(TAG, "Mapped to DTO: $userDto")
-            val response = supabaseApiService.addUser(userDto)
+
+            val response = user
+                .also {
+                    Log.d(TAG, "Starting to add user: ${user.uid}")
+                }
+                .let { userMapper.userEntityToUserDto(it) }
+                .also { Log.d(TAG, "Mapped to DTO: $it") }
+                .let { supabaseApiService.addUser(it) }
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully added user to Supabase DB")
@@ -115,6 +121,17 @@ class RepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Exception while adding user", e)
             Result.failure(e)
+        }
+    }
+
+    override suspend fun getDoctorList(): List<Doctor> {
+        return try {
+            supabaseApiService.getDoctors().let {
+                doctorMapper.doctorDtoListToDoctorEntityList(it)
+            }
+        } catch (e: Exception) {
+            Log.e("RepositoryImpl", "Error fetching doctors", e)
+            emptyList()
         }
     }
 

@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.User
+import com.example.vetclinic.domain.authFeature.User
 import com.example.vetclinic.domain.usecases.AddUserToSupabaseDb
-import com.example.vetclinic.domain.usecases.RegisterUserUseCase
+import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain.usecases
+package com.example.vetclinic.domain.authFeature
 
 import com.example.vetclinic.domain.Repository
 import io.github.jan.supabase.auth.user.UserSession

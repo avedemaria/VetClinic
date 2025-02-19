@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain
+package com.example.vetclinic.domain.authFeature
 
 import android.os.Parcel
 import android.os.Parcelable
