@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    id ("kotlin-kapt")
 }
 
 
@@ -71,6 +72,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
 
+    // Glide для загрузки изображений
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+
 
 
     implementation(platform(libs.supabase.bom))
@@ -125,7 +130,6 @@ fun getSupabaseUrl(): String {
 fun getSupabaseKey(): String {
     return "\"${getProperties().getProperty("SUPABASE_KEY")}\""
 }
-
 
 
 // Function to read properties from local.properties

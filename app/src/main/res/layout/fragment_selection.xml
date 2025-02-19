@@ -21,7 +21,7 @@
         android:textColor="@color/dark_blue"
         android:textStyle="bold"
         android:textAlignment="viewStart"
-        app:layout_constraintBottom_toTopOf="@id/cardView"
+        app:layout_constraintBottom_toTopOf="@id/cardViewDoctors"
         android:textSize="18dp"
         android:text="Добро пожаловать,\nАлександра!" />
 
@@ -34,7 +34,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id ="@+id/cardView"
+        android:id ="@+id/cardViewDoctors"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -78,7 +78,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/cardViewServices"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"

@@ -6,7 +6,6 @@ import android.os.Parcelable
 data class Doctor(
     val uid: String,
     val doctorName: String,
-    val doctorLastName: String,
     val department: String,
     val role: String,
     val photoUrl: String
@@ -17,15 +16,15 @@ data class Doctor(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(uid)
         parcel.writeString(doctorName)
-        parcel.writeString(doctorLastName)
         parcel.writeString(department)
+        parcel.writeString(role)
+        parcel.writeString(photoUrl)
     }
 
     override fun describeContents(): Int {
