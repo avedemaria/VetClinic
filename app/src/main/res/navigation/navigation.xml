@@ -8,42 +8,27 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.vetclinic.presentation.fragment.LoginFragment"
-        android:label="LoginFragment" >
+        android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_RegistrationFragment"
+            android:id="@+id/action_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.example.vetclinic.presentation.fragment.RegistrationFragment"
-        android:label="RegistrationFragment" >
+        android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.vetclinic.presentation.fragment.MainFragment"
-        android:label="MainFragment" >
-        <action
-            android:id="@+id/action_mainFragment_to_selectionFragment"
-            app:destination="@id/selectionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/selectionFragment"
-        android:name="com.example.vetclinic.presentation.fragment.SelectionFragment"
-        android:label="fragment_selection"
-        tools:layout="@layout/fragment_selection" >
-        <action
-            android:id="@+id/action_selectionFragment_to_doctorsFragment"
-            app:destination="@id/doctorsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/doctorsFragment"
-        android:name="com.example.vetclinic.presentation.fragment.DoctorsFragment"
-        android:label="fragment_doctors"
-        tools:layout="@layout/fragment_doctors" />
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main" />
 </navigation>

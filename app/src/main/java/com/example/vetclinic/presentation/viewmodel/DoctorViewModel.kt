@@ -50,7 +50,7 @@ class DoctorViewModel @Inject constructor(
             .map { (department, doctorsList) ->
                 DepartmentWithDoctors(
                     department = department,
-                    doctors = doctorsList.sortedBy { it.doctorLastName }
+                    doctors = doctorsList.sortedBy { it.doctorName }
                 )
             }
             .sortedBy { it.department }

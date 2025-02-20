@@ -18,7 +18,7 @@ interface SupabaseApiService {
     suspend fun getCurrentUser(@Path("userId") userId: String): UserDTO?
 
 
-    @POST("users")
+    @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
 
     @GET("rest/v1/doctors?select=*")

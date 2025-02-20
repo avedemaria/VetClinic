@@ -1,60 +1,136 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
+import com.example.vetclinic.databinding.FragmentDoctorsBinding
+import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.adapter.DepAndDocItemList
+import com.example.vetclinic.presentation.adapter.DoctorsAdapter
+import com.example.vetclinic.presentation.adapter.OnAppointmentClickListener
+import com.example.vetclinic.presentation.viewmodel.DoctorUiState
+import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import jakarta.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DoctorsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DoctorsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
+
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[DoctorViewModel::class]
+    }
+
+    private var _binding: FragmentDoctorsBinding? = null
+    private val binding
+        get() = _binding ?: throw RuntimeException(
+            "FragmentDoctorsBinding is null"
+        )
+
+    private lateinit var doctorsAdapter: DoctorsAdapter
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_doctors, container, false)
+    ): View {
+        _binding = FragmentDoctorsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DoctorsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DoctorsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpAdapter()
+
+        observeViewModel()
+
+
     }
+
+
+    private fun setUpAdapter() {
+        doctorsAdapter = DoctorsAdapter(object : OnAppointmentClickListener {
+            override fun onBookButtonClick(doctor: Doctor) {
+                launchDetailedDoctorInfoFragment()
+            }
+        })
+
+        binding.rvDoctors.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.VERTICAL, false
+            )
+            adapter = doctorsAdapter
+        }
+
+    }
+
+
+    private fun observeViewModel() {
+
+        viewModel.doctorState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is DoctorUiState.Empty ->
+                    Log.d("DoctorsFragment", "DoctorUiState.Empty-заглушка для теста")
+
+                is DoctorUiState.Error -> Toast.makeText(
+                    requireContext(),
+                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                ).show()
+
+                is DoctorUiState.Loading -> Log.d(
+                    "DoctorsFragment",
+                    "DoctorUiState.Loading - заглушка для теста"
+                )
+
+                is DoctorUiState.Success ->
+                    doctorsAdapter.items = state.doctors.flatMap { departmentWithDoctors ->
+                        listOf(DepAndDocItemList.DepartmentItem(departmentWithDoctors.department)) +
+                                departmentWithDoctors.doctors.map { DepAndDocItemList.DoctorItem(it) }
+                    }
+            }
+        }
+    }
+
+
+    private fun launchDetailedDoctorInfoFragment() {
+        TODO()
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
 }
+
+
+
+
+

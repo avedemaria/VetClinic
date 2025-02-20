@@ -11,7 +11,6 @@ import com.example.vetclinic.R
 class MainFragment : Fragment() {
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,15 +23,5 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_selection_container, SelectionFragment())
-            .commit()
-
-
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_info_container, InfoFragment())
-            .commit()
     }
 }

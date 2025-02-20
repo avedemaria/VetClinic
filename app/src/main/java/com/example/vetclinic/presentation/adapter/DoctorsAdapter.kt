@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.ItemDepartmentHeaderBinding
 import com.example.vetclinic.databinding.ItemDoctorBinding
+import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 
 
-class DoctorsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DoctorsAdapter(
+    private val listener: OnAppointmentClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items = listOf<DepAndDocItemList>()
         set(value) {
@@ -44,7 +47,7 @@ class DoctorsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     parent,
                     false
                 )
-                DoctorViewHolder(binding)
+                DoctorViewHolder(binding, listener)
             }
 
             else -> throw IllegalArgumentException("Invalid view type")
@@ -63,10 +66,13 @@ class DoctorsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int = items.size
 
 
+
+
     companion object {
         private const val TYPE_HEADER = 101
         private const val TYPE_DOCTOR = 102
     }
+
 
 }
 

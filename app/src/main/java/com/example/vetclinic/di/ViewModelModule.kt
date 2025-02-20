@@ -1,6 +1,7 @@
 package com.example.vetclinic.di
 
 import androidx.lifecycle.ViewModel
+import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import dagger.Binds
 import dagger.Module
@@ -12,7 +13,12 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(RegistrationViewModel::class)
     @Binds
-    fun bindDiaryPageViewModel(impl: RegistrationViewModel): ViewModel
+    fun bindRegistrationViewModel(impl: RegistrationViewModel): ViewModel
 
+
+    @IntoMap
+    @ViewModelKey(DoctorViewModel::class)
+    @Binds
+    fun bindDoctorViewModel(impl: DoctorViewModel): ViewModel
 
 }

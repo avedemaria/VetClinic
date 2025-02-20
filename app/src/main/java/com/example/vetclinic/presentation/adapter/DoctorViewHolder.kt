@@ -8,7 +8,7 @@ import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 
 class DoctorViewHolder(
     val binding: ItemDoctorBinding,
-    private val listener: OnBookButtonClickListener
+    private val listener: OnAppointmentClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(doctor: Doctor) {
@@ -30,10 +30,6 @@ class DoctorViewHolder(
             }
         }
 
-
     }
 
-    interface OnBookButtonClickListener {
-        fun onBookButtonClick(doctor: Doctor)
-    }
 }

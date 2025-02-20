@@ -2,6 +2,7 @@ package com.example.vetclinic.data.network
 
 import android.util.Log
 import com.example.vetclinic.BuildConfig
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -19,7 +20,6 @@ object SupabaseApiFactory {
     }
 
 
-
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor { chain ->
@@ -33,7 +33,9 @@ object SupabaseApiFactory {
         }
         .build()
 
-    private val moshi = Moshi.Builder().add(SingleUserAdapter())
+    private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .add(SingleUserAdapter())
         .build()
 
     private val retrofit = Retrofit.Builder()
