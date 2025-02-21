@@ -22,4 +22,6 @@ interface Repository {
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
     suspend fun getDoctorList(): List<Doctor>
+
+    suspend fun checkUserSession(): Boolean
 }

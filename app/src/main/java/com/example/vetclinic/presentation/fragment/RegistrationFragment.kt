@@ -83,18 +83,18 @@ class RegistrationFragment : Fragment() {
                 ).show()
 
                 is RegistrationState.Result -> {
-                        launchMainFragment()
-            }
+                    launchMainFragment(state.user.userName)
+                }
 
+            }
         }
     }
-    }
 
 
-    private fun launchMainFragment() {
+    private fun launchMainFragment(userName: String) {
         findNavController().navigate(
             RegistrationFragmentDirections
-                .actionRegistrationFragmentToMainFragment()
+                .actionRegistrationFragmentToMainFragment(userName)
         )
     }
 

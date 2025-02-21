@@ -2,14 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_inner_nav_graph"
+    android:id="@+id/selection_nav_graph"
     app:startDestination="@id/selectionFragment">
 
     <fragment
         android:id="@+id/selectionFragment"
         android:name="com.example.vetclinic.presentation.fragment.SelectionFragment"
-        android:label="SelectionFragment"
+        android:label="Selection"
         tools:layout="@layout/fragment_selection">
+        <argument
+            android:name="userName"
+            app:argType="string"
+            android:defaultValue="" />
         <action
             android:id="@+id/action_selectionFragment_to_doctorsFragment"
             app:destination="@id/doctorsFragment" />
@@ -18,6 +22,6 @@
     <fragment
         android:id="@+id/doctorsFragment"
         android:name="com.example.vetclinic.presentation.fragment.DoctorsFragment"
-        android:label="DoctorsFragment"
+        android:label="Doctors"
         tools:layout="@layout/fragment_doctors" />
 </navigation>

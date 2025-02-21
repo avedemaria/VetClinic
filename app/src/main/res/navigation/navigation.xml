@@ -30,5 +30,13 @@
         android:id="@+id/mainFragment"
         android:name="com.example.vetclinic.presentation.fragment.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main">
+        <argument
+            android:name="userName"
+            app:argType="string"
+            android:defaultValue="" />
+
+    </fragment>
+
+
 </navigation>

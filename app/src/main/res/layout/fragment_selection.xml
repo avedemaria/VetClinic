@@ -23,7 +23,7 @@
         android:textAlignment="viewStart"
         app:layout_constraintBottom_toTopOf="@id/cardViewDoctors"
         android:textSize="18dp"
-        android:text="Добро пожаловать,\nАлександра!" />
+        tools:text="Добро пожаловать,\nАлександра!" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineMiddle"

@@ -5,7 +5,6 @@ import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.authFeature.User
 import com.example.vetclinic.domain.selectDoctorFeature.Doctor
@@ -28,18 +27,19 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun loginUser(email: String, password: String): Result<UserSession> {
         return try {
-            var userSession: UserSession? = null
+
+            val deferred = CompletableDeferred<UserSession>()
 
             Email.login(
                 supabaseClient,
                 onSuccess = { session ->
-                    userSession = session
+                    deferred.complete(session)
                 }
             ) {
                 this.email = email
                 this.password = password
             }
-            userSession?.let { Result.success(it) } ?: Result.failure(Exception("Session is null"))
+            Result.success(deferred.await())
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -132,6 +132,14 @@ class RepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("RepositoryImpl", "Error fetching doctors", e)
             emptyList()
+        }
+    }
+
+    override suspend fun checkUserSession(): Boolean {
+        return try {
+            return supabaseClient.auth.currentUserOrNull() != null
+        } catch (e: Exception) {
+            false
         }
     }
 

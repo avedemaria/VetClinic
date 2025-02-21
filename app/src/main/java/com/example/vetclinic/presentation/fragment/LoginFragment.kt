@@ -2,16 +2,30 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.LoginState
+import com.example.vetclinic.presentation.viewmodel.LoginViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import jakarta.inject.Inject
 
 class LoginFragment : Fragment() {
 
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[LoginViewModel::class]
+    }
 
     private var _binding: FragmentLoginBinding? = null
     private val binding
@@ -40,14 +54,39 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        observeViewModel()
+
         binding.btnLogin.setOnClickListener {
-            launchMainFragment()
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+            viewModel.loginUser(email, password)
         }
 
         binding.tvRegister.setOnClickListener {
             launchRegistrationFragment()
         }
 
+
+
+    }
+
+    private fun observeViewModel() {
+        viewModel.loginState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is LoginState.Error -> Toast.makeText(
+                    requireContext(),
+                    "${state.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                is LoginState.IsAuthenticated ->
+                    launchMainFragment()
+
+                is LoginState.LoggedOut -> Log.d("LoginFragment", "null")
+                is LoginState.Result ->
+                    launchMainFragment()
+            }
+        }
     }
 
     private fun launchMainFragment() {

@@ -11,14 +11,13 @@
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
-        <!-- NavHostFragment для управления навигацией внутри MainFragment -->
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nav_host_child_fragment"
+            android:id="@+id/selection_nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:navGraph="@navigation/main_inner_nav_graph"
+            android:layout_height="wrap_content"
+            app:navGraph="@navigation/selection_nav_graph"
             app:defaultNavHost="false" />
 
         <FrameLayout
@@ -27,13 +26,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:layout_marginTop="16dp"
-            android:id="@+id/bookAppointmentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_blue"
-            android:text="@string/book_appointment"
-            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </ScrollView>

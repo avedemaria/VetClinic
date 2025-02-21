@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.databinding.FragmentSelectionBinding
@@ -13,6 +14,7 @@ import com.example.vetclinic.databinding.FragmentSelectionBinding
 
 class SelectionFragment : Fragment() {
 
+    private val args: SelectionFragmentArgs by navArgs()
 
     private var _binding: FragmentSelectionBinding? = null
     private val binding
@@ -32,6 +34,12 @@ class SelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val userName = args.userName
+
+        binding.welcomeText.text = String.format("Добро пожаловать,\n%s", userName)
+
+
         binding.cardViewDoctors.setOnClickListener {
             launchDoctorsFragment()
         }
@@ -57,4 +65,6 @@ class SelectionFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
