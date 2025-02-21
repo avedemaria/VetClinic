@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SelectionFragment">
+    android:layout_height="wrap_content"
+    tools:context=".presentation.fragment.SelectionFragment">
 
-
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginStart = "16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/dark_blue"
+        android:textStyle="bold"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toTopOf="@id/cardViewDoctors"
+        android:textSize="18dp"
+        tools:text="Добро пожаловать,\nАлександра!" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineMiddle"
@@ -18,22 +34,24 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id ="@+id/cardViewDoctors"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="16dp"
         app:cardElevation="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guidelineMiddle"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/choose_doctor_background"
             android:padding="16dp">
+
 
             <ImageView
                 android:id="@+id/IVDoctor"
@@ -60,6 +78,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewServices"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
@@ -67,9 +86,8 @@
         app:cardElevation="5dp"
         app:layout_constraintStart_toStartOf="@id/guidelineMiddle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="8dp">
+        android:layout_marginEnd="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

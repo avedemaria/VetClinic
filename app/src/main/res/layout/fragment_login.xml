@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dp">
+        android:padding="26dp">
 
 
         <ImageView
@@ -37,7 +37,6 @@
             android:inputType="textEmailAddress"
             android:layout_marginTop="16dp"
             android:padding="12dp"
-            android:background="@android:color/transparent"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:textSize="16sp"
@@ -52,7 +51,6 @@
             android:inputType="textPassword"
             android:layout_marginTop="8dp"
             android:padding="12dp"
-            android:background="@android:color/transparent"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:textSize="16sp"
@@ -71,33 +69,49 @@
             android:padding="12dp"/>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="У меня нет аккаунта. Зарегистрироваться "
-            android:textSize="14sp"
-            android:textColor="@color/dark_blue"
+        <LinearLayout
             android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="@string/dont_have_account"
+                android:textSize="14sp"
+                android:textColor="@color/dark_blue"
+                />
 
+            <TextView
+                android:id="@+id/tv_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/TV_register"
+                android:textColor="#075D52"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_forgot_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Забыли пароль?"
+            android:text="@string/tv_forgorPassword"
             android:textSize="14sp"
-            android:textColor="@color/dark_blue"
+            android:textColor="#075D52"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"/>
 
         <TextView
+            android:id="@+id/admin_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Вход для администратора"
+            android:text="@string/tv_admin_login"
             android:textSize="14sp"
-            android:textColor="@color/dark_blue"
+            android:textColor="#075D52"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"/>
