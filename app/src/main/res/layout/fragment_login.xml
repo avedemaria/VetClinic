@@ -4,83 +4,86 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <!--Как правило все цвета, строки и размеры выносятся в ресурсы.
+    Тогда, если нужно будет поменять, например, цвет фона, то изменишь в одном месте в ресурсах,
+    а не будешь искать по всем файлам -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:padding="26dp">
 
 
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/modern_pet_veterinary_clinic"
+            android:layout_marginTop="50dp"
             android:contentDescription="Логотип компании"
-            android:layout_marginTop="50dp"/>
+            android:src="@drawable/modern_pet_veterinary_clinic" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/log_in"
-            android:textSize="22sp"
             android:layout_marginTop="16dp"
-          />
+            android:text="@string/log_in"
+            android:textSize="22sp" />
 
-
+        <!--Черный текст на черном фоне-->
         <EditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
             android:layout_marginTop="16dp"
-            android:padding="12dp"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
-            android:textSize="16sp"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"/>
+            android:textColorHint="@android:color/darker_gray"
+            android:textSize="16sp" />
 
+        <!--Черный текст на черном фоне-->
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:inputType="textPassword"
             android:layout_marginTop="8dp"
-            android:padding="12dp"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
-            android:textSize="16sp"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="12dp"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"/>
+            android:textColorHint="@android:color/darker_gray"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/log_in_button"
-            android:backgroundTint="@color/dark_blue"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
             android:layout_marginTop="16dp"
-            android:padding="12dp"/>
+            android:backgroundTint="@color/dark_blue"
+            android:padding="12dp"
+            android:text="@string/log_in_button"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
 
         <LinearLayout
-            android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="@string/dont_have_account"
-                android:textSize="14sp"
                 android:textColor="@color/dark_blue"
-                />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_register"
@@ -98,34 +101,34 @@
             android:id="@+id/tv_forgot_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_forgorPassword"
-            android:textSize="14sp"
-            android:textColor="#075D52"
             android:layout_marginTop="8dp"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:text="@string/tv_forgorPassword"
+            android:textColor="#075D52"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/admin_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_admin_login"
-            android:textSize="14sp"
-            android:textColor="#075D52"
             android:layout_marginTop="8dp"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:text="@string/tv_admin_login"
+            android:textColor="#075D52"
+            android:textSize="14sp" />
 
 
         <TextView
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:textSize="16sp"
             android:layout_marginTop="16dp"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:text="@string/cancel"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </ScrollView>

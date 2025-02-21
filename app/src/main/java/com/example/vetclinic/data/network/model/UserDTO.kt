@@ -1,7 +1,9 @@
 package com.example.vetclinic.data.network.model
 
+import com.example.vetclinic.CodeReview
 import com.squareup.moshi.Json
 
+@CodeReview("Всё ок, но точно все поля не null?")
 data class UserDTO(
     @Json(name = "uid") val uid: String,
     @Json(name = "user_name") val userName: String,

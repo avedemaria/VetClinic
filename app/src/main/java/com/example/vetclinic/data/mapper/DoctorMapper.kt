@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.mapper
 
+import com.example.vetclinic.CodeReview
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 import jakarta.inject.Inject
@@ -18,6 +19,8 @@ class DoctorMapper @Inject constructor() {
 
 
     fun doctorDtoListToDoctorEntityList(doctorDtoList: List<DoctorDto>): List<Doctor> {
-        return doctorDtoList.map { doctorDtoToDoctorEntity(it) }
+        @CodeReview("Можно не создавать анонимную функцию, а использовать существующую")
+        return doctorDtoList.map(::doctorDtoToDoctorEntity) // Разница заметна только на больших списках
+
     }
 }
