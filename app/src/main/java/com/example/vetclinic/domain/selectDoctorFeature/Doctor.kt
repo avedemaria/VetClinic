@@ -10,37 +10,27 @@ data class Doctor(
     val role: String,
     val photoUrl: String
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-    ) {
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) = with(parcel) {
+        writeString(uid)
+        writeString(doctorName)
+        writeString(department)
+        writeString(role)
+        writeString(photoUrl)
     }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(uid)
-        parcel.writeString(doctorName)
-        parcel.writeString(department)
-        parcel.writeString(role)
-        parcel.writeString(photoUrl)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Doctor> {
-        override fun createFromParcel(parcel: Parcel): Doctor {
-            return Doctor(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Doctor?> {
-            return arrayOfNulls(size)
-        }
+        override fun createFromParcel(parcel: Parcel): Doctor = Doctor(parcel)
+        override fun newArray(size: Int): Array<Doctor?> = arrayOfNulls(size)
     }
 }
-
-
-

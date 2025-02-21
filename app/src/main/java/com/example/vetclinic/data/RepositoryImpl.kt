@@ -1,6 +1,7 @@
 package com.example.vetclinic.data
 
 import android.util.Log
+import com.example.vetclinic.CodeReview
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.UserMapper
@@ -11,9 +12,11 @@ import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeout
 
 
 class RepositoryImpl @Inject constructor(
@@ -26,6 +29,25 @@ class RepositoryImpl @Inject constructor(
 
 
     override suspend fun loginUser(email: String, password: String): Result<UserSession> {
+//        return try {
+//
+//            var userSession: UserSession? = null
+//
+//            Email.login(
+//                supabaseClient,
+//                onSuccess = { session ->
+//                    userSession = session
+//                }
+//            ) {
+//                this.email = email
+//                this.password = password
+//            }
+        @CodeReview("Всегда будет null? Сейчас onSuccess вызывается позже")
+//            userSession?.let { Result.success(it) } ?: Result.failure(Exception("Session is null"))
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+
         return try {
 
             val deferred = CompletableDeferred<UserSession>()
@@ -46,36 +68,14 @@ class RepositoryImpl @Inject constructor(
     }
 
 
-//    override suspend fun registerUser(
-//        email: String,
-//        password: String
-//    ): Result<UserSession> {
-//        return try {
-//            val userSession = suspendCoroutine { continuation ->
-//                Email.signUp(
-//                    supabaseClient,
-//                    onSuccess = { session ->
-//                        continuation.resume(session)
-//                    }
-//                ) {
-//                    this.email = email
-//                    this.password = password
-//                }
-//            }
-//            Result.success(userSession)
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
-//    }
-
     override suspend fun registerUser(email: String, password: String): Result<UserSession> {
         return try {
 
             val deferred = CompletableDeferred<UserSession>()
-
             Email.signUp(
                 supabaseClient,
                 onSuccess = { session ->
+                    Log.d("ANYA", "registerUser onSuccess")
                     deferred.complete(session)
                 }
             ) {
@@ -83,8 +83,12 @@ class RepositoryImpl @Inject constructor(
                 this.password = password
             }
 
-            Result.success(deferred.await())
+            // Result.success(deferred.await())
+            @CodeReview("Добавляем таймаут на случай, если onSuccess не вызовется")
+            Result.success(withTimeout(10_000) { deferred.await() })
         } catch (e: Exception) {
+            Log.d("ANYA", "Result.failure(e)")
+
             Result.failure(e)
         }
     }
@@ -94,22 +98,15 @@ class RepositoryImpl @Inject constructor(
         supabaseClient.auth.signOut()
     }
 
+    @CodeReview("Тут исключение бросается. Лучше возвращать Result или написать аннотацию с исключением")
     override fun getCurrentUser(): io.github.jan.supabase.auth.user.UserInfo =
         supabaseClient.auth.currentUserOrNull() ?: throw Exception("No authenticated user found")
 
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
-
-        return try {
-
-            val response = user
-                .also {
-                    Log.d(TAG, "Starting to add user: ${user.uid}")
-                }
-                .let { userMapper.userEntityToUserDto(it) }
-                .also { Log.d(TAG, "Mapped to DTO: $it") }
-                .let { supabaseApiService.addUser(it) }
-
+        @CodeReview("Можно без try-catch")
+        return kotlin.runCatching {
+            val response = supabaseApiService.addUser(userMapper.userEntityToUserDto(user))
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully added user to Supabase DB")
                 Result.success(Unit)
@@ -118,14 +115,12 @@ class RepositoryImpl @Inject constructor(
                 Log.e(TAG, "Failed to add user. Error: $errorBody")
                 Result.failure(Exception("Failed to add user: ${response.code()} - $errorBody"))
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception while adding user", e)
-            Result.failure(e)
         }
     }
 
     override suspend fun getDoctorList(): List<Doctor> {
         return try {
+            @CodeReview("Нет проверки на failure. Сервер может отдать 500, 404 и т.п.")
             supabaseApiService.getDoctors().let {
                 doctorMapper.doctorDtoListToDoctorEntityList(it)
             }

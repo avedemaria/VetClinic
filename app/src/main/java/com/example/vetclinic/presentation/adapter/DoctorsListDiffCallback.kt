@@ -1,6 +1,7 @@
 package com.example.vetclinic.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.example.vetclinic.CodeReview
 
 class DoctorsListDiffCallback(
     private val oldList: List<DepAndDocItemList>,
@@ -12,36 +13,33 @@ class DoctorsListDiffCallback(
 
     override fun getNewListSize(): Int = newList.size
 
+    @CodeReview("Можно убрать дублирование val newItem = newList[newItemPosition]")
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return when {
-            oldItem is DepAndDocItemList.DepartmentItem
-                    && newItem is DepAndDocItemList.DepartmentItem
-                -> oldItem.department == newItem.department
+        return when (val oldItem = oldList[oldItemPosition]) {
+            is DepAndDocItemList.DepartmentItem ->
+                newList[newItemPosition] is DepAndDocItemList.DepartmentItem
+                        && oldItem.department == (newList[newItemPosition] as DepAndDocItemList.DepartmentItem).department
 
-            oldItem is DepAndDocItemList.DoctorItem && newItem is DepAndDocItemList.DoctorItem ->
-                oldItem.doctor.uid == newItem.doctor.uid
+            is DepAndDocItemList.DoctorItem ->
+                newList[newItemPosition] is DepAndDocItemList.DoctorItem
+                        && oldItem.doctor.uid == (newList[newItemPosition] as DepAndDocItemList.DoctorItem).doctor.uid
 
             else -> false
         }
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
 
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        @CodeReview("== уже сравнивает содержимое")
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
+    @CodeReview("Позволяет обновлять только измененные поля, а не перерисовывать всё")
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return when {
-            oldItem is DepAndDocItemList.DepartmentItem && newItem
-                    is DepAndDocItemList.DepartmentItem ->
-                oldItem == newItem
-
-            oldItem is DepAndDocItemList.DoctorItem && newItem is DepAndDocItemList.DoctorItem ->
-                oldItem.doctor == newItem.doctor
-
-            else -> false
-        }
+        return if (oldItem != newItem) newItem else null
     }
 }
 

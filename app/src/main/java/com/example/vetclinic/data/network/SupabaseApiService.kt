@@ -16,16 +16,15 @@ interface SupabaseApiService {
 
     @GET("users?uid=eq.{userId}")
     suspend fun getCurrentUser(@Path("userId") userId: String): UserDTO?
-
+    //@GET("users")
+    //suspend fun getCurrentUser(@Query("uid") userId: String): UserDTO?
+    // Перепроверить: там не массив возвращается всегда?
 
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
 
     @GET("rest/v1/doctors?select=*")
-    suspend fun getDoctors (): List<DoctorDto>
-
-
-
+    suspend fun getDoctors (): List<DoctorDto> // Обернуть в Response， чтобы были ошибки
 }
 
 

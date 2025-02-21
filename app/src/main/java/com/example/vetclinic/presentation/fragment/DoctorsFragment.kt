@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.CodeReview
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentDoctorsBinding
 import com.example.vetclinic.domain.selectDoctorFeature.Doctor
@@ -35,10 +37,11 @@ class DoctorsFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[DoctorViewModel::class]
-    }
+@CodeReview("viewModelFactory может быть null, а viewModel уже создаём")
+//    private val viewModel by lazy {
+//        ViewModelProvider(this, viewModelFactory)[DoctorViewModel::class]
+//    }
+    private val viewModel: DoctorViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentDoctorsBinding? = null
     private val binding
@@ -130,8 +133,3 @@ class DoctorsFragment : Fragment() {
 
 
 }
-
-
-
-
-
