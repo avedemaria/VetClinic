@@ -43,9 +43,8 @@ class SelectionFragment : Fragment() {
 
         component.inject(this)
 
-        val userName = args.userName
 
-        binding.welcomeText.text = String.format("Добро пожаловать,\n%s", userName)
+//        binding.welcomeText.text = String.format("Добро пожаловать,\n%s", userName)
 
 
         binding.cardViewDoctors.setOnClickListener {

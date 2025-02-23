@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain.authFeature
+package com.example.vetclinic.domain.entities
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -7,13 +7,11 @@ data class User(
     val uid: String,
     val userName: String,
     val userLastName: String,
-    val petName: String,
     val phoneNumber: String,
     val email: String,
 
     ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
@@ -28,7 +26,6 @@ data class User(
             writeString(uid)
             writeString(userName)
             writeString(userLastName)
-            writeString(petName)
             writeString(phoneNumber)
             writeString(email)
         }

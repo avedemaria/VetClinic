@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.ItemDoctorBinding
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.domain.entities.Doctor
 
 class DoctorViewHolder(
     private val binding: ItemDoctorBinding,

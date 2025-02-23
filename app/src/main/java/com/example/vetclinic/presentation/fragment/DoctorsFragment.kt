@@ -10,14 +10,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentDoctorsBinding
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.DepAndDocItemList
 import com.example.vetclinic.presentation.adapter.DoctorsAdapter

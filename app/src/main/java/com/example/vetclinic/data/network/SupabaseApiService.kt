@@ -2,6 +2,7 @@ package com.example.vetclinic.data.network
 
 import androidx.room.Query
 import com.example.vetclinic.data.network.model.DoctorDto
+import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.UserDTO
 import io.github.jan.supabase.auth.mfa.FactorType
 import retrofit2.Response
@@ -21,6 +22,8 @@ interface SupabaseApiService {
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
 
+    @POST("rest/v1/pets")
+    suspend fun addPet(@Body petDto: PetDto): Response<Unit>
 
 
     @GET("rest/v1/doctors?select=*")

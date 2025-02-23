@@ -1,13 +1,16 @@
 package com.example.vetclinic.data
 
 import android.util.Log
+import com.example.vetclinic.data.database.model.UserDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.DoctorMapper
+import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.Repository
-import com.example.vetclinic.domain.authFeature.User
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.domain.entities.Doctor
+import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -23,6 +26,7 @@ class RepositoryImpl @Inject constructor(
     private val supabaseApiService: SupabaseApiService,
     private val vetClinicDao: VetClinicDao,
     private val userMapper: UserMapper,
+    private val petMapper: PetMapper,
     private val doctorMapper: DoctorMapper
 ) : Repository {
 
@@ -97,6 +101,24 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+
+    override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> {
+
+        return kotlin.runCatching {
+
+            val response = supabaseApiService.addPet(petMapper.petEntityToPetDto(pet))
+
+            if (response.isSuccessful) {
+                Log.d(TAG, "Successfully added pet to Supabase DB")
+                Result.success(Unit)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Failed to add pet. Error: $errorBody")
+                Result.failure(Exception("Failed to add pet: ${response.code()} - $errorBody"))
+            }
+        }
+    }
+
     override suspend fun getDoctorList(): Result<List<Doctor>> = runCatching {
         val response = supabaseApiService.getDoctors()
 
@@ -111,6 +133,7 @@ class RepositoryImpl @Inject constructor(
         Log.e("RepositoryImpl", "Error fetching doctors ${e.message}")
     }
 
+
     override suspend fun checkUserSession(): Boolean {
         return try {
             return supabaseClient.auth.currentUserOrNull() != null
@@ -118,6 +141,20 @@ class RepositoryImpl @Inject constructor(
             false
         }
     }
+
+
+    override suspend fun addUserToRoom(user: User, pet: Pet) {
+        vetClinicDao.insertUser(userMapper.userEntityToUserDbModel(user))
+        vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
+    }
+
+    override suspend fun getCurrentUserFromRoom(userId: String): Result<User> =
+        runCatching {
+            val userDbModel = vetClinicDao.getUserById(userId)
+            userMapper.userDbModelToUserEntity(userDbModel)
+        }.onFailure {
+            Log.e(TAG, "Error while getting user from Room", it)
+        }
 
     companion object {
         const val TAG = "RepositoryImpl"

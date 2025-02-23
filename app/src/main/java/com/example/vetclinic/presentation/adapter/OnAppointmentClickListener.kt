@@ -1,6 +1,6 @@
 package com.example.vetclinic.presentation.adapter
 
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.domain.entities.Doctor
 
 interface OnAppointmentClickListener {
 

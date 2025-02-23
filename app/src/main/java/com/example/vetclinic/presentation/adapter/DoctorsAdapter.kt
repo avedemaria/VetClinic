@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.ItemDepartmentHeaderBinding
 import com.example.vetclinic.databinding.ItemDoctorBinding
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 
 
 class DoctorsAdapter(

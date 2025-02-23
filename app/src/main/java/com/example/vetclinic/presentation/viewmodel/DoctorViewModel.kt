@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.selectDoctorFeature.DepartmentWithDoctors
-import com.example.vetclinic.domain.selectDoctorFeature.Doctor
+import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.selectDoctorFeature.GetDoctorListUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch

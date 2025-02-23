@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.viewmodel
 
-import com.example.vetclinic.domain.authFeature.User
 import io.github.jan.supabase.auth.user.UserSession
 
 sealed class LoginState {

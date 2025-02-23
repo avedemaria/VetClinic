@@ -20,5 +20,5 @@ data class PetDbModel(
     val userId: String,
     val petName: String,
     val petType: String? = null,
-    val petAge: Int? = null
+    val petAge: String? = null
 )
