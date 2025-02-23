@@ -16,12 +16,12 @@ interface Repository {
 
     suspend fun logOut()
 
-    fun getCurrentUser(): UserInfo
+    fun getCurrentUser(): Result<UserInfo>
 
 
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
-    suspend fun getDoctorList(): List<Doctor>
+    suspend fun getDoctorList(): Result<List<Doctor>>
 
     suspend fun checkUserSession(): Boolean
 }

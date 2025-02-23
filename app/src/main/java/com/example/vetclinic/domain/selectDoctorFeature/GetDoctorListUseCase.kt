@@ -5,7 +5,7 @@ import jakarta.inject.Inject
 
 class GetDoctorListUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend fun getDoctorList(): List<Doctor> {
+    suspend fun getDoctorList(): Result<List<Doctor>> {
         return repository.getDoctorList()
     }
 

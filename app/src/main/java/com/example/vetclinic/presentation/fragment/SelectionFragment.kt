@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.databinding.FragmentSelectionBinding
+import com.example.vetclinic.presentation.VetClinicApplication
 
 
 class SelectionFragment : Fragment() {
@@ -21,6 +22,11 @@ class SelectionFragment : Fragment() {
         get() = _binding ?: throw RuntimeException(
             "FragmentSelectionBinding is null"
         )
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
+
 
 
     override fun onCreateView(
@@ -34,6 +40,8 @@ class SelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        component.inject(this)
 
         val userName = args.userName
 

@@ -21,8 +21,10 @@ interface SupabaseApiService {
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
 
+
+
     @GET("rest/v1/doctors?select=*")
-    suspend fun getDoctors (): List<DoctorDto>
+    suspend fun getDoctors (): Response<List<DoctorDto>>
 
 
 

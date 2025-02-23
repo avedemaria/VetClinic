@@ -9,29 +9,21 @@ import androidx.room.RoomDatabase
 abstract class VetClinicDatabase : RoomDatabase() {
 
     companion object {
+        @Volatile   //"Чтобы переменная не кешировалась в потоках и всегда читалась из памяти" +
+        //"Если не сделать, то один поток обновит значение, а второй все еще видит старое из кеша")
+
         private var INSTANCE: VetClinicDatabase? = null
         private val DB_NAME = "VetClinicDb"
-        private val LOCK = Any()
 
         fun getInstance(application: Application): VetClinicDatabase {
 
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    application.applicationContext,
+                    VetClinicDatabase::class.java, DB_NAME
+                ).build().also { INSTANCE = it }
 
-            INSTANCE?.let {
-                return it
             }
-
-
-            synchronized(LOCK) {
-                INSTANCE?.let {
-                    return it
-                }
-            }
-
-            val database =
-                Room.databaseBuilder(application, VetClinicDatabase::class.java, DB_NAME).build()
-            INSTANCE = database
-            return database
-
         }
     }
 

@@ -6,7 +6,7 @@ import jakarta.inject.Inject
 
 class GetCurrentUserUseCase @Inject constructor(private val repository: Repository) {
 
-    fun getCurrentUser(): UserInfo {
+    fun getCurrentUser(): Result<UserInfo> {
         return repository.getCurrentUser()
     }
 }

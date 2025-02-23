@@ -15,10 +15,10 @@ class DoctorsAdapter(
 
     var items = listOf<DepAndDocItemList>()
         set(value) {
-            val callback = DoctorsListDiffCallback(items, value)
+            val callback = DoctorsListDiffCallback(field, value)
             val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
             field = value
+            diffResult.dispatchUpdatesTo(this)
         }
 
 
@@ -26,6 +26,7 @@ class DoctorsAdapter(
         return when (items[position]) {
             is DepAndDocItemList.DepartmentItem -> TYPE_HEADER
             is DepAndDocItemList.DoctorItem -> TYPE_DOCTOR
+            else -> throw IllegalArgumentException("Invalid item type")
         }
     }
 
@@ -33,21 +34,23 @@ class DoctorsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_HEADER -> {
-                val binding = ItemDepartmentHeaderBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                DepartmentViewHolder(
+                    ItemDepartmentHeaderBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 )
-                DepartmentViewHolder(binding)
             }
 
             TYPE_DOCTOR -> {
-                val binding = ItemDoctorBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                DoctorViewHolder(
+                    ItemDoctorBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ), listener
                 )
-                DoctorViewHolder(binding, listener)
             }
 
             else -> throw IllegalArgumentException("Invalid view type")
@@ -56,16 +59,18 @@ class DoctorsAdapter(
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = items[position]) {
-            is DepAndDocItemList.DepartmentItem -> (holder as DepartmentViewHolder).bind(item)
-            is DepAndDocItemList.DoctorItem -> (holder as DoctorViewHolder).bind(item.doctor)
+
+        val item = items[position]
+        when {
+            holder is DepartmentViewHolder && item is DepAndDocItemList.DepartmentItem ->
+                holder.bind(item)
+            holder is DoctorViewHolder && item is DepAndDocItemList.DoctorItem ->
+                holder.bind(item.doctor)
         }
     }
 
 
     override fun getItemCount(): Int = items.size
-
-
 
 
     companion object {

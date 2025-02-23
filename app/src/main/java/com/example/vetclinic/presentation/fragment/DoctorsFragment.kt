@@ -8,7 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,9 +39,7 @@ class DoctorsFragment : Fragment() {
     }
 
 
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[DoctorViewModel::class]
-    }
+    private val viewModel: DoctorViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentDoctorsBinding? = null
     private val binding
@@ -64,6 +65,13 @@ class DoctorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()  // Возврат к предыдущему фрагменту
+            }
+        })
 
         setUpAdapter()
 
@@ -119,7 +127,7 @@ class DoctorsFragment : Fragment() {
 
 
     private fun launchDetailedDoctorInfoFragment() {
-        TODO()
+        Log.d(TAG, "fragment launched")
     }
 
 
@@ -128,6 +136,11 @@ class DoctorsFragment : Fragment() {
         _binding = null
     }
 
+
+
+    companion object {
+        private const val TAG = "DoctorsFragment"
+    }
 
 }
 

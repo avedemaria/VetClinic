@@ -18,6 +18,6 @@ class DoctorMapper @Inject constructor() {
 
 
     fun doctorDtoListToDoctorEntityList(doctorDtoList: List<DoctorDto>): List<Doctor> {
-        return doctorDtoList.map { doctorDtoToDoctorEntity(it) }
+        return doctorDtoList.map(::doctorDtoToDoctorEntity)
     }
 }

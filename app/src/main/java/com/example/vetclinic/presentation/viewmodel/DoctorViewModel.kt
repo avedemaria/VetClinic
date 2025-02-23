@@ -26,9 +26,7 @@ class DoctorViewModel @Inject constructor(
     fun fetchDoctors() {
         _doctorState.value = DoctorUiState.Loading
         viewModelScope.launch {
-            runCatching {
                 getDoctorListUseCase.getDoctorList()
-            }
                 .onSuccess { doctors ->
                     _doctorState.value = if (doctors.isNotEmpty()) {
                         val groupedDoctors = groupDoctorsByDepartment(doctors)

@@ -11,9 +11,11 @@ import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeout
 
 
 class RepositoryImpl @Inject constructor(
@@ -45,29 +47,6 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-
-//    override suspend fun registerUser(
-//        email: String,
-//        password: String
-//    ): Result<UserSession> {
-//        return try {
-//            val userSession = suspendCoroutine { continuation ->
-//                Email.signUp(
-//                    supabaseClient,
-//                    onSuccess = { session ->
-//                        continuation.resume(session)
-//                    }
-//                ) {
-//                    this.email = email
-//                    this.password = password
-//                }
-//            }
-//            Result.success(userSession)
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
-//    }
-
     override suspend fun registerUser(email: String, password: String): Result<UserSession> {
         return try {
 
@@ -76,6 +55,7 @@ class RepositoryImpl @Inject constructor(
             Email.signUp(
                 supabaseClient,
                 onSuccess = { session ->
+                    Log.d(TAG, "registerUser onSuccess")
                     deferred.complete(session)
                 }
             ) {
@@ -83,7 +63,7 @@ class RepositoryImpl @Inject constructor(
                 this.password = password
             }
 
-            Result.success(deferred.await())
+            Result.success(withTimeout(10_000) { deferred.await() })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -94,21 +74,17 @@ class RepositoryImpl @Inject constructor(
         supabaseClient.auth.signOut()
     }
 
-    override fun getCurrentUser(): io.github.jan.supabase.auth.user.UserInfo =
-        supabaseClient.auth.currentUserOrNull() ?: throw Exception("No authenticated user found")
+    override fun getCurrentUser(): Result<UserInfo> {
+        return supabaseClient.auth.currentUserOrNull()?.let { Result.success(it) }
+            ?: Result.failure(Exception("No user found"))
+    }
 
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
 
-        return try {
+        return kotlin.runCatching {
 
-            val response = user
-                .also {
-                    Log.d(TAG, "Starting to add user: ${user.uid}")
-                }
-                .let { userMapper.userEntityToUserDto(it) }
-                .also { Log.d(TAG, "Mapped to DTO: $it") }
-                .let { supabaseApiService.addUser(it) }
+            val response = supabaseApiService.addUser(userMapper.userEntityToUserDto(user))
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully added user to Supabase DB")
@@ -118,21 +94,21 @@ class RepositoryImpl @Inject constructor(
                 Log.e(TAG, "Failed to add user. Error: $errorBody")
                 Result.failure(Exception("Failed to add user: ${response.code()} - $errorBody"))
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception while adding user", e)
-            Result.failure(e)
         }
     }
 
-    override suspend fun getDoctorList(): List<Doctor> {
-        return try {
-            supabaseApiService.getDoctors().let {
-                doctorMapper.doctorDtoListToDoctorEntityList(it)
-            }
-        } catch (e: Exception) {
-            Log.e("RepositoryImpl", "Error fetching doctors", e)
-            emptyList()
+    override suspend fun getDoctorList(): Result<List<Doctor>> = runCatching {
+        val response = supabaseApiService.getDoctors()
+
+        val body = response.body()
+            ?: throw Exception("Empty response body: ${response.code()} - ${response.message()}")
+        if (response.isSuccessful) {
+            doctorMapper.doctorDtoListToDoctorEntityList(body)
+        } else {
+            throw Exception("Server's error: ${response.code()} - ${response.message()}")
         }
+    }.onFailure { e ->
+        Log.e("RepositoryImpl", "Error fetching doctors ${e.message}")
     }
 
     override suspend fun checkUserSession(): Boolean {

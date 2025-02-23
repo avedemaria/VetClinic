@@ -7,9 +7,18 @@ import com.example.vetclinic.databinding.ItemDoctorBinding
 import com.example.vetclinic.domain.selectDoctorFeature.Doctor
 
 class DoctorViewHolder(
-    val binding: ItemDoctorBinding,
+    private val binding: ItemDoctorBinding,
     private val listener: OnAppointmentClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
+
+
+    init {
+        binding.bookAppointmentButton.setOnClickListener {
+            val doctor = it.tag as? Doctor
+            doctor?.let { listener.onBookButtonClick(it) }
+
+        }
+    }
 
     fun bind(doctor: Doctor) {
 
@@ -25,9 +34,7 @@ class DoctorViewHolder(
                 .into(doctorImageView)
 
 
-            bookAppointmentButton.setOnClickListener {
-                listener.onBookButtonClick(doctor)
-            }
+            bookAppointmentButton.tag = doctor
         }
 
     }

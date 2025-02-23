@@ -7,7 +7,7 @@ data class DoctorDto(
     @Json(name = "name") val doctorName: String,
     @Json(name = "department") val department: String,
     @Json(name = "role") val role: String,
-    @Json(name = "photoUrl") val photoUrl: String
+    @Json(name = "photoUrl") val photoUrl: String? = null
 )
 
 

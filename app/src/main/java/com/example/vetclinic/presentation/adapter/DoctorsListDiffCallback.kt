@@ -28,20 +28,13 @@ class DoctorsListDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
 
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-
-        return when {
-            oldItem is DepAndDocItemList.DepartmentItem && newItem
-                    is DepAndDocItemList.DepartmentItem ->
-                oldItem == newItem
-
-            oldItem is DepAndDocItemList.DoctorItem && newItem is DepAndDocItemList.DoctorItem ->
-                oldItem.doctor == newItem.doctor
-
-            else -> false
-        }
+        return if (oldItem != newItem) newItem else null
     }
 }
 

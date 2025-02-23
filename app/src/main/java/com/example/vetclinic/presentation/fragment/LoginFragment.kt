@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentLoginBinding
+import com.example.vetclinic.di.AppComponent
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.LoginState
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
@@ -23,9 +25,7 @@ class LoginFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[LoginViewModel::class]
-    }
+    private val viewModel: LoginViewModel by viewModels{viewModelFactory}
 
     private var _binding: FragmentLoginBinding? = null
     private val binding
@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
         )
 
 
-    private val component by lazy {
+    private val component: AppComponent by lazy {
         (requireActivity().application as VetClinicApplication).component
     }
 
@@ -67,7 +67,6 @@ class LoginFragment : Fragment() {
         }
 
 
-
     }
 
     private fun observeViewModel() {
@@ -80,16 +79,16 @@ class LoginFragment : Fragment() {
                 ).show()
 
                 is LoginState.IsAuthenticated ->
-                    launchMainFragment()
+                    launchMainScreenActivity()
 
                 is LoginState.LoggedOut -> Log.d("LoginFragment", "null")
                 is LoginState.Result ->
-                    launchMainFragment()
+                    launchMainScreenActivity()
             }
         }
     }
 
-    private fun launchMainFragment() {
+    private fun launchMainScreenActivity() {
         findNavController().navigate(
             LoginFragmentDirections
                 .actionLoginFragmentToMainFragment()

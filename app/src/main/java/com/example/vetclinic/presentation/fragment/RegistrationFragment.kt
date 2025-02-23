@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentRegistrationBinding
@@ -23,8 +24,8 @@ class RegistrationFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[RegistrationViewModel::class.java]
+    private val viewModel: RegistrationViewModel by viewModels {
+        viewModelFactory
     }
 
     private val component by lazy {
@@ -83,7 +84,7 @@ class RegistrationFragment : Fragment() {
                 ).show()
 
                 is RegistrationState.Result -> {
-                    launchMainFragment(state.user.userName)
+                    launchMainScreenActivity(state.user.userName)
                 }
 
             }
@@ -91,10 +92,10 @@ class RegistrationFragment : Fragment() {
     }
 
 
-    private fun launchMainFragment(userName: String) {
+    private fun launchMainScreenActivity(userName: String) {
         findNavController().navigate(
             RegistrationFragmentDirections
-                .actionRegistrationFragmentToMainFragment(userName)
+                .actionRegistrationFragmentToMainFragment()
         )
     }
 

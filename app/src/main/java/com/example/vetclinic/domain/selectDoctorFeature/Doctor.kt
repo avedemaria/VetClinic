@@ -8,7 +8,7 @@ data class Doctor(
     val doctorName: String,
     val department: String,
     val role: String,
-    val photoUrl: String
+    val photoUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

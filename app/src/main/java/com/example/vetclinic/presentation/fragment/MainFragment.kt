@@ -10,11 +10,17 @@ import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
+import com.example.vetclinic.presentation.VetClinicApplication
 
 
 class MainFragment : Fragment() {
 
-    val args: MainFragmentArgs by navArgs()
+//    val args: MainFragmentArgs by navArgs()
+
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
 
 
     private var _binding: FragmentMainBinding? = null
@@ -36,22 +42,23 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userName = args.userName
+        component.inject(this)
+//
+//        val navHostFragment =
+//            childFragmentManager.findFragmentById(R.id.selection_nav_host_fragment)
+//                    as NavHostFragment
+//
+//        val navController = navHostFragment.navController
 
+//        val navGraph = navController.navInflater.inflate(R.navigation.selection_nav_graph)
+//
+//        navGraph.setStartDestination(R.id.selectionFragment)
 
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.selection_nav_host_fragment)
                     as NavHostFragment
-
         val navController = navHostFragment.navController
-
-        val navGraph = navController.navInflater.inflate(R.navigation.selection_nav_graph)
-
-        navGraph.setStartDestination(R.id.selectionFragment)
-
-        navController.setGraph(navGraph, Bundle().apply {
-            putString("user_name", userName)
-        })
+        val clinicInfoContainer = requireView().findViewById<View>(R.id.fragment_info_container)
 
 
         if (savedInstanceState == null) {
@@ -59,6 +66,14 @@ class MainFragment : Fragment() {
                 .replace(R.id.fragment_info_container, InfoFragment())
                 .commit()
         }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            clinicInfoContainer.visibility =
+                if (destination.id == R.id.selectionFragment) View.VISIBLE else View.GONE
+        }
+
+
+
     }
 
     override fun onDestroyView() {

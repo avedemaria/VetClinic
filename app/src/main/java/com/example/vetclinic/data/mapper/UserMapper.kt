@@ -13,7 +13,6 @@ class UserMapper @Inject constructor() {
             uid = entity.uid,
             userName = entity.userName,
             userLastName = entity.userLastName,
-            petName = entity.petName,
             phoneNumber = entity.phoneNumber,
             email = entity.email
         )
@@ -24,7 +23,6 @@ class UserMapper @Inject constructor() {
             uid = dto.uid,
             userName = dto.userName,
             userLastName = dto.userLastName,
-            petName = dto.petName,
             phoneNumber = dto.phoneNumber,
             email = dto.email
         )
