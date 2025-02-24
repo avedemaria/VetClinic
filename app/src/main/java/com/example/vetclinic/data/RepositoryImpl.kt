@@ -18,6 +18,8 @@ import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
 
@@ -150,8 +152,12 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUserFromRoom(userId: String): Result<User> =
         runCatching {
-            val userDbModel = vetClinicDao.getUserById(userId)
-            userMapper.userDbModelToUserEntity(userDbModel)
+            withContext(Dispatchers.IO) {
+                val userDbModel = vetClinicDao.getUserById(userId)
+                    ?: throw NoSuchElementException("User with ID $userId not found in Room")
+                Log.d("RoomCheck", "User from Room: $userId")
+                userMapper.userDbModelToUserEntity(userDbModel)
+            }
         }.onFailure {
             Log.e(TAG, "Error while getting user from Room", it)
         }

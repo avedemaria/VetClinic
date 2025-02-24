@@ -103,6 +103,7 @@ dependencies {
     ksp(libs.dagger2.android.processor)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation ("androidx.fragment:fragment-ktx:1.8.6")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

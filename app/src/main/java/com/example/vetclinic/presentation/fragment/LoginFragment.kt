@@ -25,7 +25,7 @@ class LoginFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: LoginViewModel by viewModels{viewModelFactory}
+    private val viewModel: LoginViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentLoginBinding? = null
     private val binding
@@ -79,19 +79,22 @@ class LoginFragment : Fragment() {
                 ).show()
 
                 is LoginState.IsAuthenticated ->
-                    launchMainScreenActivity()
+                    Log.d(TAG, "заглущка для isAuthenticated")
 
-                is LoginState.LoggedOut -> Log.d("LoginFragment", "null")
-                is LoginState.Result ->
-                    launchMainScreenActivity()
+                is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
+                is LoginState.Result -> {
+                    val userId = state.userSession.user?.id ?: ""
+                    launchMainFragment(userId)
+                }
+
             }
         }
     }
 
-    private fun launchMainScreenActivity() {
+    private fun launchMainFragment(userId: String) {
         findNavController().navigate(
             LoginFragmentDirections
-                .actionLoginFragmentToMainFragment()
+                .actionLoginFragmentToMainFragment(userId)
         )
     }
 
@@ -106,5 +109,10 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    companion object {
+        private const val TAG = "LoginFragment"
     }
 }

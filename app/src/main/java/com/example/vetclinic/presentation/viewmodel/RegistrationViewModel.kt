@@ -6,19 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.entities.User
-import com.example.vetclinic.domain.usecases.AddUserToSupabaseDb
+import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
 import com.example.vetclinic.domain.entities.Pet
-import com.example.vetclinic.domain.usecases.AddUserToRoomUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class RegistrationViewModel @Inject constructor(
-    private val addUserToSupabaseDb: AddUserToSupabaseDb,
     private val registerUserUseCase: RegisterUserUseCase,
-    private val addUserToRoomUseCase: AddUserToRoomUseCase
+    private val addUserUseCase: AddUserUseCase
 ) : ViewModel() {
 
 
@@ -67,13 +65,13 @@ class RegistrationViewModel @Inject constructor(
                         )
 
 
-                        addUserToSupabaseDb.addUserToSupabaseDb(user).onSuccess {
+                        addUserUseCase.addUserToSupabaseDb(user).onSuccess {
                             Log.d(TAG, "user added to supabase $user")
 
-                            addUserToSupabaseDb.addPetToSupabaseDb(pet).onSuccess {
+                            addUserUseCase.addPetToSupabaseDb(pet).onSuccess {
                                 Log.d(TAG, "pet added to supabase $pet")
 
-                                addUserToRoomUseCase.addUserToRoom(user, pet)
+                                addUserUseCase.addUserToRoom(user, pet)
 
                                 Log.d(TAG, "User and pet added to Room")
                                 _registrationState.postValue(RegistrationState.Result(user))

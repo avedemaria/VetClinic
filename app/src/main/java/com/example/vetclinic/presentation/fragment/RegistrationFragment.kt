@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.MainSharedViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationState
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
@@ -84,7 +85,9 @@ class RegistrationFragment : Fragment() {
                 ).show()
 
                 is RegistrationState.Result -> {
-                    launchMainScreenActivity(state.user.userName)
+                    val mainSharedViewModel: MainSharedViewModel by viewModels { viewModelFactory }
+                    mainSharedViewModel.loadUserName(state.user.uid)
+                    launchMainFragment(state.user.uid)
                 }
 
             }
@@ -92,10 +95,10 @@ class RegistrationFragment : Fragment() {
     }
 
 
-    private fun launchMainScreenActivity(userName: String) {
+    private fun launchMainFragment(userId:String) {
         findNavController().navigate(
             RegistrationFragmentDirections
-                .actionRegistrationFragmentToMainFragment()
+                .actionRegistrationFragmentToMainFragment(userId)
         )
     }
 

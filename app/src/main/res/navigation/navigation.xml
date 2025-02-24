@@ -32,7 +32,12 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.vetclinic.presentation.fragment.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment" >
+        <argument
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="NULL" />
+    </fragment>
 
 
 </navigation>
