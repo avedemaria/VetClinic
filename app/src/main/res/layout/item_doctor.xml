@@ -25,7 +25,7 @@
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/doctor_s_photo"
             android:scaleType="centerCrop"/>
-<!--            android:background="@drawable/circle_border" />-->
+
 
         <LinearLayout
             android:orientation="vertical"
@@ -45,7 +45,7 @@
                 android:id="@+id/roleTextView"
                 tools:text ="Дерматолог"
                 android:textSize="14sp"
-                android:textColor="#5B5858"
+                android:textColor="@color/dark_grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

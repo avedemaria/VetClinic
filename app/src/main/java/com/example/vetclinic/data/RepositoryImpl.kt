@@ -3,11 +3,13 @@ package com.example.vetclinic.data
 import android.util.Log
 import com.example.vetclinic.data.database.model.UserDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.mapper.DepartmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.User
@@ -27,6 +29,7 @@ class RepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val supabaseApiService: SupabaseApiService,
     private val vetClinicDao: VetClinicDao,
+    private val departmentMapper: DepartmentMapper,
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
     private val doctorMapper: DoctorMapper
@@ -134,6 +137,22 @@ class RepositoryImpl @Inject constructor(
     }.onFailure { e ->
         Log.e("RepositoryImpl", "Error fetching doctors ${e.message}")
     }
+
+
+    override suspend fun getDepartmentList(): Result<List<Department>> = kotlin.runCatching {
+        val response = supabaseApiService.getDepartments()
+        val body = response.body()
+            ?: throw Exception("Empty response body: ${response.code()} - ${response.message()}")
+        if (response.isSuccessful) {
+            departmentMapper.departmentDtoListToDepartmentEntityList(body)
+        } else {
+            throw Exception("Server's error: ${response.code()} - ${response.message()}")
+        }
+    }.onFailure { e ->
+        Log.e("RepositoryImpl", "Error fetching departments ${e.message}")
+    }
+
+
 
 
     override suspend fun checkUserSession(): Boolean {

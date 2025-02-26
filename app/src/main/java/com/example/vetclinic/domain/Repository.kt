@@ -1,6 +1,7 @@
 package com.example.vetclinic.domain
 
 import com.example.vetclinic.data.database.model.UserDbModel
+import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.User
@@ -26,6 +27,8 @@ interface Repository {
     suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit>
 
     suspend fun getDoctorList(): Result<List<Doctor>>
+
+    suspend fun getDepartmentList():Result<List<Department>>
 
     suspend fun checkUserSession(): Boolean
 

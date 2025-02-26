@@ -10,7 +10,7 @@ class DoctorMapper @Inject constructor() {
         return Doctor(
             uid = doctorDto.uid,
             doctorName = doctorDto.doctorName,
-            department = doctorDto.department,
+            departmentId = doctorDto.departmentId,
             role = doctorDto.role,
             photoUrl = doctorDto.photoUrl
         )

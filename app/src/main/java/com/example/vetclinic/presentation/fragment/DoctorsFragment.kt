@@ -65,10 +65,10 @@ class DoctorsFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()  // Возврат к предыдущему фрагменту
-            }
-        })
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()  // Возврат к предыдущему фрагменту
+                }
+            })
 
         setUpAdapter()
 
@@ -115,7 +115,7 @@ class DoctorsFragment : Fragment() {
 
                 is DoctorUiState.Success ->
                     doctorsAdapter.items = state.doctors.flatMap { departmentWithDoctors ->
-                        listOf(DepAndDocItemList.DepartmentItem(departmentWithDoctors.department)) +
+                        listOf(DepAndDocItemList.DepartmentItem(departmentWithDoctors.department.name)) +
                                 departmentWithDoctors.doctors.map { DepAndDocItemList.DoctorItem(it) }
                     }
             }
@@ -132,7 +132,6 @@ class DoctorsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 
 
     companion object {

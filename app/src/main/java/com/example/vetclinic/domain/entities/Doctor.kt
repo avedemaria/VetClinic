@@ -6,7 +6,7 @@ import android.os.Parcelable
 data class Doctor(
     val uid: String,
     val doctorName: String,
-    val department: String,
+    val departmentId: String,
     val role: String,
     val photoUrl: String?
 ) : Parcelable {
@@ -23,7 +23,7 @@ data class Doctor(
         with(parcel) {
             writeString(uid)
             writeString(doctorName)
-            writeString(department)
+            writeString(departmentId)
             writeString(role)
             writeString(photoUrl)
         }
