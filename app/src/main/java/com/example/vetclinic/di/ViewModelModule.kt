@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.MainSharedViewModel
+import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
+import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -32,8 +34,15 @@ interface ViewModelModule {
     @Binds
     fun bindDoctorViewModel(impl: DoctorViewModel): ViewModel
 
+    @IntoMap
+    @ViewModelKey(ServiceWithDepViewModel::class)
+    @Binds
+    fun bindServiceViewModel(impl: ServiceWithDepViewModel): ViewModel
 
-
+    @IntoMap
+    @ViewModelKey(PlainServiceViewModel::class)
+    @Binds
+    fun bindPlainServiceViewModel(impl: PlainServiceViewModel): ViewModel
 
 
 }

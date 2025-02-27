@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DepartmentWithDoctors(
+data class DepartmentWithServices(
     val department: Department,
-    val doctors: List<Doctor>
+    val services: List<Service>
 ) : Parcelable

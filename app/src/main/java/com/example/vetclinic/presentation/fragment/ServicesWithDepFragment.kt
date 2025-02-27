@@ -13,36 +13,37 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.databinding.FragmentDoctorsBinding
-import com.example.vetclinic.domain.entities.Doctor
+import com.example.vetclinic.databinding.FragmentServicesBinding
+import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.DepAndDocItemList
-import com.example.vetclinic.presentation.adapter.DoctorsAdapter
-import com.example.vetclinic.presentation.adapter.OnAppointmentClickListener
-import com.example.vetclinic.presentation.viewmodel.DoctorUiState
-import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
+import com.example.vetclinic.presentation.adapter.DepAndServiceItemList
+import com.example.vetclinic.presentation.adapter.OnServiceClickListener
+import com.example.vetclinic.presentation.adapter.ServicesWithDepAdapter
+import com.example.vetclinic.presentation.viewmodel.ServiceWithDepUiState
+import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
-class DoctorsFragment : Fragment() {
 
+class ServicesWithDepFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel: DoctorViewModel by viewModels { viewModelFactory }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    private var _binding: FragmentDoctorsBinding? = null
+    private val viewModel: ServiceWithDepViewModel by viewModels { viewModelFactory }
+
+
+    private var _binding: FragmentServicesBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
-            "FragmentDoctorsBinding is null"
+            "FragmentServicesBinding is null"
         )
 
-    private lateinit var doctorsAdapter: DoctorsAdapter
+    private lateinit var servicesWithDepAdapter: ServicesWithDepAdapter
 
 
     override fun onAttach(context: Context) {
@@ -54,12 +55,14 @@ class DoctorsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDoctorsBinding.inflate(inflater, container, false)
+        _binding = FragmentServicesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -68,6 +71,7 @@ class DoctorsFragment : Fragment() {
                 }
             })
 
+
         setUpAdapter()
 
         observeViewModel()
@@ -75,20 +79,19 @@ class DoctorsFragment : Fragment() {
 
     }
 
-
     private fun setUpAdapter() {
-        doctorsAdapter = DoctorsAdapter(object : OnAppointmentClickListener {
-            override fun onBookButtonClick(doctor: Doctor) {
-                launchDetailedDoctorInfoFragment(doctor)
+        servicesWithDepAdapter = ServicesWithDepAdapter(object : OnServiceClickListener {
+            override fun onServiceClick(service: Service) {
+                launchDetailedServiceInfoFragment()
             }
         })
 
-        binding.rvDoctors.apply {
+        binding.rvServices.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(),
                 RecyclerView.VERTICAL, false
             )
-            adapter = doctorsAdapter
+            adapter = servicesWithDepAdapter
         }
 
     }
@@ -96,35 +99,41 @@ class DoctorsFragment : Fragment() {
 
     private fun observeViewModel() {
 
-        viewModel.doctorState.observe(viewLifecycleOwner) { state ->
+        viewModel.serviceState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is DoctorUiState.Empty ->
-                    Log.d("DoctorsFragment", "DoctorUiState.Empty-заглушка для теста")
+                is ServiceWithDepUiState.Empty ->
+                    Log.d(TAG, "ServiceWithDepUiState.Empty-заглушка для теста")
 
-                is DoctorUiState.Error -> Toast.makeText(
+                is ServiceWithDepUiState.Error -> Toast.makeText(
                     requireContext(),
                     "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
                 ).show()
 
-                is DoctorUiState.Loading -> Log.d(
-                    "DoctorsFragment",
-                    "DoctorUiState.Loading - заглушка для теста"
+                is ServiceWithDepUiState.Loading -> Log.d(
+                    TAG,
+                    "ServiceWithDepUiState.Loading - заглушка для теста"
                 )
 
-                is DoctorUiState.Success ->
-                    doctorsAdapter.items = state.doctors.flatMap { departmentWithDoctors ->
-                        listOf(DepAndDocItemList.DepartmentItem(departmentWithDoctors.department.name)) +
-                                departmentWithDoctors.doctors.map { DepAndDocItemList.DoctorItem(it) }
+                is ServiceWithDepUiState.Success -> {
+                    val serviceItems = state.services.flatMap { departmentWithServices ->
+                        listOf(
+                            DepAndServiceItemList.DepartmentItem(
+                                departmentWithServices
+                                    .department.name
+                            )
+                        ) + departmentWithServices.services.map {
+                            DepAndServiceItemList.ServiceItem(it)
+                        }
                     }
+                    servicesWithDepAdapter.submitList(serviceItems)
+                }
             }
         }
     }
 
 
-    private fun launchDetailedDoctorInfoFragment(doctor: Doctor) {
-        findNavController()
-            .navigate(DoctorsFragmentDirections
-                .actionDoctorsFragmentToDetailedDoctorInfoFragment(doctor))
+    private fun launchDetailedServiceInfoFragment() {
+        Log.d(TAG, "fragment launched")
     }
 
 
@@ -133,14 +142,9 @@ class DoctorsFragment : Fragment() {
         _binding = null
     }
 
-
     companion object {
-        private const val TAG = "DoctorsFragment"
+        private const val TAG = "ServicesWithDepFragment"
     }
 
+
 }
-
-
-
-
-

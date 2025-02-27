@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="12dp"
     android:background="?attr/selectableItemBackground">
@@ -10,7 +11,7 @@
         android:id="@+id/tvServiceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Название услуги"
+        tools:text="Название услуги"
         android:textSize="16sp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -23,17 +24,26 @@
 
         <TextView
             android:id="@+id/tvServicePrice"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2000 RUB"
+            tools:text="2000 руб"
             android:textSize="14sp"
             android:textColor="@color/dark_grey" />
+
+        <TextView
+            android:id="@+id/tvServiceDuration"
+            android:layout_width="wrap_content"
+            android:layout_weight="11"
+            android:layout_height="wrap_content"
+            tools:text = "90 мин"
+            android:textSize="14sp"
+            android:textColor="@color/dark_grey"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
         android:background="@color/dark_blue" />
 </LinearLayout>

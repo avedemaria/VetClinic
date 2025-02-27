@@ -26,8 +26,10 @@ class SelectionFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: MainSharedViewModel by viewModels({ requireParentFragment()
-        .requireParentFragment() }) { viewModelFactory }
+    private val viewModel: MainSharedViewModel by viewModels({
+        requireParentFragment()
+            .requireParentFragment()
+    }) { viewModelFactory }
     private var _binding: FragmentSelectionBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
@@ -97,7 +99,8 @@ class SelectionFragment : Fragment() {
     }
 
     private fun launchServicesFragment() {
-        TODO()
+        findNavController().navigate(SelectionFragmentDirections
+            .actionSelectionFragmentToServicesFragment())
     }
 
 

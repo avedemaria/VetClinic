@@ -6,12 +6,14 @@ import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.DepartmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.PetMapper
+import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -23,6 +25,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import retrofit2.Response
 
 
 class RepositoryImpl @Inject constructor(
@@ -32,7 +35,8 @@ class RepositoryImpl @Inject constructor(
     private val departmentMapper: DepartmentMapper,
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
-    private val doctorMapper: DoctorMapper
+    private val doctorMapper: DoctorMapper,
+    private val serviceMapper: ServiceMapper
 ) : Repository {
 
 
@@ -89,70 +93,78 @@ class RepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
+    override suspend fun addUserToSupabaseDb(user: User): Result<Unit> = addDataToSupabaseDb(
+        entity = user,
+        apiCall = { userDto -> supabaseApiService.addUser(userDto) },
+        mapper = { userMapper.userEntityToUserDto(user) }
+    )
 
-        return kotlin.runCatching {
+    override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> = addDataToSupabaseDb(
+        entity = pet,
+        apiCall = { petDto -> supabaseApiService.addPet(petDto) },
+        mapper = { petMapper.petEntityToPetDto(pet) }
+    )
 
-            val response = supabaseApiService.addUser(userMapper.userEntityToUserDto(user))
-
-            if (response.isSuccessful) {
-                Log.d(TAG, "Successfully added user to Supabase DB")
-                Result.success(Unit)
-            } else {
-                val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Failed to add user. Error: $errorBody")
-                Result.failure(Exception("Failed to add user: ${response.code()} - $errorBody"))
-            }
-        }
-    }
+    override suspend fun getDoctorList(): Result<List<Doctor>> = fetchData(
+        apiCall = { supabaseApiService.getDoctors() },
+        mapper = { body -> doctorMapper.doctorDtoListToDoctorEntityList(body) },
+        DOCTOR_LIST_TAG
+    )
 
 
-    override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> {
+    override suspend fun getDepartmentList(): Result<List<Department>> =
+        fetchData(
+            apiCall = { supabaseApiService.getDepartments() },
+            mapper = { departmentMapper.departmentDtoListToDepartmentEntityList(it) },
+            DEPARTMENT_LIST_TAG
+        )
 
-        return kotlin.runCatching {
+    override suspend fun getServiceList(): Result<List<Service>> =
+        fetchData(
+            apiCall = { supabaseApiService.getServices() },
+            mapper = { serviceMapper.serviceDtoListToServiceEntityList(it) },
+            SERVICE_LIST_TAG
+        )
 
-            val response = supabaseApiService.addPet(petMapper.petEntityToPetDto(pet))
 
-            if (response.isSuccessful) {
-                Log.d(TAG, "Successfully added pet to Supabase DB")
-                Result.success(Unit)
-            } else {
-                val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Failed to add pet. Error: $errorBody")
-                Result.failure(Exception("Failed to add pet: ${response.code()} - $errorBody"))
-            }
-        }
-    }
+    private suspend fun <T, R> addDataToSupabaseDb(
+        entity: T,
+        apiCall: suspend (R) -> Response<Unit>,
+        mapper: (T) -> R
+    ): Result<Unit> = runCatching {
+        val mappedEntity = mapper(entity)
+        val response = apiCall(mappedEntity)
 
-    override suspend fun getDoctorList(): Result<List<Doctor>> = runCatching {
-        val response = supabaseApiService.getDoctors()
-
-        val body = response.body()
-            ?: throw Exception("Empty response body: ${response.code()} - ${response.message()}")
         if (response.isSuccessful) {
-            doctorMapper.doctorDtoListToDoctorEntityList(body)
+            Log.d(TAG, "Successfully added $entity to Supabase DB")
+            Unit
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e(TAG, "Failed to add $entity. Error: $errorBody")
+            throw Exception("Failed to add $entity: ${response.code()} - $errorBody")
+        }
+    }.onFailure { e ->
+        Log.e(TAG, "Error adding entity: ${e.message}")
+    }
+
+
+    private suspend fun <T, R> fetchData(
+        apiCall: suspend () -> Response<T>,
+        mapper: (T) -> R,
+        entityTag: String
+    ): Result<R> = kotlin.runCatching {
+        val response = apiCall()
+        val body = response.body()
+            ?: throw Exception("Empty response body:${response.code()} - ${response.message()}")
+
+        if (response.isSuccessful) {
+            mapper(body)
         } else {
             throw Exception("Server's error: ${response.code()} - ${response.message()}")
         }
     }.onFailure { e ->
-        Log.e("RepositoryImpl", "Error fetching doctors ${e.message}")
+        Log.e(TAG, "Error fetching $entityTag {e.message}")
     }
-
-
-    override suspend fun getDepartmentList(): Result<List<Department>> = kotlin.runCatching {
-        val response = supabaseApiService.getDepartments()
-        val body = response.body()
-            ?: throw Exception("Empty response body: ${response.code()} - ${response.message()}")
-        if (response.isSuccessful) {
-            departmentMapper.departmentDtoListToDepartmentEntityList(body)
-        } else {
-            throw Exception("Server's error: ${response.code()} - ${response.message()}")
-        }
-    }.onFailure { e ->
-        Log.e("RepositoryImpl", "Error fetching departments ${e.message}")
-    }
-
-
 
 
     override suspend fun checkUserSession(): Boolean {
@@ -182,7 +194,10 @@ class RepositoryImpl @Inject constructor(
         }
 
     companion object {
-        const val TAG = "RepositoryImpl"
+        private const val TAG = "RepositoryImpl"
+        private const val SERVICE_LIST_TAG = "services"
+        private const val DOCTOR_LIST_TAG = "doctors"
+        private const val DEPARTMENT_LIST_TAG = "departments"
     }
 }
 

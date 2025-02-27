@@ -18,7 +18,7 @@ class DoctorsListDiffCallback(
         return when {
             oldItem is DepAndDocItemList.DepartmentItem
                     && newItem is DepAndDocItemList.DepartmentItem
-                -> oldItem.department == newItem.department
+                -> oldItem.departmentName == newItem.departmentName
 
             oldItem is DepAndDocItemList.DoctorItem && newItem is DepAndDocItemList.DoctorItem ->
                 oldItem.doctor.uid == newItem.doctor.uid

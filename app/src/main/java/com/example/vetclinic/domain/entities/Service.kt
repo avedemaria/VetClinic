@@ -4,27 +4,27 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Service(
-    val uid: String,
+    val id: String,
     val serviceName: String,
-    val department: String,
+    val departmentId: String,
     val price: String,
-    val name: String
-): Parcelable {
+    val duration: Int
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
-        parcel.readString().orEmpty()
-    ) {
-    }
+        parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(uid)
+        parcel.writeString(id)
         parcel.writeString(serviceName)
-        parcel.writeString(department)
+        parcel.writeString(departmentId)
         parcel.writeString(price)
-        parcel.writeString(name)
+        parcel.writeInt(duration)
+
     }
 
     override fun describeContents(): Int {

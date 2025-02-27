@@ -69,15 +69,14 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 
     implementation("io.ktor:ktor-client-android:3.0.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")  // OkHttp core
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
 
-    // Glide для загрузки изображений
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
 
-
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)

@@ -30,4 +30,5 @@
     <string name="company_logo">Логотип компании</string>
     <string name="doctor_s_photo">doctor\'s photo</string>
     <string name="book_app">Запись</string>
+    <string name="back_button">Back button</string>
 </resources>
