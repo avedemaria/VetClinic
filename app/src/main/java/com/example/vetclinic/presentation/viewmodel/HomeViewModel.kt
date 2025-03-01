@@ -10,30 +10,30 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainSharedViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase
 ) : ViewModel() {
 
 
-    private val _selectionState = MutableLiveData<SelectionState>()
-    val selectionState: LiveData<SelectionState> get() = _selectionState
+    private val _homeState = MutableLiveData<HomeState>()
+    val homeState: LiveData<HomeState> get() = _homeState
 
 
 
     fun loadUserName(userId: String) {
 
         viewModelScope.launch {
-            _selectionState.value = SelectionState.Loading
-                delay(2000)
+            _homeState.value = HomeState.Loading
+
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
                     Log.d("UserLoad", "Loaded user: $user")
-                    _selectionState.postValue(SelectionState.Result(user.userName))
+                    _homeState.postValue(HomeState.Result(user.userName))
                 }
                 .onFailure { error ->
                     Log.e("UserLoad", "Error loading user: $error")
-                    _selectionState.postValue(
-                        SelectionState.Error(
+                    _homeState.postValue(
+                        HomeState.Error(
                             error.message ?: "Unknown error"
                         )
                     )

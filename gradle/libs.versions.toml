@@ -19,6 +19,8 @@ room_version = "2.6.1"
 ksp_version ="2.0.21-1.0.27"
 dagger2_version = "2.52"
 supabase = "3.0.0"
+navigationFragmentKtx = "2.8.7"
+navigationUiKtx = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +54,8 @@ viewModel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", ver
 dagger2 = { group = "com.google.dagger", name = "dagger", version.ref = "dagger2_version" }
 dagger2-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger2_version" }
 dagger2-android-processor = { group = "com.google.dagger", name = "dagger-android-processor", version.ref = "dagger2_version" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

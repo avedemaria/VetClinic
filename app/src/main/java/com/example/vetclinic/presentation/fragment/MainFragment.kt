@@ -1,45 +1,33 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
+import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.MainSharedViewModel
-import com.example.vetclinic.presentation.viewmodel.SelectionState
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import jakarta.inject.Inject
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainFragment : Fragment() {
-
-
-    private val args by navArgs<MainFragmentArgs>()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val sharedViewModel: MainSharedViewModel by viewModels { viewModelFactory }
-
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
     }
 
-
     private var _binding: FragmentMainBinding? = null
     private val binding
-        get() = _binding ?: throw RuntimeException(
-            "FragmentMainBinding is null"
-        )
-
+        get() = _binding ?: throw RuntimeException("FragmentMainBinding is null")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,69 +37,44 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         component.inject(this)
 
-        observeViewModel()
+        // Получаем NavController из вложенного NavHostFragment
+        val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
+                as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // Привязываем BottomNavigationView к navController
+        binding.bottomNavigationView.setupWithNavController(navController)
 
 
-        val userId = args.userId
-        Log.d("MainFragment", "Received userId: $userId")
-        sharedViewModel.loadUserName(args.userId)
-
-        if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragment_info_container, InfoFragment())
-                .commit()
+        binding.fab.setOnClickListener{
+            binding.bottomNavigationView.selectedItemId = R.id.miAddAppointment
         }
 
 
-        val navController = (childFragmentManager.findFragmentById(R.id.selection_nav_host_fragment)
-                as NavHostFragment).navController
-
-        val clinicInfoContainer = requireView().findViewById<View>(R.id.fragment_info_container)
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            clinicInfoContainer.visibility =
-                if (destination.id == R.id.selectionFragment) View.VISIBLE else View.GONE
-        }
-
-
-    }
-
-    private fun observeViewModel() {
-        sharedViewModel.selectionState.observe(viewLifecycleOwner) { state ->
-            Log.d("MainFragment", "State changed to: $state")
-
-            val fragmentTransaction = childFragmentManager.beginTransaction()
-
-            when (state) {
-                is SelectionState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.selectionNavHostFragment.visibility = View.GONE
-                    binding.fragmentInfoContainer.visibility = View.GONE
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.miHome -> {
+                    navController.navigate(R.id.homeFragment)
+                    true
                 }
-                is SelectionState.Result, is SelectionState.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.selectionNavHostFragment.visibility = View.VISIBLE
-                    binding.fragmentInfoContainer.visibility = View.VISIBLE
+                R.id.miAddAppointment -> {
+                    navController.navigate(R.id.doctorsFragment)
+                    true
                 }
+                R.id.miAppointments -> {
+                    navController.navigate(R.id.appointmentFragment)
+                    true
+                }
+                else -> false
             }
-            fragmentTransaction.commitAllowingStateLoss()
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
-
-    }
-
 
 
 

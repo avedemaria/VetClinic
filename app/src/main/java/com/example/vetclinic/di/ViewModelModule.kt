@@ -3,7 +3,7 @@ package com.example.vetclinic.di
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
-import com.example.vetclinic.presentation.viewmodel.MainSharedViewModel
+import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
@@ -25,9 +25,9 @@ interface ViewModelModule {
     fun bindLoginViewModel(impl: LoginViewModel): ViewModel
 
     @IntoMap
-    @ViewModelKey(MainSharedViewModel::class)
+    @ViewModelKey(HomeViewModel::class)
     @Binds
-    fun bindMainSharedViewModel(impl: MainSharedViewModel): ViewModel
+    fun bindMainSharedViewModel(impl: HomeViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(DoctorViewModel::class)

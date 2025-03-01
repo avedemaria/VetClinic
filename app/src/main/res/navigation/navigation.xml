@@ -5,6 +5,7 @@
     android:id="@+id/navigation"
     app:startDestination="@id/loginFragment">
 
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.vetclinic.presentation.fragment.LoginFragment"
@@ -14,10 +15,9 @@
             app:destination="@id/registrationFragment" />
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/mainFragment" />
     </fragment>
+
 
     <fragment
         android:id="@+id/registrationFragment"
@@ -25,9 +25,7 @@
         android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
@@ -38,6 +36,5 @@
             app:argType="string"
             android:defaultValue="NULL" />
     </fragment>
-
 
 </navigation>

@@ -77,6 +77,7 @@ dependencies {
 
 
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
+    implementation ("com.google.android.material:material:1.3.0-alpha03")
 
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
@@ -96,6 +97,8 @@ dependencies {
     implementation(libs.viewModel)
     implementation(libs.room)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     ksp(libs.room.compiler)
     implementation(libs.dagger2)
     ksp(libs.dagger2.compiler)
@@ -135,4 +138,3 @@ fun getSupabaseKey(): String {
 }
 
 
-// Function to read properties from local.properties

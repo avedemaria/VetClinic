@@ -84,14 +84,14 @@ class DetailedDoctorInfoFragment : Fragment() {
         }
 
 
-        binding.btnBook.setOnClickListener {
-            launchPlainServicesFragment(args.doctor)
-        }
-
-        binding.btnToAllServices.setOnClickListener {
-            launchPlainServicesFragment(args.doctor)
-        }
-
+//        binding.btnBook.setOnClickListener {
+//            launchPlainServicesFragment(args.doctor)
+//        }
+//
+//        binding.btnToAllServices.setOnClickListener {
+//            launchPlainServicesFragment(args.doctor)
+//        }
+//
 
         binding.doctorName.text = args.doctor.doctorName
         binding.doctorSpecialization.text = args.doctor.role
@@ -146,19 +146,12 @@ class DetailedDoctorInfoFragment : Fragment() {
     }
 
 
-    private fun launchDoctorsFragment() {
-        findNavController().navigate(
-            DetailedDoctorInfoFragmentDirections
-                .actionDetailedDoctorInfoFragmentToDoctorsFragment()
-        )
-    }
-
-    private fun launchPlainServicesFragment(doctor: Doctor) {
-        findNavController().navigate(
-            DetailedDoctorInfoFragmentDirections
-                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor)
-        )
-    }
+//    private fun launchPlainServicesFragment(doctor: Doctor) {
+//        findNavController().navigate(
+//            DetailedDoctorInfoFragmentDirections
+//                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor)
+//        )
+//    }
 
     companion object {
         private const val TAG = "DetailedDoctorInfoFragment"

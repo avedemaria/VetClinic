@@ -94,8 +94,7 @@ class LoginFragment : Fragment() {
 
     private fun launchMainFragment(userId: String) {
         findNavController().navigate(
-            LoginFragmentDirections
-                .actionLoginFragmentToMainFragment(userId)
+            LoginFragmentDirections.actionLoginFragmentToMainFragment(userId)
         )
     }
 

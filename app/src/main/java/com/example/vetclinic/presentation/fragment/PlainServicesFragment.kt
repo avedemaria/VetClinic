@@ -29,8 +29,8 @@ import jakarta.inject.Inject
 
 class PlainServicesFragment : Fragment() {
 
-
-    private val args by navArgs<PlainServicesFragmentArgs>()
+//
+//    private val args by navArgs<PlainServicesFragmentArgs>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -105,7 +105,7 @@ class PlainServicesFragment : Fragment() {
                 ServiceUiState.Loading -> Log.d(TAG, "заглушка")
                 is ServiceUiState.Success -> {
                     val services =
-                        state.services.filter { args.doctor.departmentId == it.departmentId }
+                        state.services
                             .map{DepAndServiceItemList.ServiceItem(it)}
                     servicesAdapter.submitList(services)
 
@@ -114,7 +114,7 @@ class PlainServicesFragment : Fragment() {
             }
         }
     }
-
+//    filter { args.doctor.departmentId == it.departmentId }
 
     companion object {
         private const val TAG = "PlainServicesFragment"

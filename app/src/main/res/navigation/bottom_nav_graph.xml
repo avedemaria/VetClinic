@@ -1,0 +1,61 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.vetclinic.presentation.fragment.HomeFragment"
+        android:label="Главная"
+        app:defaultNavHost="false" >
+        <action
+            android:id="@+id/action_homeFragment_to_doctorsFragment"
+            app:destination="@id/doctorsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/doctorsFragment"
+        android:name="com.example.vetclinic.presentation.fragment.DoctorsFragment"
+        android:label="Записи"
+        app:defaultNavHost="false" >
+        <action
+            android:id="@+id/action_doctorsFragment_to_detailedDoctorInfoFragment2"
+            app:destination="@id/detailedDoctorInfoFragment2" />
+    </fragment>
+
+
+        <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.vetclinic.presentation.fragment.ProfileFragment"
+        android:label="Profile" />
+    <fragment
+        android:id="@+id/detailedDoctorInfoFragment2"
+        android:name="com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment"
+        android:label="DetailedDoctorInfoFragment" >
+        <action
+            android:id="@+id/action_detailedDoctorInfoFragment2_to_plainServicesFragment"
+            app:destination="@id/plainServicesFragment" />
+        <argument
+            android:name="doctor"
+            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+    </fragment>
+    <fragment
+        android:id="@+id/plainServicesFragment"
+        android:name="com.example.vetclinic.presentation.fragment.PlainServicesFragment"
+        android:label="PlainServicesFragment" >
+        <argument
+            android:name="doctor"
+            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+    </fragment>
+    <fragment
+        android:id="@+id/appointmentFragment"
+        android:name="com.example.vetclinic.presentation.fragment.AppointmentFragment"
+        android:label="fragment_appointment"
+        tools:layout="@layout/fragment_appointment" />
+
+
+</navigation>

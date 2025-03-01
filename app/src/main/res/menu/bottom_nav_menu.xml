@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/miHome"
+    android:title="Главная"
+    android:icon="@drawable/baseline_cottage_24"/>
+
+    <item android:id="@+id/miAddAppointment"
+        android:title="Запись"
+        />
+
+    <item android:id="@+id/miAppointments"
+        android:title="Приёмы"
+        android:icon="@drawable/baseline_assignment_24"/>
+
+
+</menu>
