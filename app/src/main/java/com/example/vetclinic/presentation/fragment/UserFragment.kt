@@ -1,60 +1,98 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.example.vetclinic.R
+import com.example.vetclinic.databinding.FragmentDoctorsBinding
+import com.example.vetclinic.databinding.FragmentUserBinding
+import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
+import com.example.vetclinic.presentation.viewmodel.UserUiState
+import com.example.vetclinic.presentation.viewmodel.UserViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import jakarta.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UserFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: UserViewModel by viewModels { viewModelFactory }
+
+    private var _binding: FragmentUserBinding? = null
+    private val binding
+        get() = _binding ?: throw RuntimeException(
+            "FragmentUserBinding is null"
+        )
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
     }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user, container, false)
+    ): View {
+        _binding = FragmentUserBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UserFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val userId = arguments?.getString(ProfileFragment.USER_ID)
+            ?: throw IllegalArgumentException("UserId is null")
+
+        Log.d("UserFragment", "Received userId: $userId")
+
+        viewModel.getUserFromRoom(userId)
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.userState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UserUiState.Error -> Toast.makeText(
+                    requireContext(),
+                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                ).show()
+
+                is UserUiState.Loading -> Log.d(
+                    "UsersFragment",
+                    "UserUiState.Loading - заглушка для теста"
+                )
+
+                is UserUiState.Success -> {
+                    binding.tvName.text = "${state.user.userName} ${state.user.userLastName}"
+                    binding.tvEmail.text = state.user.email
+                    binding.tvPhone.text = state.user.phoneNumber
                 }
             }
+        }
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
 }

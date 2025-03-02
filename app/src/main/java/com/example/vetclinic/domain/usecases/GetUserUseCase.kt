@@ -7,9 +7,9 @@ import jakarta.inject.Inject
 
 class GetUserUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend fun getUserFromSupabase(): Result<UserInfo> {
-        return repository.getCurrentUser()
-    }
+//    suspend fun getUserFromSupabase(): Result<UserInfo> {
+//        return repository.getCurrentUser()
+//    }
 
     suspend fun getUserFromRoom (userId: String): Result<User> {
         return repository.getCurrentUserFromRoom(userId)

@@ -20,8 +20,7 @@ interface Repository {
 
     suspend fun logOut()
 
-    fun getCurrentUser(): Result<UserInfo>
-
+    suspend fun getUserFromSupabaseDb(): Result<User>
 
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
@@ -38,4 +37,6 @@ interface Repository {
     suspend fun addUserToRoom(user: User, pet: Pet)
 
     suspend fun getCurrentUserFromRoom(userId: String): Result<User>
+
+    suspend fun getPetsFromRoom(userId:String): Result<List<Pet>>
 }

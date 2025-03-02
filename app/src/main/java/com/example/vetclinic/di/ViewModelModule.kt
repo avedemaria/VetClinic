@@ -5,8 +5,10 @@ import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
+import com.example.vetclinic.presentation.viewmodel.ProfileViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
+import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -43,6 +45,14 @@ interface ViewModelModule {
     @ViewModelKey(PlainServiceViewModel::class)
     @Binds
     fun bindPlainServiceViewModel(impl: PlainServiceViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(UserViewModel::class)
+    @Binds
+    fun bindUserViewModel(impl: UserViewModel): ViewModel
+
+
+
 
 
 }

@@ -87,11 +87,10 @@ class RepositoryImpl @Inject constructor(
         supabaseClient.auth.signOut()
     }
 
-    override fun getCurrentUser(): Result<UserInfo> {
-        return supabaseClient.auth.currentUserOrNull()?.let { Result.success(it) }
-            ?: Result.failure(Exception("No user found"))
-    }
 
+    override suspend fun getUserFromSupabaseDb(): Result<User> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> = addDataToSupabaseDb(
         entity = user,
@@ -167,6 +166,13 @@ class RepositoryImpl @Inject constructor(
     }
 
 
+//    private suspend fun <T> getDataFromNetwork(
+//        apiCall: suspend () -> Response<T>,
+//
+//    )
+
+
+
     override suspend fun checkUserSession(): Boolean {
         return try {
           supabaseClient.auth.currentUserOrNull() != null
@@ -186,11 +192,26 @@ class RepositoryImpl @Inject constructor(
             withContext(Dispatchers.IO) {
                 val userDbModel = vetClinicDao.getUserById(userId)
                     ?: throw NoSuchElementException("User with ID $userId not found in Room")
-                Log.d("RoomCheck", "User from Room: $userId")
                 userMapper.userDbModelToUserEntity(userDbModel)
             }
         }.onFailure {
             Log.e(TAG, "Error while getting user from Room", it)
+        }
+
+
+    override suspend fun getPetsFromRoom(userId: String): Result<List<Pet>> =
+        kotlin.runCatching {
+            withContext(Dispatchers.IO) {
+                val petDbModelList = vetClinicDao.getPetsByUserId(userId)
+
+                if (petDbModelList.isEmpty()) {
+                    throw NoSuchElementException("Pets with ID $userId not found in Room")
+                }
+
+               petMapper.petDbModelListToPetEntityList(petDbModelList)
+            }
+        }.onFailure {
+            Log.e(TAG, "Error while getting pets from Room", it)
         }
 
     companion object {

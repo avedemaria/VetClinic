@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,15 +11,16 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(
         entity = UserDbModel::class,
         parentColumns = ["uid"],
-        childColumns = ["userId"],
+        childColumns = ["user_id"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index(value = ["userId"])]
+    indices = [Index(value = ["user_id"])]
 )
 data class PetDbModel(
-    @PrimaryKey val petId: String,
-    val userId: String,
-    val petName: String,
-    val petType: String? = null,
-    val petAge: String? = null
+    @PrimaryKey
+    @ColumnInfo(name = "pet_id") val petId: String,
+    @ColumnInfo(name = "user_id") val userId: String,
+    @ColumnInfo(name = "pet_name") val petName: String,
+    @ColumnInfo(name = "pet_type") val petType: String? = null,
+    @ColumnInfo(name = "pet_age") val petAge: String? = null
 )

@@ -17,9 +17,8 @@ import retrofit2.http.Path
 
 interface SupabaseApiService {
 
-    @GET("users?uid=eq.{userId}")
-    suspend fun getCurrentUser(@Path("userId") userId: String): UserDTO?
-
+    @GET("rest/v1/users?uid=eq.{userId}")
+    suspend fun getUserFromSupabaseDb(@Path("userId") userId: String): Response<List<UserDTO?>>
 
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>

@@ -40,6 +40,23 @@ class HomeFragment : Fragment() {
         )
 
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
+        val userId =
+            sharedPrefs.getString(USER_ID, null) ?: throw IllegalArgumentException("UserId is null")
+
+        Log.d("HomeFragment", "Received userId: $userId")
+        viewModel.loadUserName(userId)
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,20 +69,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        component.inject(this)
-
-        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
-        val userId =
-            sharedPrefs.getString(USER_ID, null) ?: throw IllegalArgumentException("UserId is null")
-
-
-
-
-        Log.d("HomeFragment", "Received userId: $userId")
-        viewModel.loadUserName(userId)
 
         binding.profileButton.setOnClickListener {
-            launchProfileFragment()
+            val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
+            val userId =
+                sharedPrefs.getString(USER_ID, null)
+                    ?: throw IllegalArgumentException("UserId is null")
+
+            launchProfileFragment(userId)
         }
 
         binding.cardViewDoctors.setOnClickListener {
@@ -113,9 +124,9 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun launchProfileFragment() {
+    private fun launchProfileFragment(userId: String) {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToProfileFragment()
+            HomeFragmentDirections.actionHomeFragmentToProfileFragment(userId)
         )
     }
 

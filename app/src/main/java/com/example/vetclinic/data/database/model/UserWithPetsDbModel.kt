@@ -8,7 +8,7 @@ data class UserWithPetsDbModel(
     val user: UserDbModel,
     @Relation(
         parentColumn = "uid",
-        entityColumn = "userId"
+        entityColumn = "user_id"
     )
     val pets: List<PetDbModel>
 )

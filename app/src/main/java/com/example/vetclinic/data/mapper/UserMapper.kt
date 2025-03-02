@@ -28,6 +28,10 @@ class UserMapper @Inject constructor() {
         )
     }
 
+//    fun userDtoListToUserEntityList (): List<User> {
+//
+//    }
+
     fun userDbModelToUserEntity(dbModel: UserDbModel): User {
         return User(
             uid = dbModel.uid,

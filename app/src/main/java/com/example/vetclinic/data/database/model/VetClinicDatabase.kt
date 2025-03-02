@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [UserDbModel::class, PetDbModel::class], version = 1, exportSchema = false)
+@Database(entities = [UserDbModel::class, PetDbModel::class], version = 2, exportSchema = false)
 abstract class VetClinicDatabase : RoomDatabase() {
 
     companion object {
@@ -26,6 +28,9 @@ abstract class VetClinicDatabase : RoomDatabase() {
             }
         }
     }
+
+
+
 
     abstract fun vetClinicDao(): VetClinicDao
 

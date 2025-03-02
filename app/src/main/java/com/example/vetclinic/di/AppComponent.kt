@@ -7,6 +7,7 @@ import com.example.vetclinic.presentation.fragment.DoctorsFragment
 import com.example.vetclinic.presentation.fragment.HomeFragment
 import com.example.vetclinic.presentation.fragment.LoginFragment
 import com.example.vetclinic.presentation.fragment.MainFragment
+import com.example.vetclinic.presentation.fragment.PetFragment
 import com.example.vetclinic.presentation.fragment.PlainServicesFragment
 import com.example.vetclinic.presentation.fragment.ProfileFragment
 import com.example.vetclinic.presentation.fragment.RegistrationFragment
@@ -45,6 +46,8 @@ interface AppComponent {
     fun inject(profileFragment: ProfileFragment)
 
     fun inject (userFragment: UserFragment)
+
+    fun inject (petFragment: PetFragment)
 
 
     @Component.Factory

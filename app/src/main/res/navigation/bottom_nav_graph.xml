@@ -36,11 +36,14 @@
         android:name="com.example.vetclinic.presentation.fragment.ProfileFragment"
         android:label="Profile" >
             <action
-                android:id="@+id/action_profileFragment_to_userFragment"
-                app:destination="@id/userFragment" />
-            <action
-                android:id="@+id/action_profileFragment_to_petFragment"
-                app:destination="@id/petFragment" />
+                android:id="@+id/action_profileFragment_to_homeFragment"
+                app:destination="@id/homeFragment"
+                app:popUpTo="@id/homeFragment"
+                app:popUpToInclusive="true" />
+            <argument
+                android:name="userId"
+                app:argType="string"
+                android:defaultValue="NULL" />
         </fragment>
     <fragment
         android:id="@+id/detailedDoctorInfoFragment2"
@@ -70,15 +73,6 @@
         android:id="@+id/servicesWithDepFragment"
         android:name="com.example.vetclinic.presentation.fragment.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
-    <fragment
-        android:id="@+id/userFragment"
-        android:name="com.example.vetclinic.presentation.fragment.UserFragment"
-        android:label="UserFragment" />
-    <fragment
-        android:id="@+id/petFragment"
-        android:name="com.example.vetclinic.presentation.fragment.PetFragment"
-        android:label="fragment_pet"
-        tools:layout="@layout/fragment_pet" />
 
 
 </navigation>

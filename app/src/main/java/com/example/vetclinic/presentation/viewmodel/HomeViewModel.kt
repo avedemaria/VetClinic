@@ -11,13 +11,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase
-) : ViewModel() {
+    private val getUserUseCase: GetUserUseCase,
+
+    ) : ViewModel() {
 
 
     private val _homeState = MutableLiveData<HomeState>()
     val homeState: LiveData<HomeState> get() = _homeState
-
 
 
     fun loadUserName(userId: String) {
@@ -27,16 +27,14 @@ class HomeViewModel @Inject constructor(
 
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
-                    Log.d("UserLoad", "Loaded user: $user")
-                    _homeState.postValue(HomeState.Result(user.userName))
+                    Log.d("HomeViewModel", "Loaded user: $user")
+                    _homeState.value = HomeState.Result(user.userName)
                 }
                 .onFailure { error ->
-                    Log.e("UserLoad", "Error loading user: $error")
-                    _homeState.postValue(
-                        HomeState.Error(
-                            error.message ?: "Unknown error"
-                        )
-                    )
+                    Log.e("HomeViewModel", "Error loading user: $error")
+                    _homeState.value = HomeState.Error(error.message ?: "Неизвестная ошибка")
+
+
                 }
         }
     }

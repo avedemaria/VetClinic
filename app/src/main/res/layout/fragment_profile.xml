@@ -10,38 +10,39 @@
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleGroup"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:singleSelection="true"
+        app:checkedButton="@id/btnUser"
         app:selectionRequired="true"
-        app:checkedButton="@+id/btnUser"
         android:backgroundTint="@android:color/transparent"
         app:dividerColor="@android:color/transparent"
-        android:elevation="4dp">
+        android:elevation="6dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnUser"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
+            android:text="Профиль"
+            android:textColor="@color/toggle_button_text"
+            app:backgroundTint="@color/toggle_button_background"
+            app:strokeColor="@color/toggle_button_stroke"
             app:cornerRadius="10dp"
-            app:strokeColor="@color/dark_blue"
             android:paddingHorizontal="32dp"
             android:paddingVertical="8dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPet"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pet"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/dark_blue"
+            android:text="Питомцы"
+            android:textColor="@color/toggle_button_text"
+            app:backgroundTint="@color/toggle_button_background"
+            app:strokeColor="@color/toggle_button_stroke"
             app:cornerRadius="10dp"
-            app:strokeColor="@color/dark_blue"
             android:paddingHorizontal="32dp"
             android:paddingVertical="8dp"/>
     </com.google.android.material.button.MaterialButtonToggleGroup>

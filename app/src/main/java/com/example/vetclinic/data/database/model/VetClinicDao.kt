@@ -10,8 +10,11 @@ import androidx.room.Transaction
 @Dao
 interface VetClinicDao {
 
-    @Query("SELECT * FROM users WHERE uid=:userUid")
-    fun getUserById(userUid: String): UserDbModel?
+    @Query("SELECT * FROM users WHERE uid=:userId")
+    fun getUserById(userId: String): UserDbModel?
+
+    @Query("SELECT * FROM pets WHERE user_id=:userId")
+    fun getPetsByUserId(userId: String): List<PetDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserDbModel)
