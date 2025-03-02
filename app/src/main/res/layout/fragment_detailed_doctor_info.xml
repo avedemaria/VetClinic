@@ -4,11 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Прогресс-бар в центре -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -16,9 +11,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible"/>
-    </FrameLayout>
 
-    <!-- Контейнер всех элементов (изначально скрыт) -->
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
     <LinearLayout
         android:id="@+id/contentContainer"
         android:layout_width="match_parent"
@@ -146,5 +144,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
+</ScrollView>
 
 </FrameLayout>

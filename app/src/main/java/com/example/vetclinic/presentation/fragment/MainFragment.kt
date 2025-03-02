@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -7,8 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
@@ -20,6 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainFragment : Fragment() {
+
+    private val args by navArgs<MainFragmentArgs>()
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -42,6 +47,18 @@ class MainFragment : Fragment() {
 
         component.inject(this)
 
+
+        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putString(USER_ID, args.userId).apply()
+
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
+//            OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                requireActivity().finish()
+//            }
+//        })
+
+
         // Получаем NavController из вложенного NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 as NavHostFragment
@@ -51,7 +68,7 @@ class MainFragment : Fragment() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
 
-        binding.fab.setOnClickListener{
+        binding.fab.setOnClickListener {
             binding.bottomNavigationView.selectedItemId = R.id.miAddAppointment
         }
 
@@ -62,19 +79,29 @@ class MainFragment : Fragment() {
                     navController.navigate(R.id.homeFragment)
                     true
                 }
+
                 R.id.miAddAppointment -> {
                     navController.navigate(R.id.doctorsFragment)
                     true
                 }
+
                 R.id.miAppointments -> {
                     navController.navigate(R.id.appointmentFragment)
                     true
                 }
+
                 else -> false
             }
         }
     }
+
+
+    companion object {
+        const val USER_ID = "userId"
     }
+}
+
+
 
 
 

@@ -20,7 +20,7 @@ class LoginViewModel @Inject constructor(private val loginUserUseCase: LogInUser
     }
 
 
-    private fun checkUserSession() {
+    fun checkUserSession() {
         viewModelScope.launch {
             val isAuthenticated = loginUserUseCase.checkUserSession()
             _loginState.value = if (isAuthenticated) {

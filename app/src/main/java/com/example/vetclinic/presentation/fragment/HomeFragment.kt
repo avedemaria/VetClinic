@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,8 +21,6 @@ import jakarta.inject.Inject
 
 class HomeFragment : Fragment() {
 
-//
-//    private val args by navArgs<HomeFragmentArgs>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -53,8 +52,17 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         component.inject(this)
+
+        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
+        val userId =
+            sharedPrefs.getString(USER_ID, null) ?: throw IllegalArgumentException("UserId is null")
+
+
+
+
+        Log.d("HomeFragment", "Received userId: $userId")
+        viewModel.loadUserName(userId)
 
         binding.profileButton.setOnClickListener {
             launchProfileFragment()
@@ -63,10 +71,10 @@ class HomeFragment : Fragment() {
         binding.cardViewDoctors.setOnClickListener {
             launchDoctorsFragment()
         }
-//
-//        binding.cardViewServices.setOnClickListener {
-//            launchServicesFragment()
-//        }
+
+        binding.cardViewServices.setOnClickListener {
+            launchServicesFragment()
+        }
 
         observeViewModel()
 
@@ -98,12 +106,12 @@ class HomeFragment : Fragment() {
         )
     }
 
-//    private fun launchServicesFragment() {
-//        findNavController().navigate(
-//            HomeFragmentDirections
-//                .actionHomeFragmentToServicesWithDepFragment()
-//        )
-
+    private fun launchServicesFragment() {
+        findNavController().navigate(
+            HomeFragmentDirections
+                .actionHomeFragmentToServicesWithDepFragment()
+        )
+    }
 
     private fun launchProfileFragment() {
         findNavController().navigate(
@@ -117,10 +125,14 @@ class HomeFragment : Fragment() {
     }
 
 
+    companion object {
+        const val USER_ID = "userId"
+    }
+
+
 }
 
 
-//        val userId = args.userId
 //        Log.d("HomeFragment", "Received userId: $userId")
 //        viewModel.loadUserName(args.userId)
 

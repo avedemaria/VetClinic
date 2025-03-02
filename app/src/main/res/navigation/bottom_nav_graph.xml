@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_servicesWithDepFragment"
+            app:destination="@id/servicesWithDepFragment" />
     </fragment>
 
     <fragment
@@ -23,7 +26,7 @@
         android:label="Записи"
         app:defaultNavHost="false" >
         <action
-            android:id="@+id/action_doctorsFragment_to_detailedDoctorInfoFragment2"
+            android:id="@+id/action_doctorsFragment_to_detailedDoctorInfoFragment"
             app:destination="@id/detailedDoctorInfoFragment2" />
     </fragment>
 
@@ -31,13 +34,20 @@
         <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.vetclinic.presentation.fragment.ProfileFragment"
-        android:label="Profile" />
+        android:label="Profile" >
+            <action
+                android:id="@+id/action_profileFragment_to_userFragment"
+                app:destination="@id/userFragment" />
+            <action
+                android:id="@+id/action_profileFragment_to_petFragment"
+                app:destination="@id/petFragment" />
+        </fragment>
     <fragment
         android:id="@+id/detailedDoctorInfoFragment2"
         android:name="com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment"
         android:label="DetailedDoctorInfoFragment" >
         <action
-            android:id="@+id/action_detailedDoctorInfoFragment2_to_plainServicesFragment"
+            android:id="@+id/action_detailedDoctorInfoFragment_to_plainServicesFragment"
             app:destination="@id/plainServicesFragment" />
         <argument
             android:name="doctor"
@@ -56,6 +66,19 @@
         android:name="com.example.vetclinic.presentation.fragment.AppointmentFragment"
         android:label="fragment_appointment"
         tools:layout="@layout/fragment_appointment" />
+    <fragment
+        android:id="@+id/servicesWithDepFragment"
+        android:name="com.example.vetclinic.presentation.fragment.ServicesWithDepFragment"
+        android:label="ServicesWithDepFragment" />
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.vetclinic.presentation.fragment.UserFragment"
+        android:label="UserFragment" />
+    <fragment
+        android:id="@+id/petFragment"
+        android:name="com.example.vetclinic.presentation.fragment.PetFragment"
+        android:label="fragment_pet"
+        tools:layout="@layout/fragment_pet" />
 
 
 </navigation>

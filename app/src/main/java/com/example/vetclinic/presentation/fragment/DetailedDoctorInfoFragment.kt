@@ -22,6 +22,7 @@ import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceUiState
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepUiState
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import jakarta.inject.Inject
 
 class DetailedDoctorInfoFragment : Fragment() {
@@ -84,14 +85,14 @@ class DetailedDoctorInfoFragment : Fragment() {
         }
 
 
-//        binding.btnBook.setOnClickListener {
-//            launchPlainServicesFragment(args.doctor)
-//        }
-//
-//        binding.btnToAllServices.setOnClickListener {
-//            launchPlainServicesFragment(args.doctor)
-//        }
-//
+        binding.btnBook.setOnClickListener {
+            launchPlainServicesFragment(args.doctor)
+        }
+
+        binding.btnToAllServices.setOnClickListener {
+            launchPlainServicesFragment(args.doctor)
+        }
+
 
         binding.doctorName.text = args.doctor.doctorName
         binding.doctorSpecialization.text = args.doctor.role
@@ -146,12 +147,12 @@ class DetailedDoctorInfoFragment : Fragment() {
     }
 
 
-//    private fun launchPlainServicesFragment(doctor: Doctor) {
-//        findNavController().navigate(
-//            DetailedDoctorInfoFragmentDirections
-//                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor)
-//        )
-//    }
+    private fun launchPlainServicesFragment(doctor: Doctor) {
+        findNavController().navigate(
+            DetailedDoctorInfoFragmentDirections
+                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor)
+        )
+    }
 
     companion object {
         private const val TAG = "DetailedDoctorInfoFragment"

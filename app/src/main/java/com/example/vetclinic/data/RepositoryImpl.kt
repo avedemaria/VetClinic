@@ -169,7 +169,7 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun checkUserSession(): Boolean {
         return try {
-            return supabaseClient.auth.currentUserOrNull() != null
+          supabaseClient.auth.currentUserOrNull() != null
         } catch (e: Exception) {
             false
         }

@@ -4,12 +4,14 @@ import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
 import com.example.vetclinic.presentation.fragment.DoctorsFragment
+import com.example.vetclinic.presentation.fragment.HomeFragment
 import com.example.vetclinic.presentation.fragment.LoginFragment
 import com.example.vetclinic.presentation.fragment.MainFragment
 import com.example.vetclinic.presentation.fragment.PlainServicesFragment
+import com.example.vetclinic.presentation.fragment.ProfileFragment
 import com.example.vetclinic.presentation.fragment.RegistrationFragment
-import com.example.vetclinic.presentation.fragment.SelectionFragment
 import com.example.vetclinic.presentation.fragment.ServicesWithDepFragment
+import com.example.vetclinic.presentation.fragment.UserFragment
 import dagger.BindsInstance
 import dagger.Component
 import jakarta.inject.Singleton
@@ -21,15 +23,16 @@ interface AppComponent {
 
     fun inject(activity: MainActivity)
 
+
 //    fun inject(activity: MainScreenActivity)
 
-    fun inject(mainFragment: MainFragment)
+    fun inject (mainFragment: MainFragment)
+
+    fun inject(homeFragment: HomeFragment)
 
     fun inject(registrationFragment: RegistrationFragment)
 
     fun inject(loginFragment: LoginFragment)
-
-    fun inject(selectionFragment: SelectionFragment)
 
     fun inject(doctorsFragment: DoctorsFragment)
 
@@ -38,6 +41,10 @@ interface AppComponent {
     fun inject(servicesWithDepFragment: ServicesWithDepFragment)
 
     fun inject(plainServicesFragment: PlainServicesFragment)
+
+    fun inject(profileFragment: ProfileFragment)
+
+    fun inject (userFragment: UserFragment)
 
 
     @Component.Factory
