@@ -11,6 +11,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -22,6 +23,13 @@ interface SupabaseApiService {
 
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
+
+    @PATCH("rest/v1/users?uid=eq.{userId}")
+    suspend fun updateUser(
+        @Path("userId") userId: String,
+        @Body updatedUser: UserDTO
+    ): Response<Unit>
+
 
     @POST("rest/v1/pets")
     suspend fun addPet(@Body petDto: PetDto): Response<Unit>

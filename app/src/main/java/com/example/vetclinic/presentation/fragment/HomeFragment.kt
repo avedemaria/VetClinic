@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +26,7 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: HomeViewModel by viewModels { viewModelFactory }
+    private val viewModel: HomeViewModel by activityViewModels { viewModelFactory }
 
 
     private val component by lazy {
@@ -45,18 +46,6 @@ class HomeFragment : Fragment() {
         component.inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
-        val userId =
-            sharedPrefs.getString(USER_ID, null) ?: throw IllegalArgumentException("UserId is null")
-
-        Log.d("HomeFragment", "Received userId: $userId")
-        viewModel.loadUserName(userId)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,13 +59,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.profileButton.setOnClickListener {
-            val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
-            val userId =
-                sharedPrefs.getString(USER_ID, null)
-                    ?: throw IllegalArgumentException("UserId is null")
 
-            launchProfileFragment(userId)
+        binding.profileButton.setOnClickListener {
+
+            viewModel.userId.observe(viewLifecycleOwner) {
+                launchProfileFragment(it)
+            }
+
         }
 
         binding.cardViewDoctors.setOnClickListener {
@@ -136,34 +125,11 @@ class HomeFragment : Fragment() {
     }
 
 
-    companion object {
-        const val USER_ID = "userId"
-    }
+
 
 
 }
 
-
-//        Log.d("HomeFragment", "Received userId: $userId")
-//        viewModel.loadUserName(args.userId)
-
-//        if (savedInstanceState == null) {
-//            childFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_info_container, InfoFragment())
-//                .commit()
-//        }
-//
-//
-//        val navController = (childFragmentManager.findFragmentById(R.id.selection_nav_host_fragment)
-//                as NavHostFragment).navController
-//
-//        val clinicInfoContainer = requireView().findViewById<View>(R.id.fragment_info_container)
-//
-//        navController.addOnDestinationChangedListener { _, destination, _ ->
-//            clinicInfoContainer.visibility =
-//                if (destination.id == R.id.selectionFragment) View.VISIBLE else View.GONE
-//        }
-//
 
 
 

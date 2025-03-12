@@ -14,6 +14,7 @@ import com.example.vetclinic.databinding.FragmentDoctorsBinding
 import com.example.vetclinic.databinding.FragmentUserBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
+import com.example.vetclinic.presentation.viewmodel.UserField
 import com.example.vetclinic.presentation.viewmodel.UserUiState
 import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
@@ -38,6 +39,13 @@ class UserFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
+    private val userId by lazy {
+        arguments?.getString(ProfileFragment.USER_ID)
+            ?: throw IllegalArgumentException("UserId is null")
+
+
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         component.inject(this)
@@ -56,12 +64,11 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userId = arguments?.getString(ProfileFragment.USER_ID)
-            ?: throw IllegalArgumentException("UserId is null")
-
         Log.d("UserFragment", "Received userId: $userId")
 
-        viewModel.getUserFromRoom(userId)
+        viewModel.getUserFromRoom(userId)   //как реализовать во вьюмодели
+
+        setUpListeners()
 
         observeViewModel()
     }
@@ -84,7 +91,53 @@ class UserFragment : Fragment() {
                     binding.tvEmail.text = state.user.email
                     binding.tvPhone.text = state.user.phoneNumber
                 }
+
+                is UserUiState.EditingField -> {
+                    when (state.field) {
+                        UserUiState.FieldType.NAME -> {
+                            binding.tvName.visibility = View.GONE
+                            binding.etName.visibility = View.VISIBLE
+                            binding.btnEditName.visibility = View.GONE
+                            binding.btnSaveName.visibility = View.VISIBLE
+                        }
+
+                        UserUiState.FieldType.PHONE -> {
+                            binding.tvPhone.visibility = View.GONE
+                            binding.tvPhoneTitle.visibility = View.GONE
+                            binding.etPhone.visibility = View.VISIBLE
+                            binding.btnEditPhone.visibility = View.GONE
+                            binding.btnSavePhone.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
             }
+        }
+    }
+
+    private fun setUpListeners() {
+        binding.btnEditName.setOnClickListener {
+            viewModel.startEditingField(UserUiState.FieldType.NAME)
+        }
+
+        binding.btnEditPhone.setOnClickListener {
+            viewModel.startEditingField(UserUiState.FieldType.PHONE)
+        }
+
+        binding.btnSavePhone.setOnClickListener {
+            val newPhoneNumber = binding.etPhone.text.toString()
+            viewModel.updateField(userId, UserField.PHONE_NUMBER.name, newPhoneNumber)
+        }
+
+        binding.btnSaveName.setOnClickListener {
+            val newUserName = binding.etName.text.toString()
+            viewModel.updateField(userId, UserField.USER_NAME.name, newUserName)
+        }
+
+        binding.llSettings.setOnClickListener {
+            Toast.makeText(requireContext(), "Раздел находится в разработке",
+                Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -93,6 +146,9 @@ class UserFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }
+
+
+
+
+

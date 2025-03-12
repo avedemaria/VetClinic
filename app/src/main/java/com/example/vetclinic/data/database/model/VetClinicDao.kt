@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 
 
 @Dao
@@ -19,8 +20,14 @@ interface VetClinicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserDbModel)
 
+    @Update
+    suspend fun updateUser(user: UserDbModel)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPet(per: PetDbModel)
+    suspend fun insertPet(pet: PetDbModel)
+
+    @Update
+    suspend fun updatePet (pet: PetDbModel)
 
     @Transaction
     @Query("SELECT * FROM users WHERE uid = :userId")

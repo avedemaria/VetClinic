@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:background="@color/white"
-    >
-
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -19,14 +17,15 @@
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/user_profile"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/user_profile" />
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <EditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
@@ -40,21 +39,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                tools:text="Иван Иванов"
-                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="Иван Иванов" />
 
 
             <TextView
                 android:id="@+id/btnEditName"
-                android:textAlignment="center"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
                 android:layout_weight="0.5"
                 android:text="@string/change_data"
+                android:textAlignment="center"
                 android:textColor="@color/dark_blue" />
+
+
+            <TextView
+                android:id="@+id/btnSaveName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:paddingTop="16dp"
+                android:text="@string/save"
+                android:textAlignment="center"
+                android:textColor="@color/dark_blue"
+                android:visibility="gone" />
 
 
         </LinearLayout>
@@ -63,54 +74,54 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="8dp"
-        android:weightSum="2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_gravity="start"
             android:id="@+id/llSettings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1">
 
 
             <ImageView
-                android:layout_marginStart="8dp"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/settings_svgrepo_com"/>
+                android:layout_marginStart="8dp"
+                android:src="@drawable/settings_svgrepo_com" />
 
             <TextView
-                android:layout_marginStart="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_settings"/>
+                android:layout_marginStart="16dp"
+                android:text="@string/tv_settings" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_gravity="end"
             android:id="@+id/llChangePassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1">
 
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_height="wrap_content"
-                android:text="@string/change_password_tv"/>
+                android:layout_marginStart="16dp"
+                android:text="@string/change_password_tv" />
 
 
             <ImageView
-                android:layout_marginStart="8dp"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/security_protection_lock_padlock_square_locked_svgrepo_com"/>
+                android:layout_marginStart="8dp"
+                android:src="@drawable/security_protection_lock_padlock_square_locked_svgrepo_com" />
 
         </LinearLayout>
 
@@ -119,47 +130,37 @@
 
 
     <View
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="8dp"
         android:background="@color/dark_blue" />
-
-
 
 
     <LinearLayout
         android:id="@+id/phoneNumberInfo"
-        android:weightSum="5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:weightSum="5">
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:src="@drawable/baseline_call_24"/>
-
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_weight="4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:hint="Введите номер"
-            android:visibility="gone" />
+            android:layout_weight="0.5"
+            android:src="@drawable/baseline_call_24" />
 
 
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="wrap_content"
-            android:visibility="visible"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <TextView
+                android:id="@+id/tvPhoneTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -170,24 +171,47 @@
 
             <TextView
                 android:id="@+id/tvPhone"
-                android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="+7 987 675 86 23"
-                android:textSize="16sp" />
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                tools:text="+7 987 675 86 23" />
+
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:hint="Введите номер"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
 
         </LinearLayout>
 
-
         <TextView
-            android:id="@+id/btnEditEmail"
-            android:textAlignment="center"
+            android:id="@+id/btnEditPhone"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingTop="16dp"
             android:layout_weight="0.5"
-            android:text="Изменить"
-            android:textColor="@color/dark_blue" />
+            android:paddingTop="16dp"
+            android:text="@string/change_data"
+            android:textAlignment="center"
+            android:textColor="@color/dark_blue"
+            />
+
+
+        <TextView
+            android:id="@+id/btnSavePhone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:paddingTop="16dp"
+            android:text="@string/save"
+            android:textAlignment="center"
+            android:textColor="@color/dark_blue"
+            android:visibility="gone" />
 
 
     </LinearLayout>
@@ -195,35 +219,26 @@
 
     <LinearLayout
         android:id="@+id/emailInfo"
-        android:weightSum="5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:weightSum="5">
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:src="@drawable/baseline_email_24"/>
-
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_weight="4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:hint="Введите номер"
-            android:visibility="gone" />
+            android:layout_weight="0.5"
+            android:src="@drawable/baseline_email_24" />
 
 
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="wrap_content"
-            android:visibility="visible"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
@@ -236,24 +251,13 @@
 
             <TextView
                 android:id="@+id/tvEmail"
-                android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="ivanov_ivan@mail.com"
-                android:textSize="16sp" />
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                tools:text="ivanov_ivan@mail.com" />
 
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/btnEditPhone"
-            android:textAlignment="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingTop="16dp"
-            android:layout_weight="0.5"
-            android:text="Изменить"
-            android:textColor="@color/dark_blue" />
 
 
     </LinearLayout>

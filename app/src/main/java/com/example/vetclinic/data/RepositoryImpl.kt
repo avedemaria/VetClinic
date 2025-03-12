@@ -88,6 +88,8 @@ class RepositoryImpl @Inject constructor(
     }
 
 
+    //SupabaseDB
+
     override suspend fun getUserFromSupabaseDb(): Result<User> {
         TODO("Not yet implemented")
     }
@@ -97,6 +99,24 @@ class RepositoryImpl @Inject constructor(
         apiCall = { userDto -> supabaseApiService.addUser(userDto) },
         mapper = { userMapper.userEntityToUserDto(user) }
     )
+
+    override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> =
+        kotlin.runCatching {
+            val updatedUserDto = userMapper.userEntityToUserDto(updatedUser)
+            val response = supabaseApiService.updateUser(userId, updatedUserDto)
+
+            if (response.isSuccessful) {
+                Log.d(TAG, "Successfully updated user in Supabase DB")
+                Unit
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Failed to update User. Error: $errorBody")
+                throw Exception("Failed to update User. ${response.code()} - $errorBody")
+            }
+        }
+            .onFailure { error ->
+                Log.e(TAG, "Error while updating User in Supabase DB", error)
+            }
 
     override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> = addDataToSupabaseDb(
         entity = pet,
@@ -166,21 +186,16 @@ class RepositoryImpl @Inject constructor(
     }
 
 
-//    private suspend fun <T> getDataFromNetwork(
-//        apiCall: suspend () -> Response<T>,
-//
-//    )
-
-
-
     override suspend fun checkUserSession(): Boolean {
         return try {
-          supabaseClient.auth.currentUserOrNull() != null
+            supabaseClient.auth.currentUserOrNull() != null
         } catch (e: Exception) {
             false
         }
     }
 
+
+    //Room
 
     override suspend fun addUserToRoom(user: User, pet: Pet) {
         vetClinicDao.insertUser(userMapper.userEntityToUserDbModel(user))
@@ -198,6 +213,16 @@ class RepositoryImpl @Inject constructor(
             Log.e(TAG, "Error while getting user from Room", it)
         }
 
+    override suspend fun updateUserInRoom(user: User): Result<Unit> = kotlin.runCatching {
+
+        val userDbModel = userMapper.userEntityToUserDbModel(user)
+        vetClinicDao.updateUser(userDbModel)
+        Log.d(TAG, "User updated successfully in Room")
+        Unit
+    }
+        .onFailure { error ->
+            Log.e(TAG, "Error updatinf user in Room", error)
+        }
 
     override suspend fun getPetsFromRoom(userId: String): Result<List<Pet>> =
         kotlin.runCatching {
@@ -208,7 +233,7 @@ class RepositoryImpl @Inject constructor(
                     throw NoSuchElementException("Pets with ID $userId not found in Room")
                 }
 
-               petMapper.petDbModelListToPetEntityList(petDbModelList)
+                petMapper.petDbModelListToPetEntityList(petDbModelList)
             }
         }.onFailure {
             Log.e(TAG, "Error while getting pets from Room", it)

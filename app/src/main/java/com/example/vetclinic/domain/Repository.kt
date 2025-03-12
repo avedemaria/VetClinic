@@ -22,6 +22,8 @@ interface Repository {
 
     suspend fun getUserFromSupabaseDb(): Result<User>
 
+    suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit>
+
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
     suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit>
@@ -36,7 +38,11 @@ interface Repository {
 
     suspend fun addUserToRoom(user: User, pet: Pet)
 
+    suspend fun updateUserInRoom(user: User): Result<Unit>
+
     suspend fun getCurrentUserFromRoom(userId: String): Result<User>
 
-    suspend fun getPetsFromRoom(userId:String): Result<List<Pet>>
+    suspend fun getPetsFromRoom(userId: String): Result<List<Pet>>
+
+
 }

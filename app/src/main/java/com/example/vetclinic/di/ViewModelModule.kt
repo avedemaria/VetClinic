@@ -50,9 +50,7 @@ interface ViewModelModule {
     @ViewModelKey(UserViewModel::class)
     @Binds
     fun bindUserViewModel(impl: UserViewModel): ViewModel
-
-
-
+    
 
 
 }

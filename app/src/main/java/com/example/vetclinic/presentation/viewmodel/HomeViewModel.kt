@@ -16,9 +16,17 @@ class HomeViewModel @Inject constructor(
     ) : ViewModel() {
 
 
+    private val _userId = MutableLiveData<String>()
+    val userId: LiveData<String> get() = _userId
+
     private val _homeState = MutableLiveData<HomeState>()
     val homeState: LiveData<HomeState> get() = _homeState
 
+
+    fun setUserId(id: String) {
+        _userId.value = id
+        loadUserName(id)
+    }
 
     fun loadUserName(userId: String) {
 

@@ -9,6 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,9 +20,12 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.HomeViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import jakarta.inject.Inject
 
 
 class MainFragment : Fragment() {
@@ -33,6 +39,12 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentMainBinding is null")
+
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewmodel: HomeViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,16 +60,13 @@ class MainFragment : Fragment() {
         component.inject(this)
 
 
-        val sharedPrefs = requireContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putString(USER_ID, args.userId).apply()
-
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
 //            OnBackPressedCallback(true) {
 //            override fun handleOnBackPressed() {
 //                requireActivity().finish()
 //            }
 //        })
-
+        viewmodel.setUserId(args.userId)
 
         // Получаем NavController из вложенного NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
@@ -95,10 +104,6 @@ class MainFragment : Fragment() {
         }
     }
 
-
-    companion object {
-        const val USER_ID = "userId"
-    }
 }
 
 
