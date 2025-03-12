@@ -27,7 +27,7 @@ interface AppComponent {
 
 //    fun inject(activity: MainScreenActivity)
 
-    fun inject (mainFragment: MainFragment)
+    fun inject(mainFragment: MainFragment)
 
     fun inject(homeFragment: HomeFragment)
 
@@ -45,9 +45,9 @@ interface AppComponent {
 
     fun inject(profileFragment: ProfileFragment)
 
-    fun inject (userFragment: UserFragment)
+    fun inject(userFragment: UserFragment)
 
-    fun inject (petFragment: PetFragment)
+    fun inject(petFragment: PetFragment)
 
 
     @Component.Factory

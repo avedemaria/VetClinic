@@ -24,6 +24,8 @@ interface Repository {
 
     suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit>
 
+    suspend fun updatePetInSupabaseDb (petId:String, updatedPet:Pet): Result<Unit>
+
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
     suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit>

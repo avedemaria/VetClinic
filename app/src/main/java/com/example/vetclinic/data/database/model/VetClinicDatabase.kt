@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [UserDbModel::class, PetDbModel::class], version = 2, exportSchema = false)
+@Database(entities = [UserDbModel::class, PetDbModel::class], version = 3, exportSchema = false)
 abstract class VetClinicDatabase : RoomDatabase() {
 
     companion object {
@@ -23,7 +23,7 @@ abstract class VetClinicDatabase : RoomDatabase() {
                 INSTANCE ?: Room.databaseBuilder(
                     application.applicationContext,
                     VetClinicDatabase::class.java, DB_NAME
-                ).build().also { INSTANCE = it }
+                ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
 
             }
         }

@@ -30,17 +30,23 @@ interface SupabaseApiService {
         @Body updatedUser: UserDTO
     ): Response<Unit>
 
+    @PATCH("rest/v1/pets/{pet_id}")
+    suspend fun updatePet(
+        @Path("pet_id") petId: String,
+        @Body updatedPet: PetDto
+    ): Response<Unit>
+
 
     @POST("rest/v1/pets")
     suspend fun addPet(@Body petDto: PetDto): Response<Unit>
 
 
     @GET("rest/v1/departments?select=*")
-    suspend fun getDepartments (): Response<List<DepartmentDto>>
+    suspend fun getDepartments(): Response<List<DepartmentDto>>
 
 
     @GET("rest/v1/doctors?select=*")
-    suspend fun getDoctors (): Response<List<DoctorDto>>
+    suspend fun getDoctors(): Response<List<DoctorDto>>
 
 
     @GET("rest/v1/services?select=*")

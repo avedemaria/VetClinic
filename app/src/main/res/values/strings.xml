@@ -77,4 +77,5 @@
     <string name="tv_settings">Настройки</string>
     <string name="change_password_tv">Изменить пароль</string>
     <string name="save">Сохранить</string>
+    <string name="add">Добавить</string>
 </resources>

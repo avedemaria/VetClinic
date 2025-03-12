@@ -118,6 +118,27 @@ class RepositoryImpl @Inject constructor(
                 Log.e(TAG, "Error while updating User in Supabase DB", error)
             }
 
+
+    override suspend fun updatePetInSupabaseDb(petId: String, updatedPet: Pet): Result<Unit> =
+        kotlin.runCatching {
+
+            Log.d("SupabaseApi", "Updating pet with ID: $petId")
+            val updatedPetDto = petMapper.petEntityToPetDto(updatedPet)
+            val response = supabaseApiService.updatePet(petId, updatedPetDto)
+
+            if (response.isSuccessful) {
+                Log.d(TAG, "Successfully updated pet in Supabase DB")
+                Unit
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Failed to update pet. Error: $errorBody")
+                throw Exception("Failed to update pet. ${response.code()} - $errorBody")
+            }
+        }
+            .onFailure { error ->
+                Log.e(TAG, "Error while updating Pet in Supabase DB", error)
+            }
+
     override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> = addDataToSupabaseDb(
         entity = pet,
         apiCall = { petDto -> supabaseApiService.addPet(petDto) },

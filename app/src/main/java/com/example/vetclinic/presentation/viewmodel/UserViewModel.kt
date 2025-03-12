@@ -112,6 +112,14 @@ class UserViewModel @Inject constructor(
     //Валидация
 
 
+    fun validateField(field: String, value: String): String? {
+        return when (field) {
+            UserField.PHONE_NUMBER.name -> validatePhoneNumber(value)
+            UserField.USER_NAME.name -> validateUserName(value)
+            else -> "Неизвестное поле"
+        }
+    }
+
 
     private fun validatePhoneNumber(phone: String): String? {
         val phonePattern = "^\\+?\\d{10,15}$"

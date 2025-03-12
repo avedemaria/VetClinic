@@ -21,6 +21,7 @@ data class PetDbModel(
     @ColumnInfo(name = "pet_id") val petId: String,
     @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "pet_name") val petName: String,
+    @ColumnInfo(name = "pet_bday") val petBday: String? = null,
     @ColumnInfo(name = "pet_type") val petType: String? = null,
     @ColumnInfo(name = "pet_age") val petAge: String? = null
 )

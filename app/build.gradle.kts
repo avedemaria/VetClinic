@@ -7,9 +7,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     id("androidx.navigation.safeargs.kotlin")
-    id ("kotlin-parcelize")
+    id("kotlin-parcelize")
     id("com.google.gms.google-services")
-    id ("kotlin-kapt")
+    id("kotlin-kapt")
 }
 
 
@@ -72,12 +72,15 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    implementation("com.squareup.inject:assisted-inject-annotations-dagger2:0.6.0")
+    kapt("com.squareup.inject:assisted-inject-processor-dagger2:0.6.0")
+
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
 
-    implementation ("com.facebook.shimmer:shimmer:0.5.0")
-    implementation ("com.google.android.material:material:1.3.0-alpha03")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("com.google.android.material:material:1.3.0-alpha03")
 
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
@@ -105,7 +108,7 @@ dependencies {
     ksp(libs.dagger2.android.processor)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation ("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.fragment:fragment-ktx:1.8.6")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
