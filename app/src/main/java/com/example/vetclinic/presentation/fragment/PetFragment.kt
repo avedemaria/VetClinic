@@ -5,31 +5,24 @@ import android.content.Context
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentPetBinding
-import com.example.vetclinic.databinding.FragmentUserBinding
-import com.example.vetclinic.databinding.PetItemBinding
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.presentation.PetParameter
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.OnEditClickListener
 import com.example.vetclinic.presentation.adapter.PetAdapter
-import com.example.vetclinic.presentation.adapter.PetViewHolder
-import com.example.vetclinic.presentation.fragment.ProfileFragment.Companion.USER_ID
 import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
-import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
@@ -91,7 +84,6 @@ class PetFragment : Fragment() {
                 .addToBackStack(null) // Позволяет вернуться назад
                 .commit()
 
-//            (parentFragment as? ProfileFragment)?.setToggleGroupVisibility(false)
         }
 
 

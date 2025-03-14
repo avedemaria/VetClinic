@@ -2,6 +2,7 @@ package com.example.vetclinic.di
 
 import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
+import com.example.vetclinic.presentation.fragment.AddPetFragment
 import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
 import com.example.vetclinic.presentation.fragment.DoctorsFragment
 import com.example.vetclinic.presentation.fragment.HomeFragment
@@ -23,7 +24,6 @@ interface AppComponent {
 
 
     fun inject(activity: MainActivity)
-
 
 //    fun inject(activity: MainScreenActivity)
 
@@ -48,6 +48,8 @@ interface AppComponent {
     fun inject(userFragment: UserFragment)
 
     fun inject(petFragment: PetFragment)
+
+    fun inject(addPetFragment: AddPetFragment)
 
 
     @Component.Factory

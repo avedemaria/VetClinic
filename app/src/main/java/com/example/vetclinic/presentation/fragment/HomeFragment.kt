@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.databinding.FragmentHomeBinding
+import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.HomeState
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel

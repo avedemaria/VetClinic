@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
@@ -12,8 +13,9 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
+    private val addUserUseCase: AddUserUseCase
 
-    ) : ViewModel() {
+) : ViewModel() {
 
 
     private val _userId = MutableLiveData<String>()
@@ -28,6 +30,7 @@ class HomeViewModel @Inject constructor(
         loadUserName(id)
     }
 
+
     fun loadUserName(userId: String) {
 
         viewModelScope.launch {
@@ -38,8 +41,8 @@ class HomeViewModel @Inject constructor(
             getUserUseCase.getUserFromSupabaseDb(userId)
                 .onSuccess { user ->
                     Log.d("HomeViewModel", "Loaded user: $user")
-                    if (user!=null)
-                    _homeState.value = HomeState.Result(user.userName)
+                    if (user != null)
+                        _homeState.value = HomeState.Result(user.userName)
                 }
                 .onFailure { error ->
                     Log.e("HomeViewModel", "Error loading user: $error")
