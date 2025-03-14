@@ -35,9 +35,10 @@ class HomeViewModel @Inject constructor(
 
             delay(1000)
 
-            getUserUseCase.getUserFromRoom(userId)
+            getUserUseCase.getUserFromSupabaseDb(userId)
                 .onSuccess { user ->
                     Log.d("HomeViewModel", "Loaded user: $user")
+                    if (user!=null)
                     _homeState.value = HomeState.Result(user.userName)
                 }
                 .onFailure { error ->

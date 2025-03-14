@@ -80,6 +80,8 @@ class DetailedDoctorInfoFragment : Fragment() {
         observeViewModel()
 
 
+
+
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }

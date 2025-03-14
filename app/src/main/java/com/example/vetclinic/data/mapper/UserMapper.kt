@@ -52,4 +52,14 @@ class UserMapper @Inject constructor() {
         )
     }
 
+    fun userDtoToUserEntity(dto: UserDTO): User {
+        return User(
+            uid = dto.uid,
+            userName = dto.userName,
+            userLastName = dto.userLastName,
+            phoneNumber = dto.phoneNumber,
+            email = dto.email
+        )
+    }
+
 }

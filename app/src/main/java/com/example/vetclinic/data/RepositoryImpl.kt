@@ -1,7 +1,6 @@
 package com.example.vetclinic.data
 
 import android.util.Log
-import com.example.vetclinic.data.database.model.UserDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.DepartmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
@@ -9,6 +8,7 @@ import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
@@ -18,7 +18,6 @@ import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
@@ -90,9 +89,45 @@ class RepositoryImpl @Inject constructor(
 
     //SupabaseDB
 
-    override suspend fun getUserFromSupabaseDb(): Result<User> {
-        TODO("Not yet implemented")
+    override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> = runCatching {
+
+        val idWithParameter = "eq.$userId"
+        val response = supabaseApiService.getUserFromSupabaseDb(idWithParameter)
+
+        if (!response.isSuccessful) {
+            throw Exception("Server error: ${response.code()} - ${response.errorBody()?.string()}")
+        }
+
+        val users = response.body() ?: emptyList()
+
+        val userDto = users.find { it.uid == userId }
+
+        return@runCatching userDto?.let { userMapper.userDtoToUserEntity(it) }
+    }.onFailure { e ->
+        Log.e("RepositoryImpl", "Error fetching User: ${e.message}", e)
     }
+
+    override suspend fun getPetFromSupabaseDb(petId: String): Result<List<Pet>> =
+        kotlin.runCatching {
+            val idWithParameter = "eq.$petId"
+
+            val response = supabaseApiService.getPetFromSupabaseDb(idWithParameter)
+
+            if (!response.isSuccessful) {
+                throw Exception(
+                    "Server error: ${response.code()} - ${
+                        response.errorBody()?.string()
+                    }"
+                )
+            }
+
+            val petDtos = response.body() ?: emptyList()
+
+            return@runCatching petDtos.map { petMapper.petDtoToPetEntity(it) }
+        }.onFailure { e ->
+            Log.e("RepositoryImpl", "Error fetching Pet: ${e.message}", e)
+        }
+
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> = addDataToSupabaseDb(
         entity = user,
@@ -145,6 +180,7 @@ class RepositoryImpl @Inject constructor(
         apiCall = { petDto -> supabaseApiService.addPet(petDto) },
         mapper = { petMapper.petEntityToPetDto(pet) }
     )
+
 
     override suspend fun getDoctorList(): Result<List<Doctor>> = fetchData(
         apiCall = { supabaseApiService.getDoctors() },
@@ -217,7 +253,7 @@ class RepositoryImpl @Inject constructor(
     }
 
 
-    //Room
+//Room
 
     override suspend fun addUserToRoom(user: User, pet: Pet) {
         vetClinicDao.insertUser(userMapper.userEntityToUserDbModel(user))

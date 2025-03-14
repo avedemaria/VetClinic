@@ -31,6 +31,18 @@ class PetMapper @Inject constructor() {
         )
     }
 
+    fun petDtoToPetEntity(dto: PetDto): Pet {
+        return Pet(
+            petId = dto.petId,
+            userId = dto.userId,
+            petName = dto.petName,
+            petBDay = dto.petBday,
+            petType = dto.petType,
+            petGender = dto.petGender,
+            petAge = dto.petAge
+        )
+    }
+
 
     fun petDbModelToPetEntity(dbModel: PetDbModel): Pet {
         return Pet(

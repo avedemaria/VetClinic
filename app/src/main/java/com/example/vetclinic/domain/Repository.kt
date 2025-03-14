@@ -1,6 +1,7 @@
 package com.example.vetclinic.domain
 
 import com.example.vetclinic.data.database.model.UserDbModel
+import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
@@ -20,7 +21,7 @@ interface Repository {
 
     suspend fun logOut()
 
-    suspend fun getUserFromSupabaseDb(): Result<User>
+    suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 
     suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit>
 
@@ -29,6 +30,8 @@ interface Repository {
     suspend fun addUserToSupabaseDb(user: User): Result<Unit>
 
     suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit>
+
+    suspend fun getPetFromSupabaseDb(petId: String): Result<List<Pet>>
 
     suspend fun getDoctorList(): Result<List<Doctor>>
 
@@ -40,7 +43,7 @@ interface Repository {
 
     suspend fun addUserToRoom(user: User, pet: Pet)
 
-    suspend fun addPetToRoom (pet: Pet): Result<Unit>
+    suspend fun addPetToRoom(pet: Pet): Result<Unit>
 
     suspend fun updateUserInRoom(user: User): Result<Unit>
 
