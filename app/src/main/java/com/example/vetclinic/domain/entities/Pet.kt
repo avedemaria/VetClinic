@@ -9,9 +9,11 @@ data class Pet(
     val petName: String,
     val petBDay: String? = null,
     val petType: String? = null,
+    val petGender: String? = null,
     val petAge: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
@@ -27,6 +29,7 @@ data class Pet(
             writeString(petName)
             writeString(petBDay)
             writeString(petType)
+            writeString(petGender)
             writeValue(petAge)
         }
     }

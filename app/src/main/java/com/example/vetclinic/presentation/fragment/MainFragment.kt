@@ -20,6 +20,7 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.HomeState
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -102,6 +103,31 @@ class MainFragment : Fragment() {
                 else -> false
             }
         }
+
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewmodel.homeState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is HomeState.Error -> Log.d(TAG, "Заглушка для HomeState.Error")
+                HomeState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.coordinatorLayout.visibility = View.GONE
+                }
+
+                is HomeState.Result -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.coordinatorLayout.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+
+    companion object {
+        private const val TAG = "MainFragment"
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -19,6 +20,7 @@ class PetAdapter(private val listener: OnEditClickListener) :
 
     override fun onBindViewHolder(holder: PetViewHolder, position: Int) {
         val pet = getItem(position)
+        Log.d("PetAdapter", "onBindViewHolder - position: $position, pet: $pet")
         holder.bind(pet)
 
     }

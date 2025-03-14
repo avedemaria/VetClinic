@@ -1,6 +1,8 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.app.DatePickerDialog
 import android.content.Context
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.OnEditClickListener
 import com.example.vetclinic.presentation.adapter.PetAdapter
 import com.example.vetclinic.presentation.adapter.PetViewHolder
+import com.example.vetclinic.presentation.fragment.ProfileFragment.Companion.USER_ID
 import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.UserViewModel
@@ -80,6 +83,19 @@ class PetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        binding.btnAddPet.setOnClickListener {
+            val addPetFragment = AddPetFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, addPetFragment) // Контейнер из ProfileFragment
+                .addToBackStack(null) // Позволяет вернуться назад
+                .commit()
+
+//            (parentFragment as? ProfileFragment)?.setToggleGroupVisibility(false)
+        }
+
+
+
         viewModel.getPetsFromRoom(userId)
 
         setUpAdapter()
@@ -96,7 +112,8 @@ class PetFragment : Fragment() {
                 when (parameter) {
                     PetParameter.NAME.name -> Log.d("PetFragment", "NameEditing")
                     PetParameter.TYPE.name -> showPetTypeDialog(pet)
-                    PetParameter.BDAY.name -> Log.d("PetFragment", "BdayEditing")
+                    PetParameter.BDAY.name -> showDatePickerDialog(pet)
+                    PetParameter.GENDER.name -> showPetGenderDialog(pet)
                 }
 
             }
@@ -134,6 +151,7 @@ class PetFragment : Fragment() {
                 is PetUiState.Success -> {
                     binding.petContent.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.GONE
+                    Log.d("PetFragment", "Data received: ${state.pets}")
                     petsAdapter.submitList(state.pets)
                 }
 
@@ -151,6 +169,39 @@ class PetFragment : Fragment() {
             .setItems(petTypes) { dialog, which ->
                 val selectedType = petTypes[which]
                 val updatedPet = pet.copy(petType = selectedType)
+                viewModel.updatePet(userId, pet.petId, updatedPet)
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+
+    private fun showDatePickerDialog(pet: Pet) {
+        val calendar = Calendar.getInstance()
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            val selectedDate =
+                String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear)
+
+            val updatedPet = pet.copy(petBDay = selectedDate)
+
+            viewModel.updatePet(userId, pet.petId, updatedPet)
+        }, year, month, day).show()
+    }
+
+
+    private fun showPetGenderDialog(pet: Pet) {
+        val genders = arrayOf("Мальчик", "Девочка")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Выберите пол питомца")
+            .setItems(genders) { dialog, which ->
+                val selectedGender = genders[which]
+                val updatedPet = pet.copy(petGender = selectedGender)
                 viewModel.updatePet(userId, pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)

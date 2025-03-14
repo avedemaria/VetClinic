@@ -33,6 +33,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _homeState.value = HomeState.Loading
 
+            delay(1000)
+
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
                     Log.d("HomeViewModel", "Loaded user: $user")

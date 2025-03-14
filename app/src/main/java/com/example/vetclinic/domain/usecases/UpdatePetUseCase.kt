@@ -10,5 +10,9 @@ class UpdatePetUseCase @Inject constructor(private val repository: Repository) {
         return repository.updatePetInSupabaseDb(petId, updatedPet)
     }
 
+    suspend fun updatePetInRoom(pet: Pet): Result<Unit> {
+        return repository.updatePetInRoom(pet)
+    }
+
 
 }

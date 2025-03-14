@@ -97,8 +97,6 @@
         </LinearLayout>
 
 
-
-
         <LinearLayout
             android:id="@+id/petTypeInfo"
             android:weightSum="5"
@@ -128,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:paddingTop="8dp"
-                    android:text="Тип питомца"
+                    android:text="@string/pet_type"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -146,6 +144,64 @@
 
             <TextView
                 android:id="@+id/btnEditPetType"
+                android:textAlignment="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingTop="16dp"
+                android:layout_weight="0.5"
+                android:text="@string/change_data"
+                android:textColor="@color/dark_blue" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/petGenderInfo"
+            android:weightSum="5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/pet_14_svgrepo_com" />
+
+
+
+            <LinearLayout
+                android:layout_weight="4"
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/gender"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPetGender"
+                    android:layout_marginStart="14dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Мальчик"
+                    android:textSize="16sp" />
+
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnEditPetGender"
                 android:textAlignment="center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

@@ -78,4 +78,7 @@
     <string name="change_password_tv">Изменить пароль</string>
     <string name="save">Сохранить</string>
     <string name="add">Добавить</string>
+    <string name="pet_type">Тип питомца</string>
+    <string name="gender">Пол</string>
+    <string name="add_pet_capslock">ДОБАВИТЬ ПИТОМЦА</string>
 </resources>

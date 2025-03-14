@@ -85,15 +85,22 @@ class HomeFragment : Fragment() {
         viewModel.homeState.observe(viewLifecycleOwner) { state ->
             Log.d("HomeFragment", "State changed to: $state")
             when (state) {
-                is HomeState.Error -> Toast.makeText(
-                    requireContext(), "An error has occurred: ${state.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                is HomeState.Error -> {
+                    Toast.makeText(
+                        requireContext(), "An error has occurred: ${state.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-                is HomeState.Loading -> binding.welcomeText.text = "Добро пожаловать,\nгость"
-                is HomeState.Result ->
+                is HomeState.Loading -> {
+                    binding.welcomeText.text = "Добро пожаловать,\nгость"
+                }
+
+                is HomeState.Result -> {
                     binding.welcomeText.text =
                         String.format("Добро пожаловать,\n%s", state.userName)
+                }
+
             }
         }
     }
@@ -123,9 +130,6 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 
 
 }

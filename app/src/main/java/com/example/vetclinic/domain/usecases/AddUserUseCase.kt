@@ -8,14 +8,18 @@ import jakarta.inject.Inject
 class AddUserUseCase @Inject constructor(private val repository: Repository) {
 
     suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
-       return repository.addUserToSupabaseDb(user)
+        return repository.addUserToSupabaseDb(user)
     }
 
-    suspend fun addPetToSupabaseDb (pet: Pet): Result<Unit> {
+    suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> {
         return repository.addPetToSupabaseDb(pet)
     }
 
     suspend fun addUserToRoom(user: User, pet: Pet) {
         repository.addUserToRoom(user, pet)
+    }
+
+    suspend fun addPetToRoom(pet: Pet): Result<Unit> {
+        return repository.addPetToRoom(pet)
     }
 }

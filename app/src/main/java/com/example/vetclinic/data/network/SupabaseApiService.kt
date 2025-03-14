@@ -30,9 +30,9 @@ interface SupabaseApiService {
         @Body updatedUser: UserDTO
     ): Response<Unit>
 
-    @PATCH("rest/v1/pets/{pet_id}")
+    @PATCH("rest/v1/pets")
     suspend fun updatePet(
-        @Path("pet_id") petId: String,
+        @retrofit2.http.Query("pet_id") petId: String,
         @Body updatedPet: PetDto
     ): Response<Unit>
 

@@ -122,9 +122,10 @@ class RepositoryImpl @Inject constructor(
     override suspend fun updatePetInSupabaseDb(petId: String, updatedPet: Pet): Result<Unit> =
         kotlin.runCatching {
 
-            Log.d("SupabaseApi", "Updating pet with ID: $petId")
+            Log.d(TAG, "Updating pet with ID: $petId")
+            val idWithOperator = "eq.$petId"
             val updatedPetDto = petMapper.petEntityToPetDto(updatedPet)
-            val response = supabaseApiService.updatePet(petId, updatedPetDto)
+            val response = supabaseApiService.updatePet(idWithOperator, updatedPetDto)
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully updated pet in Supabase DB")
@@ -223,6 +224,15 @@ class RepositoryImpl @Inject constructor(
         vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
     }
 
+
+    override suspend fun addPetToRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
+
+        vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
+    }
+        .onFailure { error ->
+            Log.e(TAG, "Error adding pet to Room $error")
+        }
+
     override suspend fun getCurrentUserFromRoom(userId: String): Result<User> =
         runCatching {
             withContext(Dispatchers.IO) {
@@ -242,8 +252,20 @@ class RepositoryImpl @Inject constructor(
         Unit
     }
         .onFailure { error ->
-            Log.e(TAG, "Error updatinf user in Room", error)
+            Log.e(TAG, "Error updating user in Room", error)
         }
+
+
+    override suspend fun updatePetInRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
+        val petDbModel = petMapper.petEntityToPetDbModel(pet)
+        vetClinicDao.updatePet(petDbModel)
+        Log.d(TAG, "User updated successfully in Room")
+        Unit
+    }
+        .onFailure { error ->
+            Log.e(TAG, "Error updating pet in Room", error)
+        }
+
 
     override suspend fun getPetsFromRoom(userId: String): Result<List<Pet>> =
         kotlin.runCatching {
