@@ -1,6 +1,8 @@
 package com.example.vetclinic.data.network
 
 import androidx.room.Query
+import com.example.vetclinic.data.network.model.AppointmentCreateDto
+import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.data.network.model.DepartmentDto
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
@@ -58,6 +60,16 @@ interface SupabaseApiService {
     @GET("rest/v1/services?select=*")
     suspend fun getServices(): Response<List<ServiceDto>>
 
+
+    @GET("rest/v1/appointments")
+    suspend fun getAppointments(
+        @retrofit2.http.Query("select") select: String = "*, doctors: doctor_id(*),pets:pet_id(*)" +
+                ",users:user_id(*),services:service_id(*)"
+    ): Response<List<AppointmentDto>>
+
+
+    @POST("rest/v1/appointments")
+    suspend fun addAppointment(@Body appointmentCreateDto: AppointmentCreateDto): Response<Unit>
 
 }
 

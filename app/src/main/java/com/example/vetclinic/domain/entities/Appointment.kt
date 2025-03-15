@@ -11,5 +11,9 @@ data class Appointment(
     val petId: String,
     val doctorId: String,
     val serviceId: String,
-    val status: AppointmentStatus
-):Parcelable
+    val status: AppointmentStatus,
+    val owner: User,
+    val pet: Pet,
+    val doctor: Doctor,
+    val service: Service
+) : Parcelable

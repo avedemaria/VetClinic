@@ -29,8 +29,8 @@ import jakarta.inject.Inject
 
 class PlainServicesFragment : Fragment() {
 
-//
-//    private val args by navArgs<PlainServicesFragmentArgs>()
+
+    private val args by navArgs<PlainServicesFragmentArgs>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -75,7 +75,7 @@ class PlainServicesFragment : Fragment() {
             })
 
 
-        servicesAdapter = ServicesWithDepAdapter(object: OnServiceClickListener {
+        servicesAdapter = ServicesWithDepAdapter(object : OnServiceClickListener {
             override fun onServiceClick(service: Service) {
                 Log.d(TAG, "заглушка")
             }
@@ -87,14 +87,13 @@ class PlainServicesFragment : Fragment() {
     }
 
 
-
-    private fun setUpAdapter () {
-       binding.rvServices.apply {
-           layoutManager = LinearLayoutManager(
-               requireContext(), RecyclerView.VERTICAL, false
-           )
-           adapter = servicesAdapter
-       }
+    private fun setUpAdapter() {
+        binding.rvServices.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(), RecyclerView.VERTICAL, false
+            )
+            adapter = servicesAdapter
+        }
     }
 
     private fun observeViewModel() {
@@ -104,9 +103,12 @@ class PlainServicesFragment : Fragment() {
                 is ServiceUiState.Error -> Log.d(TAG, "заглушка")
                 ServiceUiState.Loading -> Log.d(TAG, "заглушка")
                 is ServiceUiState.Success -> {
+
+                    val filteredServices =
+                        state.services.filter { it.departmentId == args.doctor.departmentId }
                     val services =
-                        state.services
-                            .map{DepAndServiceItemList.ServiceItem(it)}
+                        filteredServices
+                            .map { DepAndServiceItemList.ServiceItem(it) }
                     servicesAdapter.submitList(services)
 
                 }
@@ -114,7 +116,7 @@ class PlainServicesFragment : Fragment() {
             }
         }
     }
-//    filter { args.doctor.departmentId == it.departmentId }
+
 
     companion object {
         private const val TAG = "PlainServicesFragment"
