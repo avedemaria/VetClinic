@@ -8,6 +8,7 @@ import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ProfileViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
+import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import dagger.Binds
@@ -59,6 +60,13 @@ interface ViewModelModule {
     @ViewModelKey(PetViewModel::class)
     @Binds
     fun bindPetViewModel(impl: PetViewModel): ViewModel
+
+
+    @IntoMap
+    @ViewModelKey(ResetPasswordViewModel::class)
+    @Binds
+    fun bindResetPasswordViewModel(impl: ResetPasswordViewModel): ViewModel
+
 
 
 

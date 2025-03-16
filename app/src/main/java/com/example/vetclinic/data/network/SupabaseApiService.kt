@@ -71,6 +71,8 @@ interface SupabaseApiService {
     @POST("rest/v1/appointments")
     suspend fun addAppointment(@Body appointmentCreateDto: AppointmentCreateDto): Response<Unit>
 
+
+
 }
 
 

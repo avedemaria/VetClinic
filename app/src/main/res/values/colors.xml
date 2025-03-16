@@ -8,4 +8,6 @@
     <color name="status_blue">#66A99C</color>
     <color name="status_red">#A26761</color>
     <color name="status_grey">#9E9E9E</color>
+    <color name="bright_red">#CE1212</color>
+    <color name="dark_red">#AF3131</color>
 </resources>

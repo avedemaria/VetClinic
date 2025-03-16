@@ -12,7 +12,10 @@ import com.example.vetclinic.presentation.fragment.PetFragment
 import com.example.vetclinic.presentation.fragment.PlainServicesFragment
 import com.example.vetclinic.presentation.fragment.ProfileFragment
 import com.example.vetclinic.presentation.fragment.RegistrationFragment
+import com.example.vetclinic.presentation.fragment.ResetPasswordWithEmailFragment
 import com.example.vetclinic.presentation.fragment.ServicesWithDepFragment
+import com.example.vetclinic.presentation.fragment.SettingsFragment
+import com.example.vetclinic.presentation.fragment.UpdatePasswordFragment
 import com.example.vetclinic.presentation.fragment.UserFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -50,6 +53,12 @@ interface AppComponent {
     fun inject(petFragment: PetFragment)
 
     fun inject(addPetFragment: AddPetFragment)
+
+    fun inject (settingsFragment: SettingsFragment)
+
+    fun inject (resetPasswordWithEmailFragment: ResetPasswordWithEmailFragment)
+
+    fun inject (updatePasswordFragment: UpdatePasswordFragment)
 
 
     @Component.Factory

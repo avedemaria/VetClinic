@@ -66,6 +66,9 @@ class UserFragment : Fragment() {
 
         Log.d("UserFragment", "Received userId: $userId")
 
+        val parentFragment = parentFragment as? ProfileFragment
+        parentFragment?.toggleGroup?.visibility = View.VISIBLE
+
         viewModel.getUserFromRoom(userId)   //как реализовать во вьюмодели
 
         setUpListeners()
@@ -135,9 +138,12 @@ class UserFragment : Fragment() {
         }
 
         binding.llSettings.setOnClickListener {
-            Toast.makeText(requireContext(), "Раздел находится в разработке",
-                Toast.LENGTH_SHORT)
-                .show()
+            parentFragmentManager.beginTransaction().apply {
+                replace(R.id.fragmentContainer, SettingsFragment())
+                addToBackStack(null)
+                commit()
+            }
+
         }
     }
 

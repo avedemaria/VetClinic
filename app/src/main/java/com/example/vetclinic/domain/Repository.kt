@@ -21,6 +21,10 @@ interface Repository {
 
     suspend fun logOut()
 
+    suspend fun resetPasswordWithEmail (email:String): Result<Unit>
+
+    suspend fun updatePassword (newPassword:String): Result<Unit>
+
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 
     suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit>

@@ -16,10 +16,14 @@ import com.example.vetclinic.di.AppComponent
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.button.MaterialButtonToggleGroup
 import jakarta.inject.Inject
 
 
 class ProfileFragment : Fragment() {
+
+
+    lateinit var toggleGroup: MaterialButtonToggleGroup
 
     private val args by navArgs<ProfileFragmentArgs>()
 
@@ -55,9 +59,12 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+
+        toggleGroup = binding.toggleGroup
+        updateToggleGroupVisibility()
 
         val userId = args.userId
-
         loadChildFragment(UserFragment(), userId)
 
         binding.toggleGroup.addOnButtonCheckedListener { toggleButtonGroup, checkedId, isChecked ->
@@ -82,6 +89,15 @@ class ProfileFragment : Fragment() {
         childFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
             .commit()
+    }
+
+    fun updateToggleGroupVisibility() {
+        val currentFragment = childFragmentManager.findFragmentById(R.id.fragmentContainer)
+        if (currentFragment is SettingsFragment) {
+            toggleGroup.visibility = View.GONE
+        } else {
+            toggleGroup.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

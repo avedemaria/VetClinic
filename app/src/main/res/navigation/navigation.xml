@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_resetPasswordWithEmailFragment"
+            app:destination="@id/resetPasswordWithEmailFragment" />
     </fragment>
 
 
@@ -44,5 +47,32 @@
     <argument
         android:name="userId"
         app:argType="string" />
+    <fragment
+        android:id="@+id/resetPasswordWithEmailFragment"
+        android:name="com.example.vetclinic.presentation.fragment.ResetPasswordWithEmailFragment"
+        android:label="ResetPasswordWithEmailFragment" >
+        <argument
+            android:name="email"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/updatePasswordFragment"
+        android:name="com.example.vetclinic.presentation.fragment.UpdatePasswordFragment"
+        android:label="Update Password"
+        tools:layout="@layout/fragment_update_password">
+        <argument
+            android:name="token"
+            app:argType="string"
+            app:nullable="false" />
+        <deepLink
+            app:uri= "vetclinic://reset-password?token={token}"/>
+        <action
+            android:id="@+id/action_updatePasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_updatePasswordFragment_to_updatePasswordFragment"
+            app:destination="@id/updatePasswordFragment" />
+    </fragment>
 
 </navigation>

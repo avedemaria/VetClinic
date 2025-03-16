@@ -67,6 +67,11 @@ class LoginFragment : Fragment() {
             launchRegistrationFragment()
         }
 
+        binding.tvForgotPassword.setOnClickListener{
+            val email = binding.etEmail.text.toString()
+            launchResetPasswordWithEmailFragment(email)
+        }
+
 
     }
 
@@ -102,6 +107,12 @@ class LoginFragment : Fragment() {
         findNavController().navigate(
             LoginFragmentDirections
                 .actionLoginFragmentToRegistrationFragment()
+        )
+    }
+
+    private fun launchResetPasswordWithEmailFragment(email:String) {
+        findNavController().navigate(
+            LoginFragmentDirections.actionLoginFragmentToResetPasswordWithEmailFragment(email)
         )
     }
 

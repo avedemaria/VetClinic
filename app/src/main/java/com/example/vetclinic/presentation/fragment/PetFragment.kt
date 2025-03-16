@@ -76,17 +76,7 @@ class PetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        binding.btnAddPet.setOnClickListener {
-            val addPetFragment = AddPetFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, addPetFragment) // Контейнер из ProfileFragment
-                .addToBackStack(null) // Позволяет вернуться назад
-                .commit()
-
-        }
-
-
+        launchAddPetFragment()
 
         viewModel.getPetsFromRoom(userId)
 
@@ -152,6 +142,17 @@ class PetFragment : Fragment() {
         }
     }
 
+
+    private fun launchAddPetFragment() {
+        binding.btnAddPet.setOnClickListener {
+            val addPetFragment = AddPetFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, addPetFragment) // Контейнер из ProfileFragment
+                .addToBackStack(null) // Позволяет вернуться назад
+                .commit()
+
+        }
+    }
 
     private fun showPetTypeDialog(pet: Pet) {
         val petTypes = arrayOf("Кот", "Собака", "Грызун")

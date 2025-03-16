@@ -48,4 +48,12 @@
     <string name="please_choose_pet_gender">Пожалуйста, выберите пол питомца</string>
     <string name="please_enter_pet_name">Пожалуйста, введите имя питомца</string>
     <string name="owner_title">Владелец:</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="log_out_account">Выйти из аккаунта</string>
+    <string name="deleting_account_title">Удаление профиля</string>
+    <string name="enter_your_email_to_reset_password_title">Введите свой email для восстановления пароля:</string>
+    <string name="enter_new_password_title">Введите новый пароль</string>
+    <string name="new_password_hint">Новый пароль</string>
+    <string name="confirm_password_hint">Подтвердите пароль</string>
+    <string name="update_password">Обновить пароль</string>
 </resources>

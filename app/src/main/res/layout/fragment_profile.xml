@@ -8,6 +8,7 @@
     android:background="@color/white"
     android:padding="16dp">
 
+
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleGroup"
         android:layout_gravity="center"
@@ -46,6 +47,7 @@
             android:paddingHorizontal="32dp"
             android:paddingVertical="8dp"/>
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
