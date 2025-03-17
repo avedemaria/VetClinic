@@ -60,16 +60,16 @@ class UpdatePasswordFragment : Fragment() {
 
         binding.updatePasswordButton.setOnClickListener {
 
-//            val token = arguments?.getString(TOKEN)
-//                ?: throw IllegalArgumentException("No token has been found")
-//
-//            Log.d("UpdatePasswordFragment", "onCreate received token: $token")
-            val newPassword = binding.etConfirmNewPassword.text.toString()
-//
-//            val email = getEmailFromPreferences()
-//            if (email != null)
+            val token = arguments?.getString(TOKEN)
+                ?: throw IllegalArgumentException("No token has been found")
 
-                viewModel.updatePassword(newPassword)
+            Log.d("UpdatePasswordFragment", "onCreate received token: $token")
+            val newPassword = binding.etConfirmNewPassword.text.toString()
+
+            val email = getEmailFromPreferences()
+            if (email != null)
+
+                viewModel.updatePassword(newPassword, token, email)
 
         }
 

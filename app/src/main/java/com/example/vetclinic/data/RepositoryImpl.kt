@@ -107,23 +107,20 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-
-
-
-    override suspend fun updatePassword(newPassword: String)
+    override suspend fun updatePassword(newPassword: String, token: String, email: String)
             : Result<Unit> =
         kotlin.runCatching {
 
-//            if (token.isBlank()) {
-//                throw IllegalArgumentException("Token is empty")
-//            }
+            if (token.isBlank()) {
+                throw IllegalArgumentException("Token is empty")
+            }
 
 
-//            supabaseClient.auth.verifyEmailOtp(
-//                email = email,
-//                token = token,
-//                type = OtpType.Email.RECOVERY
-//            )
+            supabaseClient.auth.verifyEmailOtp(
+                email = email,
+                token = token,
+                type = OtpType.Email.RECOVERY
+            )
 
             supabaseClient.auth.updateUser {
                 password = newPassword

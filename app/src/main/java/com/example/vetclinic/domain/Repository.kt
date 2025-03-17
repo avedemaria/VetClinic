@@ -23,7 +23,7 @@ interface Repository {
 
     suspend fun resetPasswordWithEmail (email:String): Result<Unit>
 
-    suspend fun updatePassword (newPassword:String): Result<Unit>
+    suspend fun updatePassword (newPassword:String, token:String, email: String): Result<Unit>
 
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 

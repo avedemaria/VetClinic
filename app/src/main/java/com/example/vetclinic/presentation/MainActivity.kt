@@ -49,51 +49,52 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
         navController = navHostFragment.navController
 
-//
-//        if (savedInstanceState == null) {
-//            handleDeepLink(intent)
-//        }
-//    }
-//
-//
-//    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
-//        super.onNewIntent(intent, caller)
-//        handleDeepLink(intent)
-//    }
 
-
-//    private fun handleDeepLink(intent: Intent?) {
-//        intent?.data?.let { uri ->
-//            Log.d("DeepLink", "Received URI: $uri")
-//
-//            if (uri.host == "reset-password") {
-//                val fullUri = uri.toString()
-//
-//                // Проверяем, есть ли #access_token в ссылке
-//                val token = if (fullUri.contains("#access_token=")) {
-//                    fullUri.substringAfter("#access_token=").substringBefore("&")
-//                } else {
-//                    uri.getQueryParameter("token") ?: ""
-//                }
-//
-//                Log.d("DeepLink", "Extracted token and email: $token")
-//
-//                if (token.isNotBlank()) {
-//                    Log.d("DeepLink", "Navigating with token and email: $token")
-//                    navController.navigate(
-//                        R.id.updatePasswordFragment,
-//                        Bundle().apply { putString(TOKEN, token) })
-//
-//                }
-//            }
-//        }
-//    }
-    }
-
-        companion object {
-            private const val TOKEN = "token"
+        if (savedInstanceState == null) {
+            handleDeepLink(intent)
         }
     }
+
+
+    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
+        super.onNewIntent(intent, caller)
+        handleDeepLink(intent)
+    }
+
+
+    private fun handleDeepLink(intent: Intent?) {
+        intent?.data?.let { uri ->
+            Log.d("DeepLink", "Received URI: $uri")
+
+            if (uri.host == "reset-password") {
+                val fullUri = uri.toString()
+
+                // Проверяем, есть ли #access_token в ссылке
+                val token = if (fullUri.contains("#access_token=")) {
+                    fullUri.substringAfter("#access_token=").substringBefore("&")
+                } else {
+                    uri.getQueryParameter("token") ?: ""
+                }
+
+                Log.d("DeepLink", "Extracted token and email: $token")
+
+                if (token.isNotBlank()) {
+                    Log.d("DeepLink", "Navigating with token and email: $token")
+                    navController.navigate(
+                        R.id.updatePasswordFragment,
+                        Bundle().apply { putString(TOKEN, token) })
+
+                }
+            }
+        }
+    }
+    companion object {
+        private const val TOKEN = "token"
+    }
+    }
+
+
+
 
 
 
