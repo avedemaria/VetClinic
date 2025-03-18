@@ -26,7 +26,7 @@ interface SupabaseApiService {
 
 
     @GET("rest/v1/pets")
-    suspend fun getPetFromSupabaseDb(@retrofit2.http.Query("uid") userId: String):
+    suspend fun getPetsFromSupabaseDb(@retrofit2.http.Query("user_id") userId: String):
             Response<List<PetDto>>
 
     @POST("rest/v1/users")

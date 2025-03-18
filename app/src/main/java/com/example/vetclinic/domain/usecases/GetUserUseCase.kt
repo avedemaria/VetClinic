@@ -10,7 +10,9 @@ class GetUserUseCase @Inject constructor(private val repository: Repository) {
 
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?> {
         return repository.getUserFromSupabaseDb(userId)
+
     }
+
 
     suspend fun getUserFromRoom(userId: String): Result<User> {
         return repository.getCurrentUserFromRoom(userId)

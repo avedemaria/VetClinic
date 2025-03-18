@@ -77,6 +77,10 @@ class HomeFragment : Fragment() {
             launchServicesFragment()
         }
 
+
+        //user id
+//        viewModel.loadUserName()
+
         observeViewModel()
 
 

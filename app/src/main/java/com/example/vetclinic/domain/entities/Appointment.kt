@@ -1,6 +1,7 @@
 package com.example.vetclinic.domain.entities
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import kotlinx.datetime.LocalDateTime
 import kotlinx.parcelize.Parcelize
 
@@ -11,9 +12,6 @@ data class Appointment(
     val petId: String,
     val doctorId: String,
     val serviceId: String,
+    val dateTime: String,
     val status: AppointmentStatus,
-    val owner: User,
-    val pet: Pet,
-    val doctor: Doctor,
-    val service: Service
 ) : Parcelable

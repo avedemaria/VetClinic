@@ -8,9 +8,9 @@ class AppointmentViewHolder(private val binding: AppointmentItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(appointment:Appointment) {
-            with (binding) {
-                doctorNameTextView.text = appointment.doctor.doctorName
-            }
-        }
+//        fun bind(appointment:Appointment) {
+//            with (binding) {
+//                doctorNameTextView.text = appointment.doctordoctorName
+//            }
+//        }
 }

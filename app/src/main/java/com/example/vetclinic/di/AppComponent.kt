@@ -6,6 +6,7 @@ import com.example.vetclinic.presentation.fragment.AddPetFragment
 import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
 import com.example.vetclinic.presentation.fragment.DoctorsFragment
 import com.example.vetclinic.presentation.fragment.HomeFragment
+import com.example.vetclinic.presentation.fragment.LoadingFragment
 import com.example.vetclinic.presentation.fragment.LoginFragment
 import com.example.vetclinic.presentation.fragment.MainFragment
 import com.example.vetclinic.presentation.fragment.PetFragment
@@ -29,6 +30,8 @@ interface AppComponent {
     fun inject(activity: MainActivity)
 
 //    fun inject(activity: MainScreenActivity)
+
+    fun inject(loadingFragment: LoadingFragment)
 
     fun inject(mainFragment: MainFragment)
 
@@ -54,11 +57,11 @@ interface AppComponent {
 
     fun inject(addPetFragment: AddPetFragment)
 
-    fun inject (settingsFragment: SettingsFragment)
+    fun inject(settingsFragment: SettingsFragment)
 
-    fun inject (resetPasswordWithEmailFragment: ResetPasswordWithEmailFragment)
+    fun inject(resetPasswordWithEmailFragment: ResetPasswordWithEmailFragment)
 
-    fun inject (updatePasswordFragment: UpdatePasswordFragment)
+    fun inject(updatePasswordFragment: UpdatePasswordFragment)
 
 
     @Component.Factory

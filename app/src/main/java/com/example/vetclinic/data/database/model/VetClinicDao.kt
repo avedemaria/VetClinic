@@ -26,8 +26,14 @@ interface VetClinicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPet(pet: PetDbModel)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPets(pets: List<PetDbModel>)
+
+    @Query("SELECT * FROM pets")
+    suspend fun getAllPets(): List<PetDbModel>
+
     @Update
-    suspend fun updatePet (pet: PetDbModel)
+    suspend fun updatePet(pet: PetDbModel)
 
     @Transaction
     @Query("SELECT * FROM users WHERE uid = :userId")

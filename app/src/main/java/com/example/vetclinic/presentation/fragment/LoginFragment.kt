@@ -67,7 +67,7 @@ class LoginFragment : Fragment() {
             launchRegistrationFragment()
         }
 
-        binding.tvForgotPassword.setOnClickListener{
+        binding.tvForgotPassword.setOnClickListener {
             val email = binding.etEmail.text.toString()
             launchResetPasswordWithEmailFragment(email)
         }
@@ -90,7 +90,15 @@ class LoginFragment : Fragment() {
                 is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
                     val userId = state.userSession.user?.id ?: ""
+
                     launchMainFragment(userId)
+
+                    val sharedPreferences =
+                        requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("userId", userId)
+                    editor.putString("accessToken", state.userSession.accessToken)
+                    editor.apply()
                 }
 
             }
@@ -110,7 +118,7 @@ class LoginFragment : Fragment() {
         )
     }
 
-    private fun launchResetPasswordWithEmailFragment(email:String) {
+    private fun launchResetPasswordWithEmailFragment(email: String) {
         findNavController().navigate(
             LoginFragmentDirections.actionLoginFragmentToResetPasswordWithEmailFragment(email)
         )

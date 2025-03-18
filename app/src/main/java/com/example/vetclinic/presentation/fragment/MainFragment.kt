@@ -22,6 +22,8 @@ import com.example.vetclinic.databinding.FragmentMainBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.HomeState
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
+import com.example.vetclinic.presentation.viewmodel.MainState
+import com.example.vetclinic.presentation.viewmodel.MainViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -45,7 +47,7 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewmodel: HomeViewModel by activityViewModels { viewModelFactory }
+    private val viewmodel: MainViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +63,9 @@ class MainFragment : Fragment() {
         component.inject(this)
 
 
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
-//            OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                requireActivity().finish()
-//            }
-//        })
-        viewmodel.setUserId(args.userId)
+        //getting userId from data store or shared preferences
+
+        viewmodel.getUserAndPet(args.userId)
 
         // Получаем NavController из вложенного NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
@@ -109,17 +107,18 @@ class MainFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewmodel.homeState.observe(viewLifecycleOwner) { state ->
+        viewmodel.mainState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is HomeState.Error -> Log.d(TAG, "Заглушка для HomeState.Error")
-                HomeState.Loading -> {
+                is MainState.Error -> Log.d(TAG, "Заглушка для HomeState.Error")
+                MainState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.coordinatorLayout.visibility = View.GONE
                 }
 
-                is HomeState.Result -> {
+                is MainState.Result -> {
                     binding.progressBar.visibility = View.GONE
                     binding.coordinatorLayout.visibility = View.VISIBLE
+
                 }
             }
         }

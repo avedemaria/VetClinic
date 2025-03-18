@@ -6,8 +6,8 @@ import jakarta.inject.Inject
 
 class GetPetsUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend fun getPetsFromSupabaseDb (petId:String): Result<List<Pet>> {
-        return repository.getPetFromSupabaseDb(petId)
+    suspend fun getPetsFromSupabaseDb (userId: String): Result<List<Pet>> {
+        return repository.getPetsFromSupabaseDb(userId)
     }
 
     suspend fun getPetsFromRoom(userId: String): Result<List<Pet>> {

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
+import com.example.vetclinic.presentation.viewmodel.MainViewModel
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ProfileViewModel
@@ -29,6 +30,11 @@ interface ViewModelModule {
     @ViewModelKey(LoginViewModel::class)
     @Binds
     fun bindLoginViewModel(impl: LoginViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    @Binds
+    fun bindMainViewModel(impl: MainViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(HomeViewModel::class)
@@ -66,8 +72,6 @@ interface ViewModelModule {
     @ViewModelKey(ResetPasswordViewModel::class)
     @Binds
     fun bindResetPasswordViewModel(impl: ResetPasswordViewModel): ViewModel
-
-
 
 
 }

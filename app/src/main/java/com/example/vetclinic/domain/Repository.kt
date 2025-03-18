@@ -35,7 +35,7 @@ interface Repository {
 
     suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit>
 
-    suspend fun getPetFromSupabaseDb(petId: String): Result<List<Pet>>
+    suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>>
 
     suspend fun getDoctorList(): Result<List<Doctor>>
 

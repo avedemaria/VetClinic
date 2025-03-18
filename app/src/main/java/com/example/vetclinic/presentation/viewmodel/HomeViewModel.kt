@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val addUserUseCase: AddUserUseCase
 
 ) : ViewModel() {
 
@@ -24,6 +23,10 @@ class HomeViewModel @Inject constructor(
     private val _homeState = MutableLiveData<HomeState>()
     val homeState: LiveData<HomeState> get() = _homeState
 
+
+    init {
+
+    }
 
     fun setUserId(id: String) {
         _userId.value = id
@@ -36,12 +39,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _homeState.value = HomeState.Loading
 
-            delay(1000)
-
-            getUserUseCase.getUserFromSupabaseDb(userId)
+            getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
                     Log.d("HomeViewModel", "Loaded user: $user")
-                    if (user != null)
                         _homeState.value = HomeState.Result(user.userName)
                 }
                 .onFailure { error ->

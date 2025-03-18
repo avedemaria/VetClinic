@@ -56,6 +56,18 @@ class PetMapper @Inject constructor() {
         )
     }
 
+    fun petDtoToPetDbModel(petDto: PetDto): PetDbModel {
+        return PetDbModel(
+            petId = petDto.petId,
+            userId = petDto.userId,
+            petName = petDto.petName,
+            petBday = petDto.petBday,
+            petType = petDto.petType,
+            petAge = petDto.petAge,
+            petGender = petDto.petGender
+        )
+    }
+
     fun petDbModelListToPetEntityList(petDbModelList: List<PetDbModel>): List<Pet> {
         return petDbModelList.map(::petDbModelToPetEntity)
     }

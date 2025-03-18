@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/loadingFragment">
 
 
     <fragment
@@ -44,9 +44,6 @@
             app:argType="string"
             android:defaultValue="NULL" />
     </fragment>
-    <argument
-        android:name="userId"
-        app:argType="string" />
     <fragment
         android:id="@+id/resetPasswordWithEmailFragment"
         android:name="com.example.vetclinic.presentation.fragment.ResetPasswordWithEmailFragment"
@@ -73,6 +70,18 @@
         <action
             android:id="@+id/action_updatePasswordFragment_to_updatePasswordFragment"
             app:destination="@id/updatePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.example.vetclinic.presentation.fragment.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/action_loadingFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 
 </navigation>

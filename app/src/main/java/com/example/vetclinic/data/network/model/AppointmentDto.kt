@@ -11,11 +11,7 @@ data class AppointmentDto(
     @Json(name = "doctor_id") val doctorId: String,
     @Json(name = "service_id") val serviceId: String,
     @Json(name = "date_time") val dateTime: LocalDateTime,
-    @Json(name = "status") val status: String,
-    @Json(name = "users") val userDto: UserDTO,
-    @Json(name = "pets") val petDto: PetDto,
-    @Json(name = "doctors") val doctorDto: DoctorDto,
-    @Json(name = "services") val serviceDto: ServiceDto
+    @Json(name = "status") val status: String
 
 )
 

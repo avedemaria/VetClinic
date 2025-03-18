@@ -148,20 +148,25 @@ class RepositoryImpl @Inject constructor(
             throw Exception("Server error: ${response.code()} - ${response.errorBody()?.string()}")
         }
 
-        val users = response.body() ?: emptyList()
+        val userDtos = response.body() ?: emptyList()
+        val userDto = userDtos.find { it.uid == userId }
 
-        val userDto = users.find { it.uid == userId }
+        if (userDto != null) {
+            val user = userMapper.userDtoToUserDbModel(userDto)
+            vetClinicDao.insertUser(user)
+        }
 
         return@runCatching userDto?.let { userMapper.userDtoToUserEntity(it) }
     }.onFailure { e ->
         Log.e("RepositoryImpl", "Error fetching User: ${e.message}", e)
     }
 
-    override suspend fun getPetFromSupabaseDb(petId: String): Result<List<Pet>> =
-        kotlin.runCatching {
-            val idWithParameter = "eq.$petId"
 
-            val response = supabaseApiService.getPetFromSupabaseDb(idWithParameter)
+    override suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>> =
+        kotlin.runCatching {
+           val idWithParameter = "eq.${userId}"
+
+            val response = supabaseApiService.getPetsFromSupabaseDb(idWithParameter)
 
             if (!response.isSuccessful) {
                 throw Exception(
@@ -173,6 +178,11 @@ class RepositoryImpl @Inject constructor(
 
             val petDtos = response.body() ?: emptyList()
 
+            if (petDtos.isNotEmpty()) {
+                val petDbModels = petDtos.map { petMapper.petDtoToPetDbModel(it) }
+                vetClinicDao.insertPets(petDbModels)
+            }
+
             return@runCatching petDtos.map { petMapper.petDtoToPetEntity(it) }
         }.onFailure { e ->
             Log.e("RepositoryImpl", "Error fetching Pet: ${e.message}", e)
@@ -183,6 +193,12 @@ class RepositoryImpl @Inject constructor(
         entity = user,
         apiCall = { userDto -> supabaseApiService.addUser(userDto) },
         mapper = { userMapper.userEntityToUserDto(user) }
+    )
+
+    override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> = addDataToSupabaseDb(
+        entity = pet,
+        apiCall = { petDto -> supabaseApiService.addPet(petDto) },
+        mapper = { petMapper.petEntityToPetDto(pet) }
     )
 
     override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> =
@@ -224,12 +240,6 @@ class RepositoryImpl @Inject constructor(
             .onFailure { error ->
                 Log.e(TAG, "Error while updating Pet in Supabase DB", error)
             }
-
-    override suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> = addDataToSupabaseDb(
-        entity = pet,
-        apiCall = { petDto -> supabaseApiService.addPet(petDto) },
-        mapper = { petMapper.petEntityToPetDto(pet) }
-    )
 
 
     override suspend fun getDoctorList(): Result<List<Doctor>> = fetchData(
