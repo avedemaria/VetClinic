@@ -45,6 +45,14 @@ class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Pre
     }
 
 
+    override suspend fun clearUserSession() {
+        dataStore.edit { preferences ->
+            preferences.remove(KEY_USER_ID)
+            preferences.remove(KEY_ACCESS_TOKEN)
+        }
+
+    }
+
     companion object {
         private val KEY_USER_ID = stringPreferencesKey("key_user_id")
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("key_access_token")

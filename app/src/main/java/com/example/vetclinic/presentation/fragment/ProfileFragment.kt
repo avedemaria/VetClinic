@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.replace
+import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentProfileBinding
 import com.example.vetclinic.di.AppComponent
@@ -84,6 +85,12 @@ class ProfileFragment : Fragment() {
             .replace(R.id.fragmentContainer, fragment)
             .commit()
     }
+
+
+//    private fun launchUserFragment() {
+//        findNavController().navigate(ProfileFragmentDirections
+//            .actionProfileFragmentToUserFragment())
+//    }
 
     fun updateToggleGroupVisibility() {
         val currentFragment = childFragmentManager.findFragmentById(R.id.fragmentContainer)

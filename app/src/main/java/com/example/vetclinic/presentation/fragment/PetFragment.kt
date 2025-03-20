@@ -2,7 +2,7 @@ package com.example.vetclinic.presentation.fragment
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.icu.util.Calendar
+import java.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,6 +26,7 @@ import com.example.vetclinic.presentation.adapter.PetAdapter
 import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener
 import jakarta.inject.Inject
 
 
@@ -151,11 +152,11 @@ class PetFragment : Fragment() {
     private fun showPetNameDialog(pet: Pet) {
         val editText = EditText(requireContext()).apply {
             setText(pet.petName)
-            setPadding(32, 16, 32, 16)
+            setPadding(32,16,32,16)
         }
 
         val container = FrameLayout(requireContext()).apply {
-            setPadding(48, 24, 48, 24)
+            setPadding(48,24,48,24)
             addView(editText)
         }
 
@@ -199,15 +200,14 @@ class PetFragment : Fragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog =
-            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate =
-                    String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear)
+      val datePickerDialog =  DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            val selectedDate =
+                String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear)
 
-                val updatedPet = pet.copy(petBDay = selectedDate)
+            val updatedPet = pet.copy(petBDay = selectedDate)
 
-                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
-            }, year, month, day)
+            viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+        }, year, month, day)
 
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
 
@@ -215,6 +215,8 @@ class PetFragment : Fragment() {
 
 
     }
+
+
 
 
     private fun showPetGenderDialog(pet: Pet) {

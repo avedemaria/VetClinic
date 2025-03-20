@@ -18,7 +18,7 @@ class LoadingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: return@launch
+            val userId = userDataStore.getUserId() ?: ""
             _loadingState.value = LoadingState.Result(userId)
         }
 

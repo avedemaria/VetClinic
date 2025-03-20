@@ -91,9 +91,15 @@ class RepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun logOut() {
+    override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
+
         supabaseClient.auth.signOut()
+        Log.d(TAG, "User has been signed out successfully")
+        Unit
     }
+        .onFailure { e ->
+            Log.d(TAG, "Error while signing out user")
+        }
 
     override suspend fun resetPasswordWithEmail(email: String): Result<Unit> =
         kotlin.runCatching {

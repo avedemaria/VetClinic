@@ -14,7 +14,7 @@ class LogInUserUseCase @Inject constructor(private val repository: Repository) {
         return repository.checkUserSession()
     }
 
-    suspend fun logOut () {
+    suspend fun logOut (): Result<Unit> {
         return repository.logOut()
     }
 }

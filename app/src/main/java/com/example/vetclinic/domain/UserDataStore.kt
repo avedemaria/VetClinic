@@ -9,5 +9,7 @@ interface UserDataStore {
     suspend fun getUserId(): String?
     suspend fun getAccessToken(): String?
 
+    suspend fun clearUserSession()
+
 
 }

@@ -63,9 +63,7 @@ class LoadingFragment : Fragment() {
 
                     if (!userId.isNullOrEmpty()) {
                         findNavController().navigate(
-                            LoadingFragmentDirections.actionLoadingFragmentToMainFragment(
-                                userId
-                            )
+                            LoadingFragmentDirections.actionLoadingFragmentToMainFragment()
                         )
                     } else {
                         findNavController()

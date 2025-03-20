@@ -2,21 +2,33 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentSettingsBinding
 import com.example.vetclinic.databinding.FragmentUserBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.SettingsState
+import com.example.vetclinic.presentation.viewmodel.SettingsViewModel
+import com.example.vetclinic.presentation.viewmodel.UserViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.button.MaterialButtonToggleGroup
+import jakarta.inject.Inject
 
 class SettingsFragment : Fragment() {
 
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding
@@ -62,12 +74,46 @@ class SettingsFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
+
+        binding.btnLogOut.setOnClickListener {
+            viewModel.logOut()
+        }
+
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     parentFragmentManager.popBackStack()  // Возврат к предыдущему фрагменту
                 }
             })
+
+        observeViewModel()
+
+    }
+
+
+    private fun observeViewModel() {
+        viewModel.settingsState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is SettingsState.Error -> Toast.makeText(
+                    requireContext(),
+                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                ).show()
+
+                SettingsState.Loading -> Log.d(
+                    "SettingsFragment",
+                    "Loading - заглушка для теста"
+                )
+
+                SettingsState.LoggedOut -> launchLoginFragment()
+            }
+        }
+    }
+
+
+    private fun launchLoginFragment() {
+        Log.d("SettingsFragment", "logged out")
+
 
     }
 

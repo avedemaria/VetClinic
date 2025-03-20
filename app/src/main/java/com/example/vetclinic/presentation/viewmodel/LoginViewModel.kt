@@ -50,12 +50,6 @@ class LoginViewModel @Inject constructor(
     }
 
 
-    fun logOutUser() {
-        viewModelScope.launch {
-            loginUserUseCase.logOut()
-            _loginState.value = LoginState.LoggedOut
-        }
-    }
 }
 
 

@@ -19,7 +19,7 @@ interface Repository {
         password: String,
     ): Result<UserSession>
 
-    suspend fun logOut()
+    suspend fun logOut(): Result<Unit>
 
     suspend fun resetPasswordWithEmail (email:String): Result<Unit>
 
