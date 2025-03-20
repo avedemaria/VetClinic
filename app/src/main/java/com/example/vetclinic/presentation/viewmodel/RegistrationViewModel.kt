@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
 import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.usecases.AddPetUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +18,9 @@ import java.util.UUID
 
 class RegistrationViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
-    private val addUserUseCase: AddUserUseCase
+    private val addUserUseCase: AddUserUseCase,
+    private val addPetUseCase: AddPetUseCase,
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
 
@@ -64,11 +68,12 @@ class RegistrationViewModel @Inject constructor(
                             petName
                         )
 
+                        userDataStore.saveUserSession(userId, supabaseUser.accessToken)
 
                         addUserUseCase.addUserToSupabaseDb(user).onSuccess {
                             Log.d(TAG, "user added to supabase $user")
 
-                            addUserUseCase.addPetToSupabaseDb(pet).onSuccess {
+                            addPetUseCase.addPetToSupabaseDb(pet).onSuccess {
                                 Log.d(TAG, "pet added to supabase $pet")
 
                                 addUserUseCase.addUserToRoom(user, pet)
@@ -99,9 +104,6 @@ class RegistrationViewModel @Inject constructor(
         }
 
     }
-
-
-
 
 
     private fun validateInputs(

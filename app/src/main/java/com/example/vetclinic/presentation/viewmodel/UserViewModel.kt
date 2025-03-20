@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import com.example.vetclinic.domain.usecases.UpdateUserUseCase
@@ -12,21 +13,32 @@ import kotlinx.coroutines.launch
 
 class UserViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase
+    private val updateUserUseCase: UpdateUserUseCase,
+    private val userDataStore: UserDataStore
+
 ) : ViewModel() {
 
     private val _userState = MutableLiveData<UserUiState>()
     val userState: LiveData<UserUiState> get() = _userState
 
 
-    fun getUserFromRoom(userId: String) {
+    init {
+        viewModelScope.launch {
+            val userId = userDataStore.getUserId() ?: return@launch
+            getUserData(userId)
+        }
+
+    }
+
+
+    private fun getUserData(userId: String) {
 
         _userState.value = UserUiState.Loading
         viewModelScope.launch {
-            getUserUseCase.getUserFromSupabaseDb(userId)
+            getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
-                    if (user!=null)
-                    _userState.value = UserUiState.Success(user)
+                    if (user != null)
+                        _userState.value = UserUiState.Success(user)
                 }
                 .onFailure { error ->
                     _userState.value = UserUiState.Error(error.message ?: "Неизвестная ошибка")
@@ -55,14 +67,14 @@ class UserViewModel @Inject constructor(
         }
 
 
-        // Валидация данных
+
         val validationResult = validateField(field, newValue)
         if (validationResult != null) {
             _userState.value = UserUiState.Error(validationResult)
             return
         }
 
-        // Обновляем пользователя
+
         val updatedUser = when (field) {
             UserField.PHONE_NUMBER.name -> currentUser.copy(phoneNumber = newValue)
             UserField.USER_NAME.name -> currentUser.copy(userName = newValue)

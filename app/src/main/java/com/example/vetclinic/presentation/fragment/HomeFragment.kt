@@ -62,11 +62,7 @@ class HomeFragment : Fragment() {
 
 
         binding.profileButton.setOnClickListener {
-
-            viewModel.userId.observe(viewLifecycleOwner) {
-                launchProfileFragment(it)
-            }
-
+            launchProfileFragment()
         }
 
         binding.cardViewDoctors.setOnClickListener {
@@ -77,9 +73,6 @@ class HomeFragment : Fragment() {
             launchServicesFragment()
         }
 
-
-        //user id
-//        viewModel.loadUserName()
 
         observeViewModel()
 
@@ -125,9 +118,9 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun launchProfileFragment(userId: String) {
+    private fun launchProfileFragment() {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToProfileFragment(userId)
+            HomeFragmentDirections.actionHomeFragmentToProfileFragment()
         )
     }
 

@@ -2,19 +2,27 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.vetclinic.R
-import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentLoadingBinding
 import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.LoadingState
+import com.example.vetclinic.presentation.viewmodel.LoadingViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import jakarta.inject.Inject
 
 
 class LoadingFragment : Fragment() {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: LoadingViewModel by viewModels { viewModelFactory }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -45,21 +53,35 @@ class LoadingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.all
-//        val userId = editor["userId"].toString()
 
-        val userId = sharedPreferences.getString("userId", null)
+        viewModel.loadingState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is LoadingState.Error -> Log.d(TAG, "заглушка для Error")
+                LoadingState.Loading -> Log.d(TAG, "заглушка для Loading")
+                is LoadingState.Result -> {
+                    val userId = state.userId
 
-        if (!userId.isNullOrEmpty()) {
-            findNavController().navigate(
-                LoadingFragmentDirections.actionLoadingFragmentToMainFragment(
-                    userId
-                )
-            )
-        } else {
-            findNavController().navigate(LoadingFragmentDirections.actionLoadingFragmentToLoginFragment())
+                    if (!userId.isNullOrEmpty()) {
+                        findNavController().navigate(
+                            LoadingFragmentDirections.actionLoadingFragmentToMainFragment(
+                                userId
+                            )
+                        )
+                    } else {
+                        findNavController()
+                            .navigate(LoadingFragmentDirections.actionLoadingFragmentToLoginFragment())
+                    }
+
+                }
+
+            }
         }
     }
+
+
+    companion object {
+        private const val TAG = "LoadingFragment"
+    }
+
+
 }

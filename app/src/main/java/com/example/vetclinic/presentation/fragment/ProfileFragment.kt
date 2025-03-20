@@ -2,19 +2,15 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.replace
 import com.example.vetclinic.R
-import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.databinding.FragmentProfileBinding
 import com.example.vetclinic.di.AppComponent
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.button.MaterialButtonToggleGroup
 import jakarta.inject.Inject
@@ -25,10 +21,11 @@ class ProfileFragment : Fragment() {
 
     lateinit var toggleGroup: MaterialButtonToggleGroup
 
-    private val args by navArgs<ProfileFragmentArgs>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+//    private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
 
 
     private var _binding: FragmentProfileBinding? = null
@@ -59,32 +56,29 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
 
         toggleGroup = binding.toggleGroup
         updateToggleGroupVisibility()
 
-        val userId = args.userId
-        loadChildFragment(UserFragment(), userId)
+
+        childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, UserFragment())
+            .commit()
 
         binding.toggleGroup.addOnButtonCheckedListener { toggleButtonGroup, checkedId, isChecked ->
 
             if (isChecked) {
                 when (checkedId) {
-                    R.id.btnUser -> loadChildFragment(UserFragment(), userId)
-                    R.id.btnPet -> loadChildFragment(PetFragment(), userId)
+                    R.id.btnUser -> loadChildFragment(UserFragment())
+                    R.id.btnPet -> loadChildFragment(PetFragment())
                 }
             }
         }
 
+
     }
 
-    private fun loadChildFragment(fragment: Fragment, userId: String) {
-
-        val bundle = Bundle().apply {
-            putString(USER_ID, userId)
-        }
-        fragment.arguments = bundle
+    private fun loadChildFragment(fragment: Fragment) {
 
         childFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
@@ -109,5 +103,7 @@ class ProfileFragment : Fragment() {
     companion object {
         const val USER_ID = "userId"
     }
-
 }
+
+
+

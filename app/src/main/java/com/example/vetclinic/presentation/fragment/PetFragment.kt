@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -29,13 +31,6 @@ import jakarta.inject.Inject
 
 class PetFragment : Fragment() {
 
-
-    private val userId by lazy {
-        arguments?.getString(ProfileFragment.USER_ID)
-            ?: throw IllegalArgumentException("UserId is null")
-
-
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -78,8 +73,6 @@ class PetFragment : Fragment() {
 
         launchAddPetFragment()
 
-        viewModel.getPetsFromRoom(userId)
-
         setUpAdapter()
 
         observeViewModel()
@@ -92,7 +85,7 @@ class PetFragment : Fragment() {
         petsAdapter = PetAdapter(object : OnEditClickListener {
             override fun onEditClick(pet: Pet, parameter: String) {
                 when (parameter) {
-                    PetParameter.NAME.name -> Log.d("PetFragment", "NameEditing")
+                    PetParameter.NAME.name -> showPetNameDialog(pet)
                     PetParameter.TYPE.name -> showPetTypeDialog(pet)
                     PetParameter.BDAY.name -> showDatePickerDialog(pet)
                     PetParameter.GENDER.name -> showPetGenderDialog(pet)
@@ -154,6 +147,36 @@ class PetFragment : Fragment() {
         }
     }
 
+
+    private fun showPetNameDialog(pet: Pet) {
+        val editText = EditText(requireContext()).apply {
+            setText(pet.petName)
+            setPadding(32, 16, 32, 16)
+        }
+
+        val container = FrameLayout(requireContext()).apply {
+            setPadding(48, 24, 48, 24)
+            addView(editText)
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Введите новое имя")
+            .setView(container)
+            .setPositiveButton("ОК") { dialog, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotBlank() && newName != pet.petName) {
+                    val updatedPet = pet.copy(petName = newName)
+                    viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена", null)
+            .create()
+            .show()
+
+    }
+
     private fun showPetTypeDialog(pet: Pet) {
         val petTypes = arrayOf("Кот", "Собака", "Грызун")
 
@@ -162,7 +185,7 @@ class PetFragment : Fragment() {
             .setItems(petTypes) { dialog, which ->
                 val selectedType = petTypes[which]
                 val updatedPet = pet.copy(petType = selectedType)
-                viewModel.updatePet(userId, pet.petId, updatedPet)
+                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)
             .show()
@@ -176,14 +199,21 @@ class PetFragment : Fragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate =
-                String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear)
+        val datePickerDialog =
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate =
+                    String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear)
 
-            val updatedPet = pet.copy(petBDay = selectedDate)
+                val updatedPet = pet.copy(petBDay = selectedDate)
 
-            viewModel.updatePet(userId, pet.petId, updatedPet)
-        }, year, month, day).show()
+                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+            }, year, month, day)
+
+        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+
+        datePickerDialog.show()
+
+
     }
 
 
@@ -195,7 +225,7 @@ class PetFragment : Fragment() {
             .setItems(genders) { dialog, which ->
                 val selectedGender = genders[which]
                 val updatedPet = pet.copy(petGender = selectedGender)
-                viewModel.updatePet(userId, pet.petId, updatedPet)
+                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)
             .show()

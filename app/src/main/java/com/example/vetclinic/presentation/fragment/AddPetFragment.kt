@@ -18,6 +18,8 @@ import com.example.vetclinic.databinding.FragmentPetBinding
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.PetAdapter
+import com.example.vetclinic.presentation.viewmodel.AddPetUiState
+import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
 import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
@@ -29,7 +31,7 @@ class AddPetFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: PetViewModel by viewModels {
+    private val viewModel: AddPetViewModel by viewModels {
         viewModelFactory
     }
 
@@ -65,8 +67,12 @@ class AddPetFragment : Fragment() {
 
         setUpPetTypeSpinner()
         setUpPetGenderSpinner()
+        setUpMonthSpinner()
 
-        onAddPetButtonClick()
+        binding.btnAddPet.setOnClickListener {
+            onAddPetButtonClick()
+        }
+
 
         observeViewModel()
 
@@ -78,56 +84,46 @@ class AddPetFragment : Fragment() {
         val petName = binding.etPetName.text.toString()
         val petType = binding.spinnerPetType.selectedItem.toString()
         val petGender = binding.spinnerPetGender.selectedItem.toString()
-        val petBirthday = "${binding.etDay.text}-${binding.spinnerMonth.selectedItem}" +
-                "-${binding.etYear.text}"
 
 
-        if (petType == CHOOSE_TYPE) {
+        val day = binding.etDay.text.toString()
+        val month = binding.spinnerMonth.selectedItem.toString()
+        val year = binding.etYear.text.toString()
+
+        val petBirthday = "$day-$month-$year"
+
+
+        if (petType == CHOOSE_TYPE || petGender == CHOOSE_GENDER
+            || month == CHOOSE_MONTH || petName.isBlank() || day.isBlank() || year.isBlank()) {
             Toast.makeText(
-                requireContext(),
-                getString(R.string.please_choose_pet_type), Toast.LENGTH_SHORT
+                requireContext(), "Заполните все обязательные поля",
+                Toast.LENGTH_SHORT
             )
                 .show()
             return
         }
 
-        if (petGender == CHOOSE_GENDER) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.please_choose_pet_gender), Toast.LENGTH_SHORT
-            )
-                .show()
-        }
+            Log.d(TAG, "clicked on button")
 
-        if (petName.isEmpty()) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.please_enter_pet_name), Toast.LENGTH_SHORT
-            )
-                .show()
-            return
-        }
+            viewModel.addPetData(petName, petType, petBirthday, petType)
 
-
-
-//        binding.btnAddPet.setOnClickListener {
-//            viewModel.addPet()
-//            parentFragmentManager.popBackStack()
-//        }
     }
 
 
     private fun observeViewModel() {
-        viewModel.petState.observe(viewLifecycleOwner) { state ->
+        viewModel.addPetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is PetUiState.Error -> Toast.makeText(
+                is AddPetUiState.Error -> Toast.makeText(
                     requireContext(),
                     "An error has occurred: ${state.message}",
                     Toast.LENGTH_SHORT
                 ).show()
 
-                PetUiState.Loading -> Log.d(TAG, "Заглушка для PetUiState.Loading")
-                is PetUiState.Success -> Log.d(TAG, "Заглушка для PetUiState.Success")
+                AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
+                AddPetUiState.Success ->    parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, PetFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
         }
     }
@@ -159,10 +155,35 @@ class AddPetFragment : Fragment() {
     }
 
 
+    private fun setUpMonthSpinner() {
+        val months = arrayOf(
+            CHOOSE_MONTH,
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12"
+        )
+
+        val spinnerAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
+        binding.spinnerMonth.adapter = spinnerAdapter
+
+        binding.spinnerMonth.setSelection(0)
+    }
+
     companion object {
         private const val TAG = "AddPetFragment"
         private const val CHOOSE_TYPE = "Выберите тип питомца"
         private const val CHOOSE_GENDER = "Выберите пол питомца"
+        private const val CHOOSE_MONTH = "Выберите месяц"
     }
 }
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.HomeState
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
@@ -29,11 +31,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
-
-    private val args by navArgs<MainFragmentArgs>()
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -62,10 +63,6 @@ class MainFragment : Fragment() {
 
         component.inject(this)
 
-
-        //getting userId from data store or shared preferences
-
-        viewmodel.getUserAndPet(args.userId)
 
         // Получаем NavController из вложенного NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)

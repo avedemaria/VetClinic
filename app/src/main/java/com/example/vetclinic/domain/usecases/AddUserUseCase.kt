@@ -11,15 +11,10 @@ class AddUserUseCase @Inject constructor(private val repository: Repository) {
         return repository.addUserToSupabaseDb(user)
     }
 
-    suspend fun addPetToSupabaseDb(pet: Pet): Result<Unit> {
-        return repository.addPetToSupabaseDb(pet)
-    }
 
     suspend fun addUserToRoom(user: User, pet: Pet) {
         repository.addUserToRoom(user, pet)
     }
 
-    suspend fun addPetToRoom(pet: Pet): Result<Unit> {
-        return repository.addPetToRoom(pet)
-    }
+
 }

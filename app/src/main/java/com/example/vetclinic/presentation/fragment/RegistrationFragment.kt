@@ -36,7 +36,7 @@ class RegistrationFragment : Fragment() {
     private var _binding: FragmentRegistrationBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
-            "FragmentCreateAccountBinding is null"
+            "FragmentRegistrationBinding is null"
         )
 
 
@@ -84,9 +84,7 @@ class RegistrationFragment : Fragment() {
                 ).show()
 
                 is RegistrationState.Result -> {
-                    val homeViewModel: HomeViewModel by viewModels { viewModelFactory }
-                    homeViewModel.loadUserName(state.user.uid)
-                    launchMainFragment(state.user.uid)
+                    launchMainFragment()
                 }
 
             }
@@ -94,10 +92,10 @@ class RegistrationFragment : Fragment() {
     }
 
 
-    private fun launchMainFragment(userId:String) {
+    private fun launchMainFragment() {
         findNavController().navigate(
             RegistrationFragmentDirections
-                .actionRegistrationFragmentToMainFragment(userId)
+                .actionRegistrationFragmentToMainFragment()
         )
     }
 

@@ -1,11 +1,17 @@
 package com.example.vetclinic.di
 
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.vetclinic.BuildConfig
+import com.example.vetclinic.data.UserDataStoreImpl
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.network.SupabaseApiFactory
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.domain.UserDataStore
 import dagger.Module
 import dagger.Provides
 import io.github.jan.supabase.SupabaseClient
@@ -41,6 +47,14 @@ class DataModule {
     @Singleton
     fun provideVetClinicDao(application: Application): VetClinicDao {
         return VetClinicDatabase.getInstance(application).vetClinicDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDataStore(application: Application): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { application.preferencesDataStoreFile("user_prefs") }
+        )
     }
 
 }

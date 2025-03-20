@@ -10,17 +10,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.di.AppComponent
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.LoginState
 import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -85,29 +87,22 @@ class LoginFragment : Fragment() {
                 ).show()
 
                 is LoginState.IsAuthenticated ->
-                    Log.d(TAG, "заглущка для isAuthenticated")
+                    Log.d(TAG, "заглушка для isAuthenticated")
 
                 is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
-                    val userId = state.userSession.user?.id ?: ""
-
-                    launchMainFragment(userId)
-
-                    val sharedPreferences =
-                        requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putString("userId", userId)
-                    editor.putString("accessToken", state.userSession.accessToken)
-                    editor.apply()
+//
+                    launchMainFragment()
+                    Log.d(TAG, "заглушка для Result")
                 }
 
             }
         }
     }
 
-    private fun launchMainFragment(userId: String) {
+    private fun launchMainFragment() {
         findNavController().navigate(
-            LoginFragmentDirections.actionLoginFragmentToMainFragment(userId)
+            LoginFragmentDirections.actionLoginFragmentToMainFragment()
         )
     }
 

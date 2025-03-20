@@ -52,6 +52,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -63,6 +64,8 @@ android {
 
 dependencies {
     implementation(libs.firebase.bom)
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     implementation("io.ktor:ktor-client-core:3.0.0")
     implementation("io.ktor:ktor-client-okhttp:3.0.0")
@@ -81,6 +84,7 @@ dependencies {
 
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("com.google.android.material:material:1.3.0-alpha03")
+    implementation ("com.wdullaer:materialdatetimepicker:4.2.3")
 
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
@@ -89,12 +93,14 @@ dependencies {
     implementation(libs.functions.kt)
 
     implementation(libs.retrofit)
-
-
     implementation(libs.converter.moshi)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.logging.interceptor)
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
 
     implementation(libs.viewModel)

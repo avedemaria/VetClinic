@@ -164,7 +164,7 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>> =
         kotlin.runCatching {
-           val idWithParameter = "eq.${userId}"
+            val idWithParameter = "eq.${userId}"
 
             val response = supabaseApiService.getPetsFromSupabaseDb(idWithParameter)
 
@@ -208,6 +208,7 @@ class RepositoryImpl @Inject constructor(
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully updated user in Supabase DB")
+                updateUserInRoom(updatedUser)
                 Unit
             } else {
                 val errorBody = response.errorBody()?.string()
@@ -230,6 +231,7 @@ class RepositoryImpl @Inject constructor(
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully updated pet in Supabase DB")
+                updatePetInRoom(updatedPet)
                 Unit
             } else {
                 val errorBody = response.errorBody()?.string()
@@ -282,6 +284,7 @@ class RepositoryImpl @Inject constructor(
         }
     }.onFailure { e ->
         Log.e(TAG, "Error adding entity: ${e.message}")
+        e.printStackTrace()
     }
 
 
@@ -355,7 +358,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun updatePetInRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
         val petDbModel = petMapper.petEntityToPetDbModel(pet)
         vetClinicDao.updatePet(petDbModel)
-        Log.d(TAG, "User updated successfully in Room")
+        Log.d(TAG, "Pet updated successfully in Room")
         Unit
     }
         .onFailure { error ->
@@ -369,7 +372,7 @@ class RepositoryImpl @Inject constructor(
                 val petDbModelList = vetClinicDao.getPetsByUserId(userId)
 
                 if (petDbModelList.isEmpty()) {
-                    throw NoSuchElementException("Pets with ID $userId not found in Room")
+                    throw NoSuchElementException("Pets with userID $userId not found in Room")
                 }
 
                 petMapper.petDbModelListToPetEntityList(petDbModelList)

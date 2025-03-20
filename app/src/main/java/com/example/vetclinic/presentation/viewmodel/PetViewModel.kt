@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
@@ -20,18 +21,22 @@ import kotlinx.coroutines.launch
 class PetViewModel @Inject constructor(
     private val getPetsUseCase: GetPetsUseCase,
     private val updatePetUseCase: UpdatePetUseCase,
-    private val addUserUseCase: AddUserUseCase
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _petState = MutableLiveData<PetUiState>()
     val petState: LiveData<PetUiState> get() = _petState
 
 
-//    init {
-//        getPetsFromRoom(userId)  как реализовать это
-//    }
+    init {
+        viewModelScope.launch {
+            val userId = userDataStore.getUserId() ?: return@launch
+            getPetsData(userId)
+        }
 
-    fun getPetsFromRoom(userId: String) {
+    }
+
+    private fun getPetsData(userId: String) {
 
         _petState.value = PetUiState.Loading
 
@@ -64,16 +69,7 @@ class PetViewModel @Inject constructor(
             val supabaseResult = updatePetUseCase.updatePetInSupabaseDb(petId, updatedPet)
 
             if (supabaseResult.isSuccess) {
-                val roomResult = updatePetUseCase.updatePetInRoom(updatedPet)
-                if (roomResult.isSuccess) {
-                    Log.d("PetViewModel", "Pet successfully updated in Room")
-                } else {
-                    Log.e(
-                        "PetViewModel", "Error updating pet in Room: " +
-                                "${roomResult.exceptionOrNull()?.message}"
-                    )
-                }
-                getPetsFromRoom(userId)
+                getPetsData(userId)
             } else {
                 val errorMessage = supabaseResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"
                 Log.e("PetViewModel", "Error while updating pet $errorMessage")
@@ -82,21 +78,6 @@ class PetViewModel @Inject constructor(
         }
     }
 
-    fun addPet(pet: Pet, userId: String) {
-        _petState.value = PetUiState.Loading
-
-        viewModelScope.launch {
-
-            val supabaseResult = addUserUseCase.addPetToSupabaseDb(pet)
-            if (supabaseResult.isSuccess) {
-                getPetsFromRoom(userId)
-            } else {
-                _petState.value = PetUiState.Error(
-                    supabaseResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                )
-            }
-        }
-    }
 
 
 }

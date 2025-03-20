@@ -39,12 +39,12 @@ class UserFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    private val userId by lazy {
-        arguments?.getString(ProfileFragment.USER_ID)
-            ?: throw IllegalArgumentException("UserId is null")
-
-
-    }
+//    private val userId by lazy {
+//        arguments?.getString(ProfileFragment.USER_ID)
+//            ?: throw IllegalArgumentException("UserId is null")
+//
+//
+//    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,12 +64,10 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("UserFragment", "Received userId: $userId")
 
         val parentFragment = parentFragment as? ProfileFragment
         parentFragment?.toggleGroup?.visibility = View.VISIBLE
 
-        viewModel.getUserFromRoom(userId)   //как реализовать во вьюмодели
 
         setUpListeners()
 
@@ -127,15 +125,15 @@ class UserFragment : Fragment() {
             viewModel.startEditingField(UserUiState.FieldType.PHONE)
         }
 
-        binding.btnSavePhone.setOnClickListener {
-            val newPhoneNumber = binding.etPhone.text.toString()
-            viewModel.updateField(userId, UserField.PHONE_NUMBER.name, newPhoneNumber)
-        }
-
-        binding.btnSaveName.setOnClickListener {
-            val newUserName = binding.etName.text.toString()
-            viewModel.updateField(userId, UserField.USER_NAME.name, newUserName)
-        }
+//        binding.btnSavePhone.setOnClickListener {
+//            val newPhoneNumber = binding.etPhone.text.toString()
+//            viewModel.updateField(userId, UserField.PHONE_NUMBER.name, newPhoneNumber)
+//        }
+//
+//        binding.btnSaveName.setOnClickListener {
+//            val newUserName = binding.etName.text.toString()
+//            viewModel.updateField(userId, UserField.USER_NAME.name, newUserName)
+//        }
 
         binding.llSettings.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {

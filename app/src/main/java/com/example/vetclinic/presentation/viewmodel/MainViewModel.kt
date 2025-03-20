@@ -1,9 +1,11 @@
 package com.example.vetclinic.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
@@ -12,7 +14,9 @@ import kotlinx.coroutines.launch
 
 class MainViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val getPetsUseCase: GetPetsUseCase
+    private val getPetsUseCase: GetPetsUseCase,
+    private val userDataStore: UserDataStore
+
 ) : ViewModel() {
 
 
@@ -20,7 +24,21 @@ class MainViewModel @Inject constructor(
     val mainState: LiveData<MainState> get() = _mainState
 
 
-    fun getUserAndPet(userId: String) {
+    init {
+        getUserIdAndFetchData()
+    }
+
+
+    fun getUserIdAndFetchData() {
+        viewModelScope.launch {
+            val userId = userDataStore.getUserId() ?: return@launch
+            Log.d("MainViewModel", "userId $userId")
+            getUserAndPet(userId)
+        }
+    }
+
+
+    private fun getUserAndPet(userId: String) {
         viewModelScope.launch {
             _mainState.value = MainState.Loading
 
