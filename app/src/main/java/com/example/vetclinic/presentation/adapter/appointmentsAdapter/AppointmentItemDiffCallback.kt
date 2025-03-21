@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.adapter
+package com.example.vetclinic.presentation.adapter.appointmentsAdapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.vetclinic.domain.entities.Appointment

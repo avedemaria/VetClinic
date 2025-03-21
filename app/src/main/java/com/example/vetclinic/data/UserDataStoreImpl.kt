@@ -1,5 +1,6 @@
 package com.example.vetclinic.data
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -17,6 +18,7 @@ class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Pre
 
 
     override suspend fun saveUserSession(userId: String, accessToken: String) {
+        Log.d("UserDataStore", "Saving userId: $userId")
         dataStore.edit { preferences ->
             preferences[KEY_USER_ID] = userId
             preferences[KEY_ACCESS_TOKEN] = accessToken

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -73,6 +74,10 @@ class RegistrationFragment : Fragment() {
 
         }
 
+        binding.tvBackToLogin.setOnClickListener{
+            launchLoginFragment()
+        }
+
     }
 
     private fun observeViewModel() {
@@ -96,6 +101,12 @@ class RegistrationFragment : Fragment() {
         findNavController().navigate(
             RegistrationFragmentDirections
                 .actionRegistrationFragmentToMainFragment()
+        )
+    }
+
+    private fun launchLoginFragment() {
+        findNavController().navigate(
+            RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment()
         )
     }
 

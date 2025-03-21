@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.FragmentServicesBinding
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.DepAndServiceItemList
-import com.example.vetclinic.presentation.adapter.OnServiceClickListener
-import com.example.vetclinic.presentation.adapter.ServicesWithDepAdapter
+import com.example.vetclinic.presentation.adapter.servicesAdapter.DepAndServiceItemList
+import com.example.vetclinic.presentation.adapter.servicesAdapter.OnServiceClickListener
+import com.example.vetclinic.presentation.adapter.servicesAdapter.ServicesWithDepAdapter
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepUiState
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory

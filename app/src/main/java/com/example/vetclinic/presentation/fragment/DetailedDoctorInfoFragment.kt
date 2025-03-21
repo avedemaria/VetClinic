@@ -17,12 +17,10 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentDetailedDoctorInfoBinding
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.DoctorServicesAdapter
+import com.example.vetclinic.presentation.adapter.doctorsAdapter.DoctorServicesAdapter
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceUiState
-import com.example.vetclinic.presentation.viewmodel.ServiceWithDepUiState
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import jakarta.inject.Inject
 
 class DetailedDoctorInfoFragment : Fragment() {
@@ -62,6 +60,8 @@ class DetailedDoctorInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         Log.d("Doctor", "${args.doctor}")
 

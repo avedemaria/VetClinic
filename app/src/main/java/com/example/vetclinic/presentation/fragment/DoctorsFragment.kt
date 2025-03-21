@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.FragmentDoctorsBinding
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.DepAndDocItemList
-import com.example.vetclinic.presentation.adapter.DoctorsAdapter
-import com.example.vetclinic.presentation.adapter.OnAppointmentClickListener
+import com.example.vetclinic.presentation.adapter.doctorsAdapter.DepAndDocItemList
+import com.example.vetclinic.presentation.adapter.doctorsAdapter.DoctorsAdapter
+import com.example.vetclinic.presentation.adapter.doctorsAdapter.OnAppointmentClickListener
 import com.example.vetclinic.presentation.viewmodel.DoctorUiState
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory

@@ -13,14 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.R
-import com.example.vetclinic.databinding.FragmentDetailedDoctorInfoBinding
 import com.example.vetclinic.databinding.FragmentPlainServicesBinding
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.DepAndServiceItemList
-import com.example.vetclinic.presentation.adapter.OnServiceClickListener
-import com.example.vetclinic.presentation.adapter.ServicesWithDepAdapter
+import com.example.vetclinic.presentation.adapter.servicesAdapter.DepAndServiceItemList
+import com.example.vetclinic.presentation.adapter.servicesAdapter.OnServiceClickListener
+import com.example.vetclinic.presentation.adapter.servicesAdapter.ServicesWithDepAdapter
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceUiState
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory

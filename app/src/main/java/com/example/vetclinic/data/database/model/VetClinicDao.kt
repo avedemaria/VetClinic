@@ -1,6 +1,7 @@
 package com.example.vetclinic.data.database.model
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -34,6 +35,9 @@ interface VetClinicDao {
 
     @Update
     suspend fun updatePet(pet: PetDbModel)
+
+    @Delete
+    suspend fun deletePet(pet: PetDbModel)
 
     @Transaction
     @Query("SELECT * FROM users WHERE uid = :userId")

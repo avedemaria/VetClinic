@@ -34,7 +34,7 @@ class AddPetViewModel @Inject constructor(
         }
     }
 
-    fun addPetData(petName: String, petBday: String, petType: String, petGender: String) {
+    fun addPetData(petName: String, petType: String, petGender: String, petBDay: String) {
 
         val currentUserId = _userId.value
         val petId = UUID.randomUUID().toString()
@@ -49,7 +49,7 @@ class AddPetViewModel @Inject constructor(
             petId = petId,
             userId = currentUserId,
             petName = petName,
-            petBDay = petBday,
+            petBDay = petBDay,
             petType = petType,
             petGender = petGender,
             petAge = null

@@ -87,11 +87,6 @@ class ProfileFragment : Fragment() {
     }
 
 
-//    private fun launchUserFragment() {
-//        findNavController().navigate(ProfileFragmentDirections
-//            .actionProfileFragmentToUserFragment())
-//    }
-
     fun updateToggleGroupVisibility() {
         val currentFragment = childFragmentManager.findFragmentById(R.id.fragmentContainer)
         if (currentFragment is SettingsFragment) {

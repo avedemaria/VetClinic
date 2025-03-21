@@ -6,26 +6,21 @@ import com.example.vetclinic.data.mapper.DepartmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
+import com.example.vetclinic.data.mapper.TimeSlotMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
+import com.example.vetclinic.domain.entities.TimeSlot
 import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserSession
-import io.github.jan.supabase.auth.user.UserUpdateBuilder
-import io.ktor.client.request.header
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +37,8 @@ class RepositoryImpl @Inject constructor(
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
     private val doctorMapper: DoctorMapper,
-    private val serviceMapper: ServiceMapper
+    private val serviceMapper: ServiceMapper,
+    private val timeSlotMapper: TimeSlotMapper
 ) : Repository {
 
 
@@ -143,6 +139,14 @@ class RepositoryImpl @Inject constructor(
             }
 
 
+    override suspend fun checkUserSession(): Boolean {
+        return try {
+            supabaseClient.auth.currentUserOrNull() != null
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 //SupabaseDB
 
     override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> = runCatching {
@@ -170,6 +174,7 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>> =
         kotlin.runCatching {
+
             val idWithParameter = "eq.${userId}"
 
             val response = supabaseApiService.getPetsFromSupabaseDb(idWithParameter)
@@ -189,9 +194,23 @@ class RepositoryImpl @Inject constructor(
                 vetClinicDao.insertPets(petDbModels)
             }
 
-            return@runCatching petDtos.map { petMapper.petDtoToPetEntity(it) }
+            petDtos.map { petMapper.petDtoToPetEntity(it) }
         }.onFailure { e ->
-            Log.e("RepositoryImpl", "Error fetching Pet: ${e.message}", e)
+            Log.e(TAG, "Error fetching Pet: ${e.message}", e)
+        }
+
+
+    override suspend fun getServiceById(serviceId: String): Result<Service> = kotlin.runCatching {
+        val idWithParameter = "eq.$serviceId"
+
+        val response = supabaseApiService.getServiceFromSupabaseDbById(idWithParameter)
+        val serviceDto = response.body()?.firstOrNull()
+            ?: throw Exception("The service with $serviceId is not found")
+
+        serviceMapper.serviceDtoToServiceEntity(serviceDto)
+    }
+        .onFailure { e ->
+            Log.e(TAG, "Error fetching service by id: ${e.message}", e)
         }
 
 
@@ -241,13 +260,31 @@ class RepositoryImpl @Inject constructor(
                 Unit
             } else {
                 val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Failed to update pet. Error: $errorBody")
                 throw Exception("Failed to update pet. ${response.code()} - $errorBody")
             }
         }
             .onFailure { error ->
                 Log.e(TAG, "Error while updating Pet in Supabase DB", error)
             }
+
+
+    override suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> = kotlin.runCatching {
+
+        val idWithOperator = "eq.${pet.petId}"
+
+        val response = supabaseApiService.deletePet(idWithOperator)
+
+        if (response.isSuccessful) {
+            Log.d(TAG, "Successfully deleted pet in Supabase DB")
+            deletePetFromRoom(pet)
+        } else {
+            val errorBody = response.errorBody()?.string()
+            throw Exception("Failed to delete pet. ${response.code()} - $errorBody\")")
+        }
+    }
+        .onFailure { error ->
+            Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
+        }
 
 
     override suspend fun getDoctorList(): Result<List<Doctor>> = fetchData(
@@ -270,6 +307,13 @@ class RepositoryImpl @Inject constructor(
             mapper = { serviceMapper.serviceDtoListToServiceEntityList(it) },
             SERVICE_LIST_TAG
         )
+
+
+    override suspend fun getTimeSlots(): Result<List<TimeSlot>> = fetchData(
+        apiCall = { supabaseApiService.getTimeSlots() },
+        mapper = { timeSlotMapper.timeSlotDtoListToTimeSlotEntityList(it) },
+        TIME_SLOTS_TAG
+    )
 
 
     private suspend fun <T, R> addDataToSupabaseDb(
@@ -310,15 +354,6 @@ class RepositoryImpl @Inject constructor(
         }
     }.onFailure { e ->
         Log.e(TAG, "Error fetching $entityTag {e.message}")
-    }
-
-
-    override suspend fun checkUserSession(): Boolean {
-        return try {
-            supabaseClient.auth.currentUserOrNull() != null
-        } catch (e: Exception) {
-            false
-        }
     }
 
 
@@ -387,11 +422,23 @@ class RepositoryImpl @Inject constructor(
             Log.e(TAG, "Error while getting pets from Room", it)
         }
 
+
+    override suspend fun deletePetFromRoom(pet: Pet) {
+        try {
+            vetClinicDao.deletePet(petMapper.petEntityToPetDbModel(pet))
+            Log.d(TAG, "Pet was deleted successfully from Room")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting pet from Room", e)
+        }
+
+    }
+
     companion object {
         private const val TAG = "RepositoryImpl"
         private const val SERVICE_LIST_TAG = "services"
         private const val DOCTOR_LIST_TAG = "doctors"
         private const val DEPARTMENT_LIST_TAG = "departments"
+        private const val TIME_SLOTS_TAG = "timeSlots"
     }
 }
 

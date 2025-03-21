@@ -27,17 +27,20 @@ class HomeViewModel @Inject constructor(
 
     fun getUserIdAndLoadUserName() {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: return@launch
-            loadUserName(userId)
+            val userId = userDataStore.getUserId()
+            if (!userId.isNullOrEmpty()) {
+                loadUserName(userId)
+            } else {
+                _homeState.value = HomeState.Error("User not found")
+            }
         }
+
     }
 
 
     private fun loadUserName(userId: String) {
-
+        _homeState.value = HomeState.Loading
         viewModelScope.launch {
-            _homeState.value = HomeState.Loading
-
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
                     Log.d("HomeViewModel", "Loaded user: $user")

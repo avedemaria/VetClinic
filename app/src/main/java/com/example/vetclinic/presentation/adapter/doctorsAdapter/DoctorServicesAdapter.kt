@@ -1,12 +1,10 @@
-package com.example.vetclinic.presentation.adapter
+package com.example.vetclinic.presentation.adapter.doctorsAdapter
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.vetclinic.databinding.ItemServiceBinding
 import com.example.vetclinic.domain.entities.Service
-import com.facebook.shimmer.ShimmerFrameLayout
 
 class DoctorServicesAdapter(
     private val container: LinearLayout,

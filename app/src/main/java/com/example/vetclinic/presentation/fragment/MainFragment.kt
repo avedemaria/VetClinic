@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -35,6 +36,9 @@ import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
+
+
+    lateinit var bottomNavigationView: View
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -71,6 +75,17 @@ class MainFragment : Fragment() {
 
         // Привязываем BottomNavigationView к navController
         binding.bottomNavigationView.setupWithNavController(navController)
+
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.detailedDoctorInfoFragment) {
+                binding.bottomNavigationView.visibility = View.GONE
+                binding.fab.visibility = View.GONE
+            } else {
+                binding.bottomNavigationView.visibility = View.VISIBLE
+                binding.fab.visibility = View.VISIBLE
+            }
+        }
 
 
         binding.fab.setOnClickListener {

@@ -9,13 +9,13 @@ import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.DepartmentWithServices
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.usecases.GetDepartmentListUseCase
-import com.example.vetclinic.domain.usecases.GetServiceListUseCase
+import com.example.vetclinic.domain.usecases.GetServiceUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ServiceWithDepViewModel @Inject constructor(
-    private val getServiceListUseCase: GetServiceListUseCase,
+    private val getServiceUseCase: GetServiceUseCase,
     private val getDepartmentListUseCase: GetDepartmentListUseCase
 ) : ViewModel() {
 
@@ -33,7 +33,7 @@ class ServiceWithDepViewModel @Inject constructor(
         _serviceState.value = ServiceWithDepUiState.Loading
 
         viewModelScope.launch {
-            val servicesResult = async { getServiceListUseCase.getServiceList() }.await()
+            val servicesResult = async { getServiceUseCase.getServiceList() }.await()
             val departmentsResult = async { getDepartmentListUseCase.getDepartmentList() }.await()
 
             if (servicesResult.isSuccess && departmentsResult.isSuccess) {

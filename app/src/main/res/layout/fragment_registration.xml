@@ -142,7 +142,7 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/tv_register"
+                android:id="@+id/tv_back_to_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"

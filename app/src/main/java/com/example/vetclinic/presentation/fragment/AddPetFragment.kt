@@ -9,19 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.viewModels
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAddPetBinding
-import com.example.vetclinic.databinding.FragmentPetBinding
-import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.adapter.PetAdapter
 import com.example.vetclinic.presentation.viewmodel.AddPetUiState
 import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
-import com.example.vetclinic.presentation.viewmodel.PetUiState
-import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
@@ -103,9 +96,7 @@ class AddPetFragment : Fragment() {
             return
         }
 
-            Log.d(TAG, "clicked on button")
-
-            viewModel.addPetData(petName, petType, petBirthday, petType)
+            viewModel.addPetData(petName, petType, petGender, petBirthday)
 
     }
 

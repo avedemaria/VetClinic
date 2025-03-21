@@ -6,6 +6,7 @@ import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
+import com.example.vetclinic.domain.entities.TimeSlot
 import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
@@ -21,9 +22,9 @@ interface Repository {
 
     suspend fun logOut(): Result<Unit>
 
-    suspend fun resetPasswordWithEmail (email:String): Result<Unit>
+    suspend fun resetPasswordWithEmail(email: String): Result<Unit>
 
-    suspend fun updatePassword (newPassword:String, token:String, email: String): Result<Unit>
+    suspend fun updatePassword(newPassword: String, token: String, email: String): Result<Unit>
 
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 
@@ -37,11 +38,15 @@ interface Repository {
 
     suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>>
 
+    suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit>
+
     suspend fun getDoctorList(): Result<List<Doctor>>
 
     suspend fun getDepartmentList(): Result<List<Department>>
 
     suspend fun getServiceList(): Result<List<Service>>
+
+    suspend fun getServiceById(serviceId: String): Result<Service>
 
     suspend fun checkUserSession(): Boolean
 
@@ -57,5 +62,11 @@ interface Repository {
 
     suspend fun getPetsFromRoom(userId: String): Result<List<Pet>>
 
+    suspend fun deletePetFromRoom(pet:Pet)
+
+
+    //time slots and appointments
+
+    suspend fun getTimeSlots(): Result<List<TimeSlot>>
 
 }

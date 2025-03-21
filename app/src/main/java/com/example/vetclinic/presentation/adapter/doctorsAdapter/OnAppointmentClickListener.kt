@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.adapter
+package com.example.vetclinic.presentation.adapter.doctorsAdapter
 
 import com.example.vetclinic.domain.entities.Doctor
 

@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.usecases.GetServiceListUseCase
+import com.example.vetclinic.domain.usecases.GetServiceUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlainServiceViewModel @Inject constructor(
-    private val getServiceListUseCase: GetServiceListUseCase
+    private val getServiceUseCase: GetServiceUseCase
 ) : ViewModel() {
 
     private val _serviceState = MutableLiveData<ServiceUiState>()
@@ -28,7 +28,7 @@ class PlainServiceViewModel @Inject constructor(
         viewModelScope.launch {
             _serviceState.value = ServiceUiState.Loading
             delay(1000)
-            val servicesResult = getServiceListUseCase.getServiceList()
+            val servicesResult = getServiceUseCase.getServiceList()
 
             if (servicesResult.isSuccess) {
                 val services = servicesResult.getOrThrow()

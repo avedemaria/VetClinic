@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.adapter
+package com.example.vetclinic.presentation.adapter.servicesAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

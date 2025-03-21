@@ -7,10 +7,12 @@ import com.example.vetclinic.data.network.model.DepartmentDto
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.ServiceDto
+import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.data.network.model.UserDTO
 import io.github.jan.supabase.auth.mfa.FactorType
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -24,6 +26,10 @@ interface SupabaseApiService {
     suspend fun getUserFromSupabaseDb(@retrofit2.http.Query("uid") userId: String):
             Response<List<UserDTO>>
 
+
+    @GET("rest/v1/services")
+    suspend fun getServiceFromSupabaseDbById(@retrofit2.http.Query("id") serviceId: String):
+            Response<List<ServiceDto>>
 
     @GET("rest/v1/pets")
     suspend fun getPetsFromSupabaseDb(@retrofit2.http.Query("user_id") userId: String):
@@ -44,6 +50,10 @@ interface SupabaseApiService {
         @Body updatedPet: PetDto
     ): Response<Unit>
 
+    @DELETE("rest/v1/pets")
+    suspend fun deletePet(
+        @retrofit2.http.Query("pet_id") petId: String
+    ): Response<Unit>
 
     @POST("rest/v1/pets")
     suspend fun addPet(@Body petDto: PetDto): Response<Unit>
@@ -71,6 +81,9 @@ interface SupabaseApiService {
     @POST("rest/v1/appointments")
     suspend fun addAppointment(@Body appointmentCreateDto: AppointmentCreateDto): Response<Unit>
 
+
+    @GET("rest/v1/time_slots?select=*")
+    suspend fun getTimeSlots(): Response<List<TimeSlotDto>>
 
 
 }

@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.adapter
+package com.example.vetclinic.presentation.adapter.petAdapter
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView

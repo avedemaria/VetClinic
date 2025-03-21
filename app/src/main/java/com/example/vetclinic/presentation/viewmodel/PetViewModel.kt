@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.usecases.AddUserUseCase
+import com.example.vetclinic.domain.usecases.DeletePetUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.UpdatePetUseCase
 import dagger.assisted.Assisted
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class PetViewModel @Inject constructor(
     private val getPetsUseCase: GetPetsUseCase,
     private val updatePetUseCase: UpdatePetUseCase,
+    private val deletePetUseCase: DeletePetUseCase,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
 
@@ -49,7 +51,6 @@ class PetViewModel @Inject constructor(
                 if (pets.isEmpty()) {
                     return@launch
                 }
-
                 _petState.value = PetUiState.Success(pets)
             } else {
                 _petState.value = PetUiState.Error(
@@ -57,7 +58,6 @@ class PetViewModel @Inject constructor(
                         .exceptionOrNull()?.message ?: "Неизвестная ошибка"
                 )
             }
-
         }
     }
 
@@ -78,6 +78,25 @@ class PetViewModel @Inject constructor(
         }
     }
 
+    fun deletePet(pet: Pet) {
+        _petState.value = PetUiState.Loading
+
+
+
+        viewModelScope.launch {
+//            val userId = userDataStore.getUserId() ?: ""
+
+            val result = deletePetUseCase.deletePetFromSupabaseDb(pet)
+
+            if (result.isSuccess) {
+                _petState.value = PetUiState.Deleted
+            } else {
+                val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
+                Log.e("PetViewModel", "Error while updating pet $errorMessage")
+                _petState.value = PetUiState.Error(errorMessage)
+            }
+        }
+    }
 
 
 }

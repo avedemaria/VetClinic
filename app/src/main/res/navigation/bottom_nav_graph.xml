@@ -27,7 +27,7 @@
         app:defaultNavHost="false" >
         <action
             android:id="@+id/action_doctorsFragment_to_detailedDoctorInfoFragment"
-            app:destination="@id/detailedDoctorInfoFragment2" />
+            app:destination="@id/detailedDoctorInfoFragment" />
     </fragment>
 
 
@@ -46,7 +46,7 @@
                 android:defaultValue="NULL" />
         </fragment>
     <fragment
-        android:id="@+id/detailedDoctorInfoFragment2"
+        android:id="@+id/detailedDoctorInfoFragment"
         android:name="com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment"
         android:label="DetailedDoctorInfoFragment" >
         <action
