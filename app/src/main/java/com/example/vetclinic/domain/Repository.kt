@@ -50,7 +50,9 @@ interface Repository {
 
     suspend fun checkUserSession(): Boolean
 
-    suspend fun addUserToRoom(user: User, pet: Pet)
+    suspend fun addUserAndPetToRoom(user: User, pet: Pet)
+
+    suspend fun addUserToRoom (user:User)
 
     suspend fun addPetToRoom(pet: Pet): Result<Unit>
 

@@ -9,7 +9,8 @@ data class TimeSlotDto(
     @Json(name = "service_id") val serviceId: String,
     @Json(name = "start_time") val startTime: String,
     @Json(name = "end_time") val endTime: String,
-    @Json(name = "is_booked") val isBooked: Boolean
+    @Json(name = "is_booked") val isBooked: Boolean,
+    @Json(name = "day_id") val dayId: String
 ) {
 
 

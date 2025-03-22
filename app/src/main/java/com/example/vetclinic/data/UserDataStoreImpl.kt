@@ -8,7 +8,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.vetclinic.domain.UserDataStore
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 
@@ -54,6 +56,11 @@ class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Pre
         }
 
     }
+
+    override val userIdFlow: Flow<String?>
+        get() = dataStore.data.map { preferences ->
+            preferences[KEY_USER_ID]
+        }
 
     companion object {
         private val KEY_USER_ID = stringPreferencesKey("key_user_id")

@@ -11,6 +11,7 @@ import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.usecases.AddPetUseCase
+import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ class RegistrationViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val addUserUseCase: AddUserUseCase,
     private val addPetUseCase: AddPetUseCase,
+    private val getPetsUseCase: GetPetsUseCase,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
 
@@ -70,18 +72,11 @@ class RegistrationViewModel @Inject constructor(
 
                         userDataStore.saveUserSession(userId, supabaseUser.accessToken)
 
+
+
                         addUserUseCase.addUserToSupabaseDb(user).onSuccess {
                             Log.d(TAG, "user added to supabase $user")
-
-                            addPetUseCase.addPetToSupabaseDb(pet).onSuccess {
-                                Log.d(TAG, "pet added to supabase $pet")
-
-                                addUserUseCase.addUserToRoom(user, pet)
-
-                                Log.d(TAG, "User and pet added to Room")
-                                _registrationState.postValue(RegistrationState.Result(user))
-                            }
-
+                            addUserUseCase.addUserToRoom(user)
 
                         }.onFailure { error ->
                             Log.e(TAG, "Failed to add user to DB", error)
@@ -90,6 +85,17 @@ class RegistrationViewModel @Inject constructor(
                                     error.message ?: "Failed to add user to DB"
                                 )
                             )
+                        }
+
+
+                        addPetUseCase.addPetToSupabaseDb(pet).onSuccess { savedPet ->
+                            Log.d(TAG, "pet added to supabase $pet")
+                            //sync
+                            getPetsUseCase.getPetsFromSupabaseDb(userId)
+
+
+                            Log.d(TAG, "User and pet added to Room")
+                            _registrationState.postValue(RegistrationState.Result(user))
                         }
 
                     }

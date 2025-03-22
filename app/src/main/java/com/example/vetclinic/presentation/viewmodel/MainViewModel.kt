@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getUserIdAndFetchData() {
+    private fun getUserIdAndFetchData() {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
             Log.d("MainViewModel", "userId $userId")

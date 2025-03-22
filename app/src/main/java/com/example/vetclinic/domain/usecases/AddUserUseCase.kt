@@ -12,8 +12,12 @@ class AddUserUseCase @Inject constructor(private val repository: Repository) {
     }
 
 
-    suspend fun addUserToRoom(user: User, pet: Pet) {
-        repository.addUserToRoom(user, pet)
+    suspend fun addUserToRoom(user: User) {
+        repository.addUserToRoom(user)
+    }
+
+    suspend fun addUserAndPetToRoom(user: User, pet: Pet) {
+        repository.addUserAndPetToRoom(user, pet)
     }
 
 

@@ -3,7 +3,6 @@ package com.example.vetclinic.data.mapper
 import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.TimeSlot
 import jakarta.inject.Inject
-import java.sql.Time
 
 class TimeSlotMapper @Inject constructor() {
 
@@ -15,7 +14,8 @@ class TimeSlotMapper @Inject constructor() {
             serviceId = dto.serviceId,
             startTime = dto.startTime,
             endTime = dto.endTime,
-            isBooked = dto.isBooked
+            isBooked = dto.isBooked,
+            dayId = dto.dayId
         )
     }
 

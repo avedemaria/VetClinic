@@ -17,6 +17,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import jakarta.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class PetViewModel @Inject constructor(
@@ -33,31 +34,31 @@ class PetViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
+            Log.d("PetViewModel", "userId: $userId")
+//            val petDeferred = async { getPetsUseCase.getPetsFromSupabaseDb(userId) }
+
             getPetsData(userId)
         }
 
     }
 
-    private fun getPetsData(userId: String) {
+    private suspend fun getPetsData(userId: String) {
 
         _petState.value = PetUiState.Loading
+        val result = getPetsUseCase.getPetsFromRoom(userId)
+        Log.d("PetViewModel", "Result: $result")
+        if (result.isSuccess) {
+            val pets = result.getOrThrow()
 
-        viewModelScope.launch {
-            val result = getPetsUseCase.getPetsFromRoom(userId)
-
-            if (result.isSuccess) {
-                val pets = result.getOrThrow()
-
-                if (pets.isEmpty()) {
-                    return@launch
-                }
-                _petState.value = PetUiState.Success(pets)
-            } else {
-                _petState.value = PetUiState.Error(
-                    result
-                        .exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                )
+            if (pets.isEmpty()) {
+                return
             }
+            _petState.value = PetUiState.Success(pets)
+        } else {
+            _petState.value = PetUiState.Error(
+                result
+                    .exceptionOrNull()?.message ?: "Неизвестная ошибка"
+            )
         }
     }
 

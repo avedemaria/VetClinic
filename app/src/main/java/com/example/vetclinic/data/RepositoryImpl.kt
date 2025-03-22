@@ -191,7 +191,9 @@ class RepositoryImpl @Inject constructor(
 
             if (petDtos.isNotEmpty()) {
                 val petDbModels = petDtos.map { petMapper.petDtoToPetDbModel(it) }
-                vetClinicDao.insertPets(petDbModels)
+                Log.d(TAG, "PetDbModels jkdjkfdj: $petDbModels")
+
+                vetClinicDao.insertPet(petDbModels.first())
             }
 
             petDtos.map { petMapper.petDtoToPetEntity(it) }
@@ -359,11 +361,15 @@ class RepositoryImpl @Inject constructor(
 
 //Room
 
-    override suspend fun addUserToRoom(user: User, pet: Pet) {
-        vetClinicDao.insertUser(userMapper.userEntityToUserDbModel(user))
-        vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
+    override suspend fun addUserAndPetToRoom(user: User, pet: Pet) {
+        addUserToRoom(user)
+        addPetToRoom(pet)
     }
 
+
+    override suspend fun addUserToRoom(user: User) {
+        vetClinicDao.insertUser(userMapper.userEntityToUserDbModel(user))
+    }
 
     override suspend fun addPetToRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
 
