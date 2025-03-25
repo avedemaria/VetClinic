@@ -1,14 +1,11 @@
 package com.example.vetclinic.domain
 
-import com.example.vetclinic.data.database.model.UserDbModel
-import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.TimeSlot
 import com.example.vetclinic.domain.entities.User
-import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 
 interface Repository {
@@ -70,5 +67,7 @@ interface Repository {
     //time slots and appointments
 
     suspend fun getTimeSlots(): Result<List<TimeSlot>>
+
+    suspend fun clearAllData()
 
 }

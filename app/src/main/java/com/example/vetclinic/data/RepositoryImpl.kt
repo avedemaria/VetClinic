@@ -88,8 +88,8 @@ class RepositoryImpl @Inject constructor(
 
 
     override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
-
         supabaseClient.auth.signOut()
+        clearAllData() // Clear all data of DB (Drop tables of Room)
         Log.d(TAG, "User has been signed out successfully")
         Unit
     }
@@ -373,7 +373,11 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun addPetToRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
 
-        vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
+        val models = petMapper.petEntityToPetDbModel(pet)
+
+        Log.d(TAG,"Pet model is: $models")
+
+        vetClinicDao.insertPet(models)
     }
         .onFailure { error ->
             Log.e(TAG, "Error adding pet to Room $error")
@@ -437,6 +441,12 @@ class RepositoryImpl @Inject constructor(
             Log.e(TAG, "Error deleting pet from Room", e)
         }
 
+    }
+
+
+    override suspend fun clearAllData() {
+        vetClinicDao.clearAllPets()
+        vetClinicDao.clearUserData()
     }
 
     companion object {
