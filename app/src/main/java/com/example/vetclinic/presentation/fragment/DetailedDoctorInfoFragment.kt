@@ -73,7 +73,7 @@ class DetailedDoctorInfoFragment : Fragment() {
                 }
             })
 
-
+        viewModel.getServicesByDepartmentId(args.departmentId)
 
         setUpAdapter()
 
@@ -88,11 +88,11 @@ class DetailedDoctorInfoFragment : Fragment() {
 
 
         binding.btnBook.setOnClickListener {
-            launchPlainServicesFragment(args.doctor)
+            launchPlainServicesFragment(args.doctor, args.departmentId)
         }
 
         binding.btnToAllServices.setOnClickListener {
-            launchPlainServicesFragment(args.doctor)
+            launchPlainServicesFragment(args.doctor, args.departmentId)
         }
 
 
@@ -135,12 +135,9 @@ class DetailedDoctorInfoFragment : Fragment() {
 
                     binding.allServicesButtonContainer.visibility = View.VISIBLE
 
-                    val groupedServices =
-                        state.services.filter { it.departmentId == args.doctor.departmentId }
-
 
                     servicesAdapter.setServices(
-                        groupedServices,
+                        state.services,
                         binding.allServicesButtonContainer
                     )
                 }
@@ -149,10 +146,10 @@ class DetailedDoctorInfoFragment : Fragment() {
     }
 
 
-    private fun launchPlainServicesFragment(doctor: Doctor) {
+    private fun launchPlainServicesFragment(doctor: Doctor, departmentId: String) {
         findNavController().navigate(
             DetailedDoctorInfoFragmentDirections
-                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor)
+                .actionDetailedDoctorInfoFragmentToPlainServicesFragment(doctor, departmentId)
         )
     }
 

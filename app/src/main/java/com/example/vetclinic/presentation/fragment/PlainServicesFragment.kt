@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.FragmentPlainServicesBinding
+import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.servicesAdapter.DepAndServiceItemList
@@ -75,13 +76,23 @@ class PlainServicesFragment : Fragment() {
 
         servicesAdapter = ServicesWithDepAdapter(object : OnServiceClickListener {
             override fun onServiceClick(service: Service) {
-                Log.d(TAG, "заглушка")
+                launchBookAppointmentFragment(service, args.doctor)
             }
         })
+
+        viewModel.getServicesByDepartmentId(args.departmentId)
 
         setUpAdapter()
         observeViewModel()
 
+    }
+
+
+    private fun launchBookAppointmentFragment(service: Service, doctor: Doctor) {
+        findNavController().navigate(
+            PlainServicesFragmentDirections
+                .actionPlainServicesFragmentToBookAppointmentFragment(service, doctor)
+        )
     }
 
 
@@ -102,11 +113,8 @@ class PlainServicesFragment : Fragment() {
                 ServiceUiState.Loading -> Log.d(TAG, "заглушка")
                 is ServiceUiState.Success -> {
 
-                    val filteredServices =
-                        state.services.filter { it.departmentId == args.doctor.departmentId }
                     val services =
-                        filteredServices
-                            .map { DepAndServiceItemList.ServiceItem(it) }
+                       state.services.map { DepAndServiceItemList.ServiceItem(it) }
                     servicesAdapter.submitList(services)
 
                 }

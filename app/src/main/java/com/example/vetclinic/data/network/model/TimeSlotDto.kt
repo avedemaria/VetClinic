@@ -1,7 +1,7 @@
 package com.example.vetclinic.data.network.model
 
+import com.example.vetclinic.extractTime
 import com.squareup.moshi.Json
-import kotlinx.datetime.LocalDateTime
 
 data class TimeSlotDto(
     @Json(name = "id") val id: String,
@@ -13,5 +13,11 @@ data class TimeSlotDto(
     @Json(name = "day_id") val dayId: String
 ) {
 
+    val formattedStartTime: String
+        get() = startTime.extractTime()
+
 
 }
+
+
+

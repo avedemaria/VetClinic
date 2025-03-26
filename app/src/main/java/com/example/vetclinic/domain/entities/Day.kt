@@ -9,8 +9,7 @@ import java.sql.Time
 data class Day(
     val id: String,
     val date: String,
-    val timeSlots: List<TimeSlot>,
-    val isSelected: Boolean = false,
+    val isSelected: Boolean = false
 
     ) : Parcelable {
 }

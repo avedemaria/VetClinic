@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -28,17 +30,17 @@ import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.MainState
 import com.example.vetclinic.presentation.viewmodel.MainViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
 
-
-    lateinit var bottomNavigationView: View
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -76,17 +78,12 @@ class MainFragment : Fragment() {
         // Привязываем BottomNavigationView к navController
         binding.bottomNavigationView.setupWithNavController(navController)
 
+        setUpListeners(navController)
+        observeViewModel()
+    }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.detailedDoctorInfoFragment) {
-                binding.bottomNavigationView.visibility = View.GONE
-                binding.fab.visibility = View.GONE
-            } else {
-                binding.bottomNavigationView.visibility = View.VISIBLE
-                binding.fab.visibility = View.VISIBLE
-            }
-        }
 
+    private fun setUpListeners(navController: NavController) {
 
         binding.fab.setOnClickListener {
             binding.bottomNavigationView.selectedItemId = R.id.miAddAppointment
@@ -115,7 +112,31 @@ class MainFragment : Fragment() {
         }
 
 
-        observeViewModel()
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.detailedDoctorInfoFragment) {
+                binding.bottomNavigationView.visibility = View.GONE
+                binding.fab.visibility = View.GONE
+            } else {
+                binding.bottomNavigationView.visibility = View.VISIBLE
+                binding.fab.visibility = View.VISIBLE
+
+
+                setUpBottomNavViewAnimation()
+
+            }
+
+        }
+    }
+
+    private fun setUpBottomNavViewAnimation() {
+        val bottomNavLayoutParams =
+            binding.bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams
+        val bottomNavBehavior = bottomNavLayoutParams.behavior as? HideBottomViewOnScrollBehavior
+        bottomNavBehavior?.slideUp(binding.bottomNavigationView)
+
+        val fabLayoutParams = binding.fab.layoutParams as CoordinatorLayout.LayoutParams
+        val fabBehavior = fabLayoutParams.behavior as? HideBottomViewOnScrollBehavior
+        fabBehavior?.slideUp(binding.fab)
     }
 
     private fun observeViewModel() {
@@ -140,6 +161,7 @@ class MainFragment : Fragment() {
     companion object {
         private const val TAG = "MainFragment"
     }
+
 
 }
 

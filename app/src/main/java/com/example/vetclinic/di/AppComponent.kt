@@ -3,6 +3,7 @@ package com.example.vetclinic.di
 import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.fragment.AddPetFragment
+import com.example.vetclinic.presentation.fragment.BookAppointmentFragment
 import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
 import com.example.vetclinic.presentation.fragment.DoctorsFragment
 import com.example.vetclinic.presentation.fragment.HomeFragment
@@ -62,6 +63,8 @@ interface AppComponent {
     fun inject(resetPasswordWithEmailFragment: ResetPasswordWithEmailFragment)
 
     fun inject(updatePasswordFragment: UpdatePasswordFragment)
+
+    fun inject(bookAppointmentFragment: BookAppointmentFragment)
 
 
     @Component.Factory

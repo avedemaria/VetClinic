@@ -170,6 +170,13 @@ class AddPetFragment : Fragment() {
         binding.spinnerMonth.setSelection(0)
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
     companion object {
         private const val TAG = "AddPetFragment"
         private const val CHOOSE_TYPE = "Выберите тип питомца"

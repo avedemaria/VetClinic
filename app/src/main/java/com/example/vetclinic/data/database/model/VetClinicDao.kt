@@ -30,9 +30,6 @@ interface VetClinicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPets(pets: List<PetDbModel>)
 
-    @Query("SELECT * FROM pets")
-    suspend fun getAllPets(): List<PetDbModel>
-
     @Update
     suspend fun updatePet(pet: PetDbModel)
 

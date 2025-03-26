@@ -6,7 +6,6 @@ import com.example.vetclinic.data.mapper.DepartmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
 import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
-import com.example.vetclinic.data.mapper.TimeSlotMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.Repository
@@ -14,7 +13,6 @@ import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
-import com.example.vetclinic.domain.entities.TimeSlot
 import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
@@ -37,8 +35,7 @@ class RepositoryImpl @Inject constructor(
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
     private val doctorMapper: DoctorMapper,
-    private val serviceMapper: ServiceMapper,
-    private val timeSlotMapper: TimeSlotMapper
+    private val serviceMapper: ServiceMapper
 ) : Repository {
 
 
@@ -310,13 +307,23 @@ class RepositoryImpl @Inject constructor(
             SERVICE_LIST_TAG
         )
 
+    override suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>> =
+        kotlin.runCatching {
 
-    override suspend fun getTimeSlots(): Result<List<TimeSlot>> = fetchData(
-        apiCall = { supabaseApiService.getTimeSlots() },
-        mapper = { timeSlotMapper.timeSlotDtoListToTimeSlotEntityList(it) },
-        TIME_SLOTS_TAG
-    )
+            val departmentIdWithParam = "eq.$departmentId"
 
+            Log.d(TAG, "Fetching services for department: $departmentIdWithParam")
+            val response = supabaseApiService.getServicesByDepartmentId(departmentIdWithParam)
+            val servicesDto = response.body()
+                ?: throw Exception("Empty response body:${response.code()} - ${response.message()}")
+            if (response.isSuccessful) {
+                Log.d(TAG, "Successfully fetched services by $departmentId in Supabase DB")
+                serviceMapper.serviceDtoListToServiceEntityList(servicesDto)
+            } else {
+                throw Exception("Server's error: ${response.code()} - ${response.message()}")
+            }
+        }
+            .onFailure { e-> Log.e(TAG, "Error fetching serviced {$e.message}") }
 
     private suspend fun <T, R> addDataToSupabaseDb(
         entity: T,
@@ -355,7 +362,7 @@ class RepositoryImpl @Inject constructor(
             throw Exception("Server's error: ${response.code()} - ${response.message()}")
         }
     }.onFailure { e ->
-        Log.e(TAG, "Error fetching $entityTag {e.message}")
+        Log.e(TAG, "Error fetching $entityTag {$e.message}")
     }
 
 

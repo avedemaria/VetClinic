@@ -55,6 +55,10 @@
         <argument
             android:name="doctor"
             app:argType="com.example.vetclinic.domain.entities.Doctor" />
+        <argument
+            android:name="departmentId"
+            app:argType="string"
+            android:defaultValue="NULL" />
     </fragment>
     <fragment
         android:id="@+id/plainServicesFragment"
@@ -63,16 +67,45 @@
         <argument
             android:name="doctor"
             app:argType="com.example.vetclinic.domain.entities.Doctor" />
+        <action
+            android:id="@+id/action_plainServicesFragment_to_bookAppointmentFragment"
+            app:destination="@id/bookAppointmentFragment" />
+        <argument
+            android:name="departmentId"
+            app:argType="string"
+            android:defaultValue="NULL" />
     </fragment>
     <fragment
         android:id="@+id/appointmentFragment"
         android:name="com.example.vetclinic.presentation.fragment.AppointmentFragment"
         android:label="fragment_appointment"
-        tools:layout="@layout/fragment_appointment" />
+        tools:layout="@layout/fragment_appointment" >
+        <argument
+            android:name="service"
+            app:argType="com.example.vetclinic.domain.entities.Service" />
+        <argument
+            android:name="doctor"
+            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+    </fragment>
     <fragment
         android:id="@+id/servicesWithDepFragment"
         android:name="com.example.vetclinic.presentation.fragment.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
+    <fragment
+        android:id="@+id/bookAppointmentFragment"
+        android:name="com.example.vetclinic.presentation.fragment.BookAppointmentFragment"
+        android:label="fragment_book_appointment"
+        tools:layout="@layout/fragment_book_appointment" >
+        <argument
+            android:name="service"
+            app:argType="com.example.vetclinic.domain.entities.Service" />
+        <argument
+            android:name="doctor"
+            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+        <action
+            android:id="@+id/action_bookAppointmentFragment_to_appointmentFragment"
+            app:destination="@id/appointmentFragment" />
+    </fragment>
 
 
 </navigation>

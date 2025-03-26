@@ -93,7 +93,7 @@ class PetViewModel @Inject constructor(
                 _petState.value = PetUiState.Deleted
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                Log.e("PetViewModel", "Error while updating pet $errorMessage")
+                Log.e("PetViewModel", "Error while deleting pet $errorMessage")
                 _petState.value = PetUiState.Error(errorMessage)
             }
         }

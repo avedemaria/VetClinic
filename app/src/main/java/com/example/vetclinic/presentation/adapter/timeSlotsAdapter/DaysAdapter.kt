@@ -15,9 +15,9 @@ class DaysAdapter(private val onDayClickedListener: OnDayClickedListener) :
         val dayItem = getItem(position)
 
         return if (dayItem.isSelected) {
-            TYPE_DAY
-        } else {
             TYPE_DAY_CLICKED
+        } else {
+            TYPE_DAY
         }
     }
 

@@ -15,9 +15,9 @@ class TimeSlotAdapter(private val onTimeSlotClickedListener: OnTimeSlotClickedLi
         val timeSlot = getItem(position)
 
         return if (timeSlot.isSelected) {
-            TYPE_TIME_SLOT
-        } else {
             TYPE_TIME_SLOT_CLICKED
+        } else {
+            TYPE_TIME_SLOT
         }
     }
 

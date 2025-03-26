@@ -68,6 +68,8 @@ class DoctorsFragment : Fragment() {
                 }
             })
 
+
+
         setUpAdapter()
 
         observeViewModel()
@@ -79,7 +81,7 @@ class DoctorsFragment : Fragment() {
     private fun setUpAdapter() {
         doctorsAdapter = DoctorsAdapter(object : OnAppointmentClickListener {
             override fun onBookButtonClick(doctor: Doctor) {
-                launchDetailedDoctorInfoFragment(doctor)
+                launchDetailedDoctorInfoFragment(doctor, doctor.departmentId)
             }
         })
 
@@ -121,11 +123,11 @@ class DoctorsFragment : Fragment() {
     }
 
 
-    private fun launchDetailedDoctorInfoFragment(doctor: Doctor) {
+    private fun launchDetailedDoctorInfoFragment(doctor: Doctor, departmentId:String) {
         findNavController()
             .navigate(
                 DoctorsFragmentDirections.actionDoctorsFragmentToDetailedDoctorInfoFragment(
-                    doctor
+                    doctor, departmentId
                 )
             )
     }

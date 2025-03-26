@@ -17,8 +17,30 @@ class PlainServiceViewModel @Inject constructor(
     private val _serviceState = MutableLiveData<ServiceUiState>()
     val serviceState: LiveData<ServiceUiState> get() = _serviceState
 
-    init {
-        fetchServices()
+//    init {
+//        fetchServices()
+//    }
+
+
+    fun getServicesByDepartmentId(departmentId: String) {
+        Log.d(TAG, "Calling getServicesByDepartmentId with: $departmentId")
+        _serviceState.value = ServiceUiState.Loading
+
+        viewModelScope.launch {
+            val servicesResult = getServiceUseCase.getServicesByDepartmentId(departmentId)
+
+            if (servicesResult.isSuccess) {
+                val services = servicesResult.getOrThrow()
+                _serviceState.value = ServiceUiState.Success(services)
+            } else {
+                val error = servicesResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"
+                Log.e(
+                    TAG, "Error while fetching" +
+                            " services: $error"
+                )
+                _serviceState.value = ServiceUiState.Error(error)
+            }
+        }
     }
 
 
@@ -27,7 +49,7 @@ class PlainServiceViewModel @Inject constructor(
 
         viewModelScope.launch {
             _serviceState.value = ServiceUiState.Loading
-            delay(1000)
+
             val servicesResult = getServiceUseCase.getServiceList()
 
             if (servicesResult.isSuccess) {
@@ -41,12 +63,17 @@ class PlainServiceViewModel @Inject constructor(
             } else {
                 val error = servicesResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"
                 Log.e(
-                    "PlainServiceViewModel", "Error while fetching" +
+                    TAG, "Error while fetching" +
                             " services: $error"
                 )
                 _serviceState.value = ServiceUiState.Error(error)
             }
 
         }
+    }
+
+
+    companion object {
+        private const val TAG = "PlainServicesViewModel"
     }
 }

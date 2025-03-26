@@ -12,6 +12,7 @@ import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.usecases.AddPetUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
+import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class RegistrationViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val addUserUseCase: AddUserUseCase,
     private val addPetUseCase: AddPetUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val getPetsUseCase: GetPetsUseCase,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
@@ -43,8 +45,6 @@ class RegistrationViewModel @Inject constructor(
             return
         }
 
-        try {
-            Log.d(TAG, "Starting registration process")
             viewModelScope.launch(Dispatchers.IO) {
                 registerUserUseCase.registerUser(email, password)
                     .onSuccess { supabaseUser ->
@@ -76,7 +76,7 @@ class RegistrationViewModel @Inject constructor(
 
                         addUserUseCase.addUserToSupabaseDb(user).onSuccess {
                             Log.d(TAG, "user added to supabase $user")
-                            addUserUseCase.addUserToRoom(user)
+                            getUserUseCase.getUserFromSupabaseDb(user.uid)
 
                         }.onFailure { error ->
                             Log.e(TAG, "Failed to add user to DB", error)
@@ -89,13 +89,13 @@ class RegistrationViewModel @Inject constructor(
 
 
                         addPetUseCase.addPetToSupabaseDb(pet).onSuccess { savedPet ->
-                            Log.d(TAG, "pet added to supabase $pet")
+                            Log.d(TAG, "pet added to supabase $savedPet")
                             //sync
                             getPetsUseCase.getPetsFromSupabaseDb(userId)
 
 
                             Log.d(TAG, "User and pet added to Room")
-                            _registrationState.postValue(RegistrationState.Result(user))
+                            _registrationState.postValue(RegistrationState.Result)
                         }
 
                     }
@@ -104,10 +104,6 @@ class RegistrationViewModel @Inject constructor(
                         _registrationState.postValue(RegistrationState.Error(error.message))
                     }
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "unexpected error", e)
-            _registrationState.postValue(RegistrationState.Error("Unexpected error ${e.message}"))
-        }
 
     }
 

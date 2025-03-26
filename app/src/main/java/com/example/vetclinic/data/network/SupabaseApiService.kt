@@ -1,42 +1,47 @@
 package com.example.vetclinic.data.network
 
-import androidx.room.Query
+
 import com.example.vetclinic.data.network.model.AppointmentCreateDto
 import com.example.vetclinic.data.network.model.AppointmentDto
+import com.example.vetclinic.data.network.model.DayDto
+import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.DepartmentDto
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.data.network.model.UserDTO
-import io.github.jan.supabase.auth.mfa.FactorType
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface SupabaseApiService {
 
     @GET("rest/v1/users")
-    suspend fun getUserFromSupabaseDb(@retrofit2.http.Query("uid") userId: String):
+    suspend fun getUserFromSupabaseDb(@Query("uid") userId: String):
             Response<List<UserDTO>>
 
 
     @GET("rest/v1/services")
-    suspend fun getServiceFromSupabaseDbById(@retrofit2.http.Query("id") serviceId: String):
+    suspend fun getServiceFromSupabaseDbById(@Query("id") serviceId: String):
             Response<List<ServiceDto>>
 
     @GET("rest/v1/pets")
-    suspend fun getPetsFromSupabaseDb(@retrofit2.http.Query("user_id") userId: String):
+    suspend fun getPetsFromSupabaseDb(@Query("user_id") userId: String):
             Response<List<PetDto>>
 
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
+
+    @POST("rest/v1/pets")
+    suspend fun addPet(@Body petDto: PetDto): Response<Unit>
 
     @PATCH("rest/v1/users?uid=eq.{userId}")
     suspend fun updateUser(
@@ -46,17 +51,14 @@ interface SupabaseApiService {
 
     @PATCH("rest/v1/pets")
     suspend fun updatePet(
-        @retrofit2.http.Query("pet_id") petId: String,
+        @Query("pet_id") petId: String,
         @Body updatedPet: PetDto
     ): Response<Unit>
 
     @DELETE("rest/v1/pets")
     suspend fun deletePet(
-        @retrofit2.http.Query("pet_id") petId: String
+        @Query("pet_id") petId: String
     ): Response<Unit>
-
-    @POST("rest/v1/pets")
-    suspend fun addPet(@Body petDto: PetDto): Response<Unit>
 
 
     @GET("rest/v1/departments?select=*")
@@ -70,10 +72,15 @@ interface SupabaseApiService {
     @GET("rest/v1/services?select=*")
     suspend fun getServices(): Response<List<ServiceDto>>
 
+    @GET("rest/v1/services")
+    suspend fun getServicesByDepartmentId(
+        @Query("department_id") departmentId: String
+    ): Response<List<ServiceDto>>
+
 
     @GET("rest/v1/appointments")
     suspend fun getAppointments(
-        @retrofit2.http.Query("select") select: String = "*, doctors: doctor_id(*),pets:pet_id(*)" +
+        @Query("select") select: String = "*, doctors: doctor_id(*),pets:pet_id(*)" +
                 ",users:user_id(*),services:service_id(*)"
     ): Response<List<AppointmentDto>>
 
@@ -82,9 +89,47 @@ interface SupabaseApiService {
     suspend fun addAppointment(@Body appointmentCreateDto: AppointmentCreateDto): Response<Unit>
 
 
-    @GET("rest/v1/time_slots?select=*")
-    suspend fun getTimeSlots(): Response<List<TimeSlotDto>>
+//    @GET("rest/v1/days")
+//    suspend fun getDaysWithTimeSlots(
+//        @Query("select") select: String = "*,time_slots(*),time_slots!inner(*)",
+//        @Query("time_slots.is_booked") isBooked: String,
+//        @Query("time_slots.doctor_id") doctorId: String,
+//        @Query("time_slots.service_id") serviceId: String
+//    ): Response<List<DaysWithTimeSlotsDto>>
 
+
+//    @GET("rest/v1/days")
+//    suspend fun getDaysWithTimeSlots(
+//        @Query("select") select: String = "*,time_slots!inner(*)",
+//        @Query("time_slots.is_booked") isBooked: String = "eq.false",
+//        @Query("time_slots.doctor_id") doctorId: String,
+//        @Query("time_slots.service_id") serviceId: String
+//
+//    ): Response<List<DayWithTimeSlotsDto>>
+
+
+    @GET("rest/v1/days")
+    suspend fun getDaysWithTimeSlots(
+        @Query("select") select: String = "*,time_slots!inner(*)",
+        @Query("time_slots.is_booked") isBooked: String = "eq.false",
+        @Query("time_slots.doctor_id") doctorId: String,
+        @Query("time_slots.service_id") serviceId: String,
+        @Query("date") dateRange: String,
+        @Query("limit") limit: Int = 1000
+    ): Response<List<DayWithTimeSlotsDto>>
+
+
+    @POST("rest/v1/days?on_conflict=id,date")
+    @Headers("Prefer: resolution=merge-duplicates")
+    suspend fun insertDays(
+        @Body days: List<DayDto>
+    ): Response<Unit>
+
+    @POST("rest/v1/time_slots?on_conflict=id,start_time,end_time,day_id")
+    @Headers("Prefer: resolution=merge-duplicates")
+    suspend fun insertTimeSlots(
+        @Body timeSlots: List<TimeSlotDto>
+    ): Response<Unit>
 
 }
 

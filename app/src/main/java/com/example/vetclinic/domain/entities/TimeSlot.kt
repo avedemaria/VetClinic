@@ -1,7 +1,6 @@
 package com.example.vetclinic.domain.entities
 
 import android.os.Parcelable
-import kotlinx.datetime.LocalDateTime
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,4 +15,6 @@ data class TimeSlot(
     val isSelected: Boolean = false
 
 ) : Parcelable {
+
+
 }

@@ -1,14 +1,10 @@
 package com.example.vetclinic.domain
 
-import com.example.vetclinic.data.database.model.UserDbModel
-import com.example.vetclinic.data.network.model.UserDTO
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
-import com.example.vetclinic.domain.entities.TimeSlot
 import com.example.vetclinic.domain.entities.User
-import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 
 interface Repository {
@@ -46,13 +42,15 @@ interface Repository {
 
     suspend fun getServiceList(): Result<List<Service>>
 
+    suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>>
+
     suspend fun getServiceById(serviceId: String): Result<Service>
 
     suspend fun checkUserSession(): Boolean
 
     suspend fun addUserAndPetToRoom(user: User, pet: Pet)
 
-    suspend fun addUserToRoom (user:User)
+    suspend fun addUserToRoom(user: User)
 
     suspend fun addPetToRoom(pet: Pet): Result<Unit>
 
@@ -64,11 +62,10 @@ interface Repository {
 
     suspend fun getPetsFromRoom(userId: String): Result<List<Pet>>
 
-    suspend fun deletePetFromRoom(pet:Pet)
+    suspend fun deletePetFromRoom(pet: Pet)
 
 
     //time slots and appointments
 
-    suspend fun getTimeSlots(): Result<List<TimeSlot>>
 
 }

@@ -1,14 +1,17 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.Repository
-import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.TimeSlotsRepository
+import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import jakarta.inject.Inject
 
-class GetTimeSlotsUseCase @Inject constructor(private val repository: Repository) {
+class GetTimeSlotsUseCase @Inject constructor(private val repository: TimeSlotsRepository) {
 
 
-    suspend fun getTimeSlots(): Result<List<TimeSlot>> {
-        return repository.getTimeSlots()
+    suspend fun getTimeSlots(
+        doctorId: String,
+        serviceId: String
+    ): Result<List<DayWithTimeSlots>> {
+        return repository.getAvailableDaysAndTimeSlots(doctorId, serviceId)
     }
 
 }
