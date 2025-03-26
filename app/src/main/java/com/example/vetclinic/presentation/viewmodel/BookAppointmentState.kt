@@ -19,4 +19,6 @@ sealed class BookAppointmentState {
         BookAppointmentState()
 
     data class Error(val message: String) : BookAppointmentState()
+
+    object AppointmentAdded: BookAppointmentState()
 }

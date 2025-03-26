@@ -5,22 +5,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.data.AppointmentRepositoryImpl
 import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.entities.Appointment
+import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.Day
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.usecases.AddAppointmentUseCase
 import com.example.vetclinic.domain.usecases.AddTimeSlotsUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.GetTimeSlotsUseCase
+import com.example.vetclinic.domain.usecases.UpdateTimeSlotUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 class BookAppointmentViewModel @Inject constructor(
     private val getTimeSlotsUseCase: GetTimeSlotsUseCase,
     private val addTimeSlotsUseCase: AddTimeSlotsUseCase,
     private val getPetsUseCase: GetPetsUseCase,
+    private val addAppointmentUseCase: AddAppointmentUseCase,
+    private val updateTimeSlotUseCase: UpdateTimeSlotUseCase,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
 
@@ -31,8 +39,9 @@ class BookAppointmentViewModel @Inject constructor(
     private var allDaysWithTimeSlots: List<DayWithTimeSlots> = emptyList()
     private var filteredTimeSlots: List<TimeSlot> = emptyList()
     private var pets: List<Pet> = emptyList()
-    private var selectedDay: Day? = null
-    private var selectedTimeSlot: TimeSlot? = null
+    var selectedDay: Day? = null
+    var selectedTimeSlot: TimeSlot? = null
+
 
     init {
         viewModelScope.launch {
@@ -41,6 +50,14 @@ class BookAppointmentViewModel @Inject constructor(
             getPets(userId)
         }
     }
+
+    fun getPetsFromCurrentState(): List<Pet> {
+        return when (val currentState = _bookAppointmentState.value) {
+            is BookAppointmentState.Success -> currentState.pets
+            else -> emptyList()
+        }
+    }
+
 
     private suspend fun addTimeSlotsToSupabaseDb(
         doctorId: String,
@@ -85,6 +102,41 @@ class BookAppointmentViewModel @Inject constructor(
                 _bookAppointmentState.value = BookAppointmentState.Error(e.message.toString())
             }
         }
+    }
+
+
+    fun bookAppointment(petId: String, serviceId: String, doctorId: String, dateTime: String) {
+        _bookAppointmentState.value = BookAppointmentState.Loading
+
+
+        viewModelScope.launch {
+            val userId = userDataStore.getUserId() ?: ""
+            val appointment = Appointment(
+                UUID.randomUUID().toString(),
+                userId,
+                petId,
+                doctorId,
+                serviceId,
+                dateTime,
+                AppointmentStatus.SCHEDULED,
+                false
+            )
+
+            val result = addAppointmentUseCase.addAppointment(appointment)
+            if (result.isSuccess) {
+                if (selectedDay != null) {
+                    updateTimeSlotUseCase.updateTimeSlotStatusToBooked(
+                        selectedTimeSlot?.id ?: "")
+                }
+                _bookAppointmentState.value = BookAppointmentState.AppointmentAdded
+            } else {
+                _bookAppointmentState.value = BookAppointmentState.Error(
+                    result.exceptionOrNull()
+                        ?.message ?: "Неизвестная ошибка"
+                )
+            }
+        }
+
     }
 
 

@@ -1,8 +1,10 @@
 package com.example.vetclinic.di
 
+import com.example.vetclinic.data.AppointmentRepositoryImpl
 import com.example.vetclinic.data.RepositoryImpl
 import com.example.vetclinic.data.TimeSlotsRepositoryImpl
 import com.example.vetclinic.data.UserDataStoreImpl
+import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.TimeSlotsRepository
 import com.example.vetclinic.domain.UserDataStore
@@ -16,8 +18,11 @@ interface DomainModule {
     fun bindRepository(impl: RepositoryImpl): Repository
 
     @Binds
-    fun bindTimeSlotsRepository (impl:TimeSlotsRepositoryImpl): TimeSlotsRepository
+    fun bindTimeSlotsRepository(impl: TimeSlotsRepositoryImpl): TimeSlotsRepository
 
     @Binds
-    fun bindUserDataStore (impl: UserDataStoreImpl): UserDataStore
+    fun bindAppointmentRepository(impl: AppointmentRepositoryImpl): AppointmentRepository
+
+    @Binds
+    fun bindUserDataStore(impl: UserDataStoreImpl): UserDataStore
 }

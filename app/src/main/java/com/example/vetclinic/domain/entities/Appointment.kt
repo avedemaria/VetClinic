@@ -14,4 +14,5 @@ data class Appointment(
     val serviceId: String,
     val dateTime: String,
     val status: AppointmentStatus,
+    val isArchived: Boolean
 ) : Parcelable

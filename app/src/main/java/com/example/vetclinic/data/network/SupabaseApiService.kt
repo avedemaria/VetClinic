@@ -1,7 +1,6 @@
 package com.example.vetclinic.data.network
 
 
-import com.example.vetclinic.data.network.model.AppointmentCreateDto
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.data.network.model.DayDto
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
@@ -10,6 +9,7 @@ import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
+import com.example.vetclinic.data.network.model.TimeSlotUpdateRequest
 import com.example.vetclinic.data.network.model.UserDTO
 import retrofit2.Response
 import retrofit2.http.Body
@@ -86,26 +86,7 @@ interface SupabaseApiService {
 
 
     @POST("rest/v1/appointments")
-    suspend fun addAppointment(@Body appointmentCreateDto: AppointmentCreateDto): Response<Unit>
-
-
-//    @GET("rest/v1/days")
-//    suspend fun getDaysWithTimeSlots(
-//        @Query("select") select: String = "*,time_slots(*),time_slots!inner(*)",
-//        @Query("time_slots.is_booked") isBooked: String,
-//        @Query("time_slots.doctor_id") doctorId: String,
-//        @Query("time_slots.service_id") serviceId: String
-//    ): Response<List<DaysWithTimeSlotsDto>>
-
-
-//    @GET("rest/v1/days")
-//    suspend fun getDaysWithTimeSlots(
-//        @Query("select") select: String = "*,time_slots!inner(*)",
-//        @Query("time_slots.is_booked") isBooked: String = "eq.false",
-//        @Query("time_slots.doctor_id") doctorId: String,
-//        @Query("time_slots.service_id") serviceId: String
-//
-//    ): Response<List<DayWithTimeSlotsDto>>
+    suspend fun addAppointment(@Body appointmentCreateDto: AppointmentDto): Response<Unit>
 
 
     @GET("rest/v1/days")
@@ -131,6 +112,12 @@ interface SupabaseApiService {
         @Body timeSlots: List<TimeSlotDto>
     ): Response<Unit>
 
+
+    @PATCH("rest/v1/timeslots")
+    suspend fun updateTimeSlotStatusToBooked(
+        @Query("id") timeSlotId: String,
+        @Body updateRequest: TimeSlotUpdateRequest
+    ): Response<Unit>
 }
 
 

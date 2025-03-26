@@ -15,4 +15,6 @@ interface TimeSlotsRepository {
         duration: String
     ): Result<Unit>
 
+
+    suspend fun updateTimeSlotStatusToBooked(timeSlotId: String): Result<Unit>
 }

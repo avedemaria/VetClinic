@@ -3,9 +3,9 @@ package com.example.vetclinic.data
 import android.util.Log
 import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.data.network.model.DayDto
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
+import com.example.vetclinic.data.network.model.TimeSlotUpdateRequest
 import com.example.vetclinic.domain.TimeSlotsRepository
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import jakarta.inject.Inject
@@ -279,6 +279,21 @@ class TimeSlotsRepositoryImpl @Inject constructor(
         }
     }
 
+
+    override suspend fun updateTimeSlotStatusToBooked(timeSlotId: String): Result<Unit> =
+        kotlin.runCatching {
+            val updateRequest = TimeSlotUpdateRequest(isBooked = true)
+
+            val response =
+                supabaseApiService.updateTimeSlotStatusToBooked(timeSlotId, updateRequest)
+
+            if (!response.isSuccessful) {
+                throw Exception("${response.errorBody()?.string()}")
+            }
+        }
+            .onFailure { e ->
+                Log.e(TAG, "Failed to update timeSlot status $e", e)
+            }
 
     companion object {
         private const val TAG = "TimeSlotsRepositoryImpl"

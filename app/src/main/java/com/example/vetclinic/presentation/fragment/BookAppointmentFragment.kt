@@ -26,6 +26,9 @@ import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.extractDayOfMonth
+import com.example.vetclinic.formatDayMonthYear
+import com.example.vetclinic.formatToLocalDateTime
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.DaysAdapter
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnDayClickedListener
@@ -35,12 +38,6 @@ import com.example.vetclinic.presentation.viewmodel.BookAppointmentState
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Calendar
-import java.util.Locale
 
 
 class BookAppointmentFragment : Fragment() {
@@ -104,10 +101,12 @@ class BookAppointmentFragment : Fragment() {
             service.duration.toString()
         )
 
-        binding.tvServiceInfo.text = getStyledServiceInfo(args.service)
+
+        binding.tvDoctorInfo.text = getStyledDoctorInfo(doctor)
+        binding.tvServiceInfo.text = getStyledServiceInfo(service)
 
         binding.btnCreateAppointment.setOnClickListener {
-            launchAppointmentFragment(service, doctor)
+            showConfirmationDialog(service, doctor)
         }
 
         setUpAdapters()
@@ -144,7 +143,10 @@ class BookAppointmentFragment : Fragment() {
                     //adapter RV
 
                     val updatedDays = state.daysWithTimeSlots.map { it.day }.map { day ->
-                        day.copy(isSelected = (day.id == state.selectedDay?.id))
+                        day.copy(
+                            isSelected = (day.id == state.selectedDay?.id),
+                            date = day.date.extractDayOfMonth().toString()
+                        )
                     }
                     daysAdapter.submitList(updatedDays)
 
@@ -157,6 +159,8 @@ class BookAppointmentFragment : Fragment() {
 
 
                 }
+
+                is BookAppointmentState.AppointmentAdded -> launchAppointmentFragment()
             }
         }
     }
@@ -189,6 +193,56 @@ class BookAppointmentFragment : Fragment() {
     }
 
 
+    private fun showConfirmationDialog(
+        service: Service,
+        doctor: Doctor
+    ) {
+        val selectedDay = viewModel.selectedDay
+        val selectedTimeSlot = viewModel.selectedTimeSlot
+        val selectedPetIndex = binding.spinnerPets.selectedItemPosition
+        val pets = viewModel.getPetsFromCurrentState()
+        val selectedPet = pets[selectedPetIndex]
+        if (selectedDay == null || selectedTimeSlot == null) {
+
+            Toast.makeText(
+                requireContext(),
+                "Пожалуйста, выберите день и время",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Подтвердите приём: ")
+            .setMessage(
+                createBoldSpannableString(
+                    "Date:" to selectedDay.date.formatDayMonthYear(),
+                    "Time:" to selectedTimeSlot.startTime,
+                    "${doctor.role}:" to doctor.doctorName,
+                    "Service:" to service.serviceName,
+                    "Pet:" to selectedPet.petName,
+                    "Duration:" to "${service.duration} min",
+                    "Price:" to "${service.price} руб."
+                )
+            )
+            .setPositiveButton("Подтверждаю") { dialog, _ ->
+                val dateTime =
+                    "${selectedDay.date} ${selectedTimeSlot.startTime}:00".formatToLocalDateTime()
+                Log.d(TAG, "dateTime: $dateTime")
+
+                viewModel.bookAppointment(selectedPet.petId, service.id, doctor.uid, dateTime)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+
+    }
+
+
     private fun getStyledServiceInfo(service: Service): SpannableStringBuilder {
         return SpannableStringBuilder().apply {
             appendBold("Услуга: ")
@@ -200,6 +254,39 @@ class BookAppointmentFragment : Fragment() {
             appendBold("Цена: ")
             append("${service.price} руб.")
         }
+    }
+
+    private fun getStyledDoctorInfo(doctor: Doctor): SpannableStringBuilder {
+        return SpannableStringBuilder().apply {
+            appendBold("${doctor.role}: ")
+            append("${doctor.doctorName}")
+        }
+    }
+
+
+    private fun createBoldSpannableString(vararg pairs: Pair<String, String>):
+            SpannableStringBuilder {
+
+        val spannableBuilder = SpannableStringBuilder()
+
+        pairs.forEachIndexed { index, (title, value) ->
+            val titleStart = spannableBuilder.length
+
+            spannableBuilder.append(title)
+                .setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    titleStart,
+                    spannableBuilder.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+            spannableBuilder.append(" $value")
+
+            if (index < pairs.size - 1) {
+                spannableBuilder.append("\n")
+            }
+        }
+        return spannableBuilder
     }
 
     private fun SpannableStringBuilder.appendBold(text: String) {
@@ -226,13 +313,9 @@ class BookAppointmentFragment : Fragment() {
     }
 
 
-
-    private fun launchAppointmentFragment(service: Service, doctor: Doctor) {
+    private fun launchAppointmentFragment() {
         findNavController().navigate(
-            BookAppointmentFragmentDirections.actionBookAppointmentFragmentToAppointmentFragment(
-                service,
-                doctor
-            )
+            BookAppointmentFragmentDirections.actionBookAppointmentFragmentToAppointmentFragment()
         )
     }
 

@@ -48,7 +48,7 @@ class DayWithTimeSlotsMapper @Inject constructor() {
     }
 
     private fun dayWithTimeSlotsDtoToDay(dayWithTimeSlotsDto: DayWithTimeSlotsDto): Day {
-        return Day(id = dayWithTimeSlotsDto.id, date = dayWithTimeSlotsDto.dayOfMonth.toString())
+        return Day(id = dayWithTimeSlotsDto.id, date = dayWithTimeSlotsDto.date)
     }
 
 
