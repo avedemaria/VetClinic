@@ -24,15 +24,16 @@ import jakarta.inject.Inject
 class HomeFragment : Fragment() {
 
 
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
+
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel: HomeViewModel by activityViewModels { viewModelFactory }
 
-
-    private val component by lazy {
-        (requireActivity().application as VetClinicApplication).component
-    }
 
 
     private var _binding: FragmentHomeBinding? = null
@@ -41,16 +42,11 @@ class HomeFragment : Fragment() {
             "FragmentHomeBinding is null"
         )
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,7 +54,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
 
+        observeViewModel()
 
 
         binding.profileButton.setOnClickListener {
@@ -73,9 +71,9 @@ class HomeFragment : Fragment() {
             launchServicesFragment()
         }
 
+        Log.d("HomeFragment", "onViewCreated")
 
-        observeViewModel()
-
+        viewModel.getUserIdAndLoadUserName()
 
     }
 

@@ -16,7 +16,6 @@ class MainViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getPetsUseCase: GetPetsUseCase,
     private val userDataStore: UserDataStore
-
 ) : ViewModel() {
 
 
@@ -24,15 +23,10 @@ class MainViewModel @Inject constructor(
     val mainState: LiveData<MainState> get() = _mainState
 
 
-    init {
-        getUserIdAndFetchData()
-    }
-
-
-    private fun getUserIdAndFetchData() {
+     fun getUserIdAndFetchData() {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
-            Log.d("MainViewModel", "userId $userId")
+            Log.d("MainViewModel", "userId1 $userId")
             getUserAndPet(userId)
         }
     }
@@ -42,6 +36,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _mainState.value = MainState.Loading
 
+            // TODO: Do it synchronously (order is important)
             val userDeferred = async { getUserUseCase.getUserFromSupabaseDb(userId) }
             val petDeferred = async { getPetsUseCase.getPetsFromSupabaseDb(userId) }
 

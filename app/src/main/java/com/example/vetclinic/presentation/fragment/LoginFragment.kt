@@ -47,8 +47,7 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
@@ -75,6 +74,13 @@ class LoginFragment : Fragment() {
             launchResetPasswordWithEmailFragment(email)
         }
 
+        binding.btnLogin.setOnLongClickListener {
+            binding.etEmail.setText( "test4396a0d3-404f-4942-9f33-4ddd1f2c89d4@test.com")
+            binding.etPassword.setText("password")
+            true
+
+        }
+
 
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
 //            object : OnBackPressedCallback(true) {
@@ -89,13 +95,10 @@ class LoginFragment : Fragment() {
         viewModel.loginState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is LoginState.Error -> Toast.makeText(
-                    requireContext(),
-                    "${state.message}",
-                    Toast.LENGTH_SHORT
+                    requireContext(), "${state.message}", Toast.LENGTH_SHORT
                 ).show()
 
-                is LoginState.IsAuthenticated ->
-                    Log.d(TAG, "заглушка для isAuthenticated")
+                is LoginState.IsAuthenticated -> Log.d(TAG, "заглушка для isAuthenticated")
 
                 is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
@@ -114,8 +117,7 @@ class LoginFragment : Fragment() {
 
     private fun launchRegistrationFragment() {
         findNavController().navigate(
-            LoginFragmentDirections
-                .actionLoginFragmentToRegistrationFragment()
+            LoginFragmentDirections.actionLoginFragmentToRegistrationFragment()
         )
     }
 

@@ -189,7 +189,8 @@ class RepositoryImpl @Inject constructor(
 
             if (petDtos.isNotEmpty()) {
                 val petDbModels = petDtos.map { petMapper.petDtoToPetDbModel(it) }
-                Log.d(TAG, "PetDbModels jkdjkfdj: $petDbModels")
+
+                Log.d(TAG, "PetDbModels first of map: $petDbModels")
 
                 vetClinicDao.insertPet(petDbModels.first())
             }

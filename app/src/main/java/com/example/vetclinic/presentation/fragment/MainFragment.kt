@@ -80,6 +80,8 @@ class MainFragment : Fragment() {
 
         setUpListeners(navController)
         observeViewModel()
+        
+        viewmodel.getUserIdAndFetchData()
     }
 
 
