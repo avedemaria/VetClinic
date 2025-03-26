@@ -100,7 +100,6 @@ class LoginFragment : Fragment() {
                 is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
                     launchMainFragment()
-                    Log.d(TAG, "заглушка для Result")
                 }
 
             }

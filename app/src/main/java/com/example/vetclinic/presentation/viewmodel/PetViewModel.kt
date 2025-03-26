@@ -35,7 +35,6 @@ class PetViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
             Log.d("PetViewModel", "userId: $userId")
-//            val petDeferred = async { getPetsUseCase.getPetsFromSupabaseDb(userId) }
 
             getPetsData(userId)
         }
@@ -85,7 +84,6 @@ class PetViewModel @Inject constructor(
 
 
         viewModelScope.launch {
-//            val userId = userDataStore.getUserId() ?: ""
 
             val result = deletePetUseCase.deletePetFromSupabaseDb(pet)
 

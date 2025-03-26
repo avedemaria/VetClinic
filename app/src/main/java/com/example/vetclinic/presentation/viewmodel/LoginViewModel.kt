@@ -42,6 +42,8 @@ class LoginViewModel @Inject constructor(
             loginUserUseCase.loginUser(email, password).onSuccess {
                 _loginState.value = LoginState.Result(it)
                 userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken)
+
+
                 Log.d("LoginViewModel", "Saving userId: ${it.user?.id}")
             }
                 .onFailure {

@@ -40,4 +40,10 @@ interface VetClinicDao {
     @Query("SELECT * FROM users WHERE uid = :userId")
     suspend fun getUserWithPets(userId: String): UserWithPetsDbModel?
 
+    @Query("DELETE FROM users")
+    suspend fun clearUserData()
+
+    @Query("DELETE FROM pets")
+    suspend fun clearAllPets()
+
 }

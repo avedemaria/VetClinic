@@ -64,6 +64,9 @@ interface Repository {
 
     suspend fun deletePetFromRoom(pet: Pet)
 
+    suspend fun clearAllData()
+
+
 
     //time slots and appointments
 

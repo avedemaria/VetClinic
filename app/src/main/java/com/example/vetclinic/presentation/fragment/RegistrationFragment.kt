@@ -17,6 +17,7 @@ import com.example.vetclinic.presentation.viewmodel.RegistrationState
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import java.util.UUID
 
 
 class RegistrationFragment : Fragment() {
@@ -74,6 +75,13 @@ class RegistrationFragment : Fragment() {
 
         }
 
+        binding.btnCreateAccount.setOnLongClickListener {
+            generateMockForm()
+            true
+        }
+
+
+
         binding.tvBackToLogin.setOnClickListener{
             launchLoginFragment()
         }
@@ -113,6 +121,16 @@ class RegistrationFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun generateMockForm() {
+        binding.etName.setText("John")
+        binding.etLastName.setText("Doe")
+        binding.etPetName.setText("Rex")
+        binding.etPhoneNumber.setText("123456789")
+        binding.etEmail.setText("test${UUID.randomUUID()}@test.com")
+        binding.etPassword.setText("password")
     }
 
 

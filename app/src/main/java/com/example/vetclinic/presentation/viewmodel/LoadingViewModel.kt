@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ class LoadingViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: ""
+            Log.d("LoadingFragment", "userId: $userId")
             _loadingState.value = LoadingState.Result(userId)
         }
 

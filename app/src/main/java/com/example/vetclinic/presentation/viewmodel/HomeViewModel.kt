@@ -30,7 +30,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 //            userDataStore.userIdFlow.collect { userId ->
             val userId =  userDataStore.getUserId()
-                Log.d(TAG, "received userId: $userId")
                 if (!userId.isNullOrEmpty()) {
                     loadUserName(userId)
                 } else {

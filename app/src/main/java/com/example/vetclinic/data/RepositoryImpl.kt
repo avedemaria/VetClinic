@@ -87,6 +87,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
 
         supabaseClient.auth.signOut()
+        clearAllData()
         Log.d(TAG, "User has been signed out successfully")
         Unit
     }
@@ -323,7 +324,7 @@ class RepositoryImpl @Inject constructor(
                 throw Exception("Server's error: ${response.code()} - ${response.message()}")
             }
         }
-            .onFailure { e-> Log.e(TAG, "Error fetching serviced {$e.message}") }
+            .onFailure { e -> Log.e(TAG, "Error fetching serviced {$e.message}") }
 
     private suspend fun <T, R> addDataToSupabaseDb(
         entity: T,
@@ -380,7 +381,10 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun addPetToRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
 
-        vetClinicDao.insertPet(petMapper.petEntityToPetDbModel(pet))
+        val models = petMapper.petEntityToPetDbModel(pet)
+        Log.d(TAG,"Pet model is: $models")
+        vetClinicDao.insertPet(models)
+
     }
         .onFailure { error ->
             Log.e(TAG, "Error adding pet to Room $error")
@@ -445,6 +449,12 @@ class RepositoryImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun clearAllData() {
+        vetClinicDao.clearAllPets()
+        vetClinicDao.clearUserData()
+    }
+
 
     companion object {
         private const val TAG = "RepositoryImpl"
