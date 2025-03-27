@@ -23,8 +23,8 @@ class ProfileFragment : Fragment() {
     lateinit var toggleGroup: MaterialButtonToggleGroup
 
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelFactory
 
 //    private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
 
@@ -40,12 +40,6 @@ class ProfileFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +52,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        component.inject(this)
 
         toggleGroup = binding.toggleGroup
         updateToggleGroupVisibility()
@@ -102,9 +97,6 @@ class ProfileFragment : Fragment() {
     }
 
 
-    companion object {
-        const val USER_ID = "userId"
-    }
 }
 
 

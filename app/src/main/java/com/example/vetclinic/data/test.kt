@@ -12,16 +12,7 @@ import kotlin.random.Random
 fun main() {
 
 
-    val days = mutableListOf<Day>()
 
-    for (i in 0..14) {
-
-        val id = Random.nextInt(14).toString()
-        val date = LocalDate.now().plusDays(14).toString()
-        days.add(Day(id, date))
-    }
-
-    println(generateTimeSlots(days, "789", "294", 30))
 
 }
 

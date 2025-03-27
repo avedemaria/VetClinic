@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Date
 
 fun String.extractDayOfMonth(): Int {
@@ -27,11 +28,57 @@ fun String.formatDayMonthYear(): String {
     }
 }
 
-fun String.toFormattedDateTime(): String {
+fun String.toLocalDateWithDefaults(): LocalDate {
+    val currentDate = LocalDate.now()
+    // Добавляем текущий год и месяц, если они не заданы в строке
+    return LocalDate.parse(
+        "${currentDate.year}-${
+            currentDate.monthValue.toString().padStart(2, '0')
+        }-$this", DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    )
+}
 
+fun LocalDate.formatDateTime(timeSlot: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val dateTime = LocalDateTime.parse(this, formatter)
-    return dateTime.format(formatter)
+
+    val timeParts = timeSlot.split(":")
+    val hour = timeParts[0].toInt()
+    val minute = timeParts[1].toInt()
+
+    return LocalDateTime.of(this.year, this.monthValue, this.dayOfMonth, hour, minute, 0)
+        .format(formatter)
+}
+
+
+fun String.toLocalDateDefault(): LocalDate {
+    // Assuming the date is in a format like "2025-03-27"
+    return LocalDate.parse(this, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+}
+
+fun String.formatAppointmentDateTime(): String {
+    val inputFormatters = listOf(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    )
+
+    val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+
+    for (formatter in inputFormatters) {
+        try {
+            val parsedDateTime = LocalDateTime.parse(this, formatter)
+            return parsedDateTime.format(outputFormatter)
+        } catch (e: Exception) {
+            // Continue to next formatter
+            continue
+        }
+    }
+    // If all parsing attempts fail, return the original string
+    return this
+}
+
+fun LocalDate.toFormattedString(): String {
+    return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 }
 
 fun String.formatToLocalDateTime(): String {

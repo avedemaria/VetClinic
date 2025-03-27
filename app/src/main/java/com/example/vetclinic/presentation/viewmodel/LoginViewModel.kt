@@ -44,29 +44,34 @@ class LoginViewModel @Inject constructor(
 
     fun loginUser(email: String, password: String) {
 
-        //TODO: Loading in button
+
+        _loginState.value = LoginState.Loading
+
         viewModelScope.launch {
             loginUserUseCase.loginUser(email, password).onSuccess {
 
                 userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken)
 
-                it.user?.id?.let { userId ->
-                    getUserUseCase.getUserFromSupabaseDb(userId)
-                    getPetsUseCase.getPetsFromSupabaseDb(userId)
-                }
-
                 Log.d("LoginViewModel", "Saving userId: ${it.user?.id}")
+                it.user?.id?.let { userId ->
+                    val userResult = getUserUseCase.getUserFromSupabaseDb(userId)
 
-                // Avoid delay and implement like sync suspend methods
-                delay(1500)
-                _loginState.value = LoginState.Result(it)
-            }.onFailure {
-                _loginState.value = LoginState.Error(it.message)
+                    if (userResult.isSuccess) {
+                        getPetsUseCase.getPetsFromSupabaseDb(userId)
+                    } else {
+                        _loginState.value = LoginState.Error(userResult.exceptionOrNull()?.message)
+                    }
+
+                    _loginState.value = LoginState.Result(it)
+                }
             }
+                .onFailure {
+                    _loginState.value = LoginState.Error(it.message)
+                }
+                }
         }
+
+
     }
-
-
-}
 
 

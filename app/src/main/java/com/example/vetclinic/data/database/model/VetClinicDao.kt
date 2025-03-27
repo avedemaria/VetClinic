@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.vetclinic.domain.entities.Pet
 
 
 @Dao
@@ -17,6 +18,9 @@ interface VetClinicDao {
 
     @Query("SELECT * FROM pets WHERE user_id=:userId")
     fun getPetsByUserId(userId: String): List<PetDbModel>
+
+    @Query("SELECT * FROM pets WHERE pet_id=:petId")
+    fun getPetById(petId:String): PetDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserDbModel)

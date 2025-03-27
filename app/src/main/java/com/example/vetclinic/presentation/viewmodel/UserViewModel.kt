@@ -37,7 +37,6 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
-                    if (user != null)
                         _userState.value = UserUiState.Success(user)
                 }
                 .onFailure { error ->

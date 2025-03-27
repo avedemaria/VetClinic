@@ -56,4 +56,5 @@
     <string name="new_password_hint">Новый пароль</string>
     <string name="confirm_password_hint">Подтвердите пароль</string>
     <string name="update_password">Обновить пароль</string>
+    <string name="appointments_are_not_available">Нет доступных приёмов</string>
 </resources>

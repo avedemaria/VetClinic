@@ -19,7 +19,7 @@ class DoctorViewModel @Inject constructor(
     private val getDepartmentListUseCase: GetDepartmentListUseCase
 ) : ViewModel() {
 
-    private val _doctorState = MutableLiveData<DoctorUiState>(DoctorUiState.Empty)
+    private val _doctorState = MutableLiveData<DoctorUiState>()
     val doctorState: LiveData<DoctorUiState> = _doctorState
 
 
@@ -37,11 +37,6 @@ class DoctorViewModel @Inject constructor(
             if (doctorsResult.isSuccess && departmentsResult.isSuccess) {
                 val doctors = doctorsResult.getOrThrow()
                 val departments = departmentsResult.getOrThrow()
-
-                if (doctors.isEmpty() || departments.isEmpty()) {
-                    _doctorState.value = DoctorUiState.Empty
-                    return@launch
-                }
 
                 val groupedDoctors = groupDoctorsByDepartment(doctors, departments)
                 _doctorState.value = DoctorUiState.Success(groupedDoctors)

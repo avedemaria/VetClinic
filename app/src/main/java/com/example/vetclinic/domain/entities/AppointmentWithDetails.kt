@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Appointment(
+data class AppointmentWithDetails(
     val id: String,
     val userId: String,
     val petId: String,
@@ -12,5 +12,10 @@ data class Appointment(
     val serviceId: String,
     val dateTime: String,
     val status: AppointmentStatus,
-    val isArchived: Boolean
+    val isArchived: Boolean,
+    val serviceName: String,
+    val doctorName: String,
+    val doctorRole: String,
+    val petName: String,
+    val userName: String
 ) : Parcelable

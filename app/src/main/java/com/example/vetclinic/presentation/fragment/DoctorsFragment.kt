@@ -100,8 +100,6 @@ class DoctorsFragment : Fragment() {
 
         viewModel.doctorState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is DoctorUiState.Empty ->
-                    Log.d("DoctorsFragment", "DoctorUiState.Empty-заглушка для теста")
 
                 is DoctorUiState.Error -> Toast.makeText(
                     requireContext(),

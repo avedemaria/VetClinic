@@ -39,18 +39,6 @@ class UserFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-//    private val userId by lazy {
-//        arguments?.getString(ProfileFragment.USER_ID)
-//            ?: throw IllegalArgumentException("UserId is null")
-//
-//
-//    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +52,7 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        component.inject(this)
 
         val parentFragment = parentFragment as? ProfileFragment
         parentFragment?.toggleGroup?.visibility = View.VISIBLE

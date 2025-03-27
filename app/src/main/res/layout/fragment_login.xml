@@ -2,130 +2,157 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
-    <LinearLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="26dp">
-
-
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/modern_pet_veterinary_clinic"
-            android:contentDescription="Логотип компании"
-            android:layout_marginTop="50dp"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/log_in"
-            android:textSize="22sp"
-            android:layout_marginTop="16dp"
-          />
-
-
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"/>
-
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:layout_marginTop="8dp"
-            android:padding="12dp"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"/>
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/log_in_button"
-            android:backgroundTint="@color/dark_blue"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"/>
+        android:layout_height="match_parent">
 
 
         <LinearLayout
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="@string/dont_have_account"
-                android:textSize="14sp"
-                android:textColor="@color/dark_blue"
-                />
+            android:id="@+id/llLoginContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="26dp">
+
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="50dp"
+                android:contentDescription="Логотип компании"
+                android:src="@drawable/modern_pet_veterinary_clinic" />
+
 
             <TextView
-                android:id="@+id/tv_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/log_in"
+                android:textSize="22sp" />
+
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:backgroundTint="@color/dark_blue"
+                android:text="@string/log_in_button" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:visibility="gone"
+                app:indicatorSize="24dp"
+                app:trackThickness="4dp"
+                app:indicatorColor="@color/light_grey"/>
+
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/dont_have_account"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/TV_register"
+                    android:textColor="#075D52"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="@string/TV_register"
+                android:text="@string/tv_forgorPassword"
                 android:textColor="#075D52"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/admin_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/tv_admin_login"
+                android:textColor="#075D52"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/cancel"
+                android:textSize="16sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_forgot_password"
+
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_forgorPassword"
-            android:textSize="14sp"
-            android:textColor="#075D52"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/admin_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_admin_login"
-            android:textSize="14sp"
-            android:textColor="#075D52"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:focusable="true"/>
-
-
-        <TextView
-            android:id="@+id/btn_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"/>
-    </LinearLayout>
+    </FrameLayout>
 
 </ScrollView>

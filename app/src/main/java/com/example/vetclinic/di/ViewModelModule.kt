@@ -3,6 +3,7 @@ package com.example.vetclinic.di
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
+import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.LoadingViewModel
@@ -99,6 +100,11 @@ interface ViewModelModule {
     @ViewModelKey(BookAppointmentViewModel::class)
     @Binds
     fun bindBookAppointmentViewModel(impl: BookAppointmentViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(CurrentAppointmentsViewModel::class)
+    @Binds
+    fun bindCurrentAppointmentsViewModel(impl: CurrentAppointmentsViewModel): ViewModel
 
 
 }

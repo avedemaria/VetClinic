@@ -54,11 +54,6 @@ class PlainServiceViewModel @Inject constructor(
 
             if (servicesResult.isSuccess) {
                 val services = servicesResult.getOrThrow()
-
-                if (services.isEmpty()) {
-                    _serviceState.value = ServiceUiState.Empty
-                    return@launch
-                }
                 _serviceState.value = ServiceUiState.Success(services)
             } else {
                 val error = servicesResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"

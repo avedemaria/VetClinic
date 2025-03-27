@@ -21,8 +21,7 @@ class HomeViewModel @Inject constructor(
 
     fun getUserIdAndLoadUserName() {
         viewModelScope.launch {
-//            val userId = userDataStore.getUserId() ?: return@launch
-            val userId = "1db3eb25-7b6e-4729-b226-fe3ce18c5c80"
+            val userId = userDataStore.getUserId() ?: return@launch
             Log.d(TAG, "userId2 $userId")
 
             if (userId.isNotEmpty()) {

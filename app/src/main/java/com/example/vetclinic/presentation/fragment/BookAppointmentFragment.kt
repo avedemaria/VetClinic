@@ -26,9 +26,7 @@ import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.TimeSlot
-import com.example.vetclinic.extractDayOfMonth
-import com.example.vetclinic.formatDayMonthYear
-import com.example.vetclinic.formatToLocalDateTime
+import com.example.vetclinic.formatDateTime
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.DaysAdapter
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnDayClickedListener
@@ -37,6 +35,7 @@ import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.TimeSlotAdapt
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentState
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.example.vetclinic.toFormattedString
 import jakarta.inject.Inject
 
 
@@ -145,7 +144,7 @@ class BookAppointmentFragment : Fragment() {
                     val updatedDays = state.daysWithTimeSlots.map { it.day }.map { day ->
                         day.copy(
                             isSelected = (day.id == state.selectedDay?.id),
-                            date = day.date.extractDayOfMonth().toString()
+                            date = day.date
                         )
                     }
                     daysAdapter.submitList(updatedDays)
@@ -211,26 +210,28 @@ class BookAppointmentFragment : Fragment() {
             ).show()
             return
         }
-
+        Log.d(TAG, "selectedDay: ${selectedDay.date}")
 
         AlertDialog.Builder(requireContext())
             .setTitle("Подтвердите приём: ")
             .setMessage(
                 createBoldSpannableString(
-                    "Date:" to selectedDay.date.formatDayMonthYear(),
-                    "Time:" to selectedTimeSlot.startTime,
+                    "Дата:" to selectedDay.date.toFormattedString(),
+                    "Время:" to selectedTimeSlot.startTime,
                     "${doctor.role}:" to doctor.doctorName,
-                    "Service:" to service.serviceName,
-                    "Pet:" to selectedPet.petName,
-                    "Duration:" to "${service.duration} min",
-                    "Price:" to "${service.price} руб."
+                    "Услуга:" to service.serviceName,
+                    "Питомец:" to selectedPet.petName,
+                    "Длительность:" to "${service.duration} мин.",
+                    "Цена:" to "${service.price} руб."
+
+
                 )
+
             )
             .setPositiveButton("Подтверждаю") { dialog, _ ->
                 val dateTime =
-                    "${selectedDay.date} ${selectedTimeSlot.startTime}:00".formatToLocalDateTime()
+                    selectedDay.date.formatDateTime(selectedTimeSlot.startTime)
                 Log.d(TAG, "dateTime: $dateTime")
-
                 viewModel.bookAppointment(selectedPet.petId, service.id, doctor.uid, dateTime)
                 dialog.dismiss()
             }

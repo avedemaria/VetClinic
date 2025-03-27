@@ -6,17 +6,11 @@ import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.Day
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.toLocalDateDefault
 import jakarta.inject.Inject
 
 class DayWithTimeSlotsMapper @Inject constructor() {
 
-
-    fun dayDtoToEntity(dto: DayDto): Day {
-        return Day(
-            id = dto.id,
-            date = dto.date
-        )
-    }
 
     fun timeSlotDtoToEntity(dto: TimeSlotDto): TimeSlot {
         return TimeSlot(
@@ -48,7 +42,10 @@ class DayWithTimeSlotsMapper @Inject constructor() {
     }
 
     private fun dayWithTimeSlotsDtoToDay(dayWithTimeSlotsDto: DayWithTimeSlotsDto): Day {
-        return Day(id = dayWithTimeSlotsDto.id, date = dayWithTimeSlotsDto.date)
+        return Day(
+            id = dayWithTimeSlotsDto.id,
+            date = dayWithTimeSlotsDto.date.toLocalDateDefault()
+        )
     }
 
 

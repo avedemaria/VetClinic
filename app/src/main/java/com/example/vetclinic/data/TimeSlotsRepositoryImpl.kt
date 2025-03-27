@@ -282,10 +282,17 @@ class TimeSlotsRepositoryImpl @Inject constructor(
 
     override suspend fun updateTimeSlotStatusToBooked(timeSlotId: String): Result<Unit> =
         kotlin.runCatching {
-            val updateRequest = TimeSlotUpdateRequest(isBooked = true)
+
+            val timeSlotIdWithParam = "eq.$timeSlotId"
+            val timeSlots = supabaseApiService.getTimeSlotById(timeSlotIdWithParam)
+
+            val existingTimeSlot = timeSlots.firstOrNull()
+                ?: throw Exception("No time slot found with ID: $timeSlotId")
+
+            val updatedTimeSlot = existingTimeSlot.copy(isBooked = true)
 
             val response =
-                supabaseApiService.updateTimeSlotStatusToBooked(timeSlotId, updateRequest)
+                supabaseApiService.updateTimeSlot(timeSlotIdWithParam, updatedTimeSlot)
 
             if (!response.isSuccessful) {
                 throw Exception("${response.errorBody()?.string()}")

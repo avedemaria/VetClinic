@@ -6,5 +6,4 @@ sealed class DoctorUiState {
     object Loading : DoctorUiState()
     data class Success(val doctors: List<DepartmentWithDoctors>) : DoctorUiState()
     data class Error(val message: String) : DoctorUiState()
-    object Empty : DoctorUiState()
 }

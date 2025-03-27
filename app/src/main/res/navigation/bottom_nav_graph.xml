@@ -77,9 +77,9 @@
     </fragment>
     <fragment
         android:id="@+id/appointmentFragment"
-        android:name="com.example.vetclinic.presentation.fragment.AppointmentFragment"
+        android:name="com.example.vetclinic.presentation.fragment.AppointmentsFragment"
         android:label="fragment_appointment"
-        tools:layout="@layout/fragment_appointment" />
+        tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/servicesWithDepFragment"
         android:name="com.example.vetclinic.presentation.fragment.ServicesWithDepFragment"

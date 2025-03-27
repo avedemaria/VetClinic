@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.data.AppointmentRepositoryImpl
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentStatus
@@ -125,8 +124,14 @@ class BookAppointmentViewModel @Inject constructor(
             val result = addAppointmentUseCase.addAppointment(appointment)
             if (result.isSuccess) {
                 if (selectedDay != null) {
-                    updateTimeSlotUseCase.updateTimeSlotStatusToBooked(
-                        selectedTimeSlot?.id ?: "")
+
+                    val timeSlot = selectedTimeSlot
+                    if (timeSlot!= null) {
+                        updateTimeSlotUseCase.updateTimeSlotStatusToBooked(timeSlot.id)
+                        Log.d(TAG, "selected time slot $timeSlot")
+                    }
+
+
                 }
                 _bookAppointmentState.value = BookAppointmentState.AppointmentAdded
             } else {

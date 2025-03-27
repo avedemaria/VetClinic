@@ -1,60 +1,124 @@
 package com.example.vetclinic.presentation.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
+import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
+import com.example.vetclinic.databinding.FragmentDetailedDoctorInfoBinding
+import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
+import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
+import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import jakarta.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CurrentAppointmentsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CurrentAppointmentsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: CurrentAppointmentsViewModel by viewModels { viewModelFactory }
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
     }
+
+    private var _binding: FragmentCurrentAppointmentsBinding? = null
+    private val binding
+        get() = _binding ?: throw RuntimeException(
+            "FragmentCurrentAppointmentsBinding is null"
+        )
+
+
+    private lateinit var appointmentsAdapter: AppointmentsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_current_appointments, container, false)
+    ): View {
+        _binding = FragmentCurrentAppointmentsBinding.inflate(
+            inflater, container,
+            false
+        )
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CurrentAppointmentsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CurrentAppointmentsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
+
+        setUpAdapter()
+
+        observeViewModel()
+
+
+    }
+
+
+    private fun setUpAdapter() {
+
+        appointmentsAdapter = AppointmentsAdapter()
+
+        binding.rvCurrentAppointments.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(), RecyclerView.VERTICAL,
+                false
+            )
+
+            adapter = appointmentsAdapter
+        }
+    }
+
+
+    private fun observeViewModel() {
+        viewModel.appointmentState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                CurrentAppointmentsState.Empty -> {
+                    binding.rvCurrentAppointments.visibility = View.GONE
+                    binding.tvEmptyAppointments.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                is CurrentAppointmentsState.Error -> {
+                    binding.currentAppointmentContent.isEnabled = false
+                    binding.progressBar.visibility = View.GONE
+
+                    Toast.makeText(
+                        requireContext(),
+                        "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                CurrentAppointmentsState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.currentAppointmentContent.isEnabled = false
+                }
+
+                is CurrentAppointmentsState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.currentAppointmentContent.isEnabled = true
+
+                    appointmentsAdapter.submitList(state.appointments)
                 }
             }
+
+        }
+    }
+
+
+    companion object {
+        private const val TAG = "CurrentAppointmentsFragment"
     }
 }

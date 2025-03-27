@@ -108,7 +108,7 @@ class PlainServicesFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.serviceState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ServiceUiState.Empty -> Log.d(TAG, "заглушка")
+
                 is ServiceUiState.Error -> Log.d(TAG, "заглушка")
                 ServiceUiState.Loading -> Log.d(TAG, "заглушка")
                 is ServiceUiState.Success -> {

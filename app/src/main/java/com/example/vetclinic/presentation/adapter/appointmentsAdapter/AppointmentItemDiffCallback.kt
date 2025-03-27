@@ -2,11 +2,18 @@ package com.example.vetclinic.presentation.adapter.appointmentsAdapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.vetclinic.domain.entities.Appointment
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
 
-class AppointmentItemDiffCallback : DiffUtil.ItemCallback<Appointment>() {
-    override fun areItemsTheSame(oldItem: Appointment, newItem: Appointment): Boolean =
+class AppointmentItemDiffCallback : DiffUtil.ItemCallback<AppointmentWithDetails>() {
+    override fun areItemsTheSame(
+        oldItem: AppointmentWithDetails,
+        newItem: AppointmentWithDetails
+    ): Boolean =
         oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Appointment, newItem: Appointment): Boolean =
+    override fun areContentsTheSame(
+        oldItem: AppointmentWithDetails,
+        newItem: AppointmentWithDetails
+    ): Boolean =
         oldItem == newItem
 }

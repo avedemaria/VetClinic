@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vetclinic.databinding.AppointmentItemBinding
 import com.example.vetclinic.domain.entities.Appointment
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
 
-class AppointmentsAdapter() : ListAdapter<Appointment, AppointmentViewHolder>(AppointmentItemDiffCallback()) {
+class AppointmentsAdapter() :
+    ListAdapter<AppointmentWithDetails, AppointmentViewHolder>(AppointmentItemDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -20,6 +22,7 @@ class AppointmentsAdapter() : ListAdapter<Appointment, AppointmentViewHolder>(Ap
     }
 
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val appointment = getItem(position)
+        holder.bind(appointment)
     }
 }

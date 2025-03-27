@@ -8,4 +8,5 @@ sealed class LoginState {
     data class Error(val message: String?) : LoginState()
     object IsAuthenticated: LoginState()
     object LoggedOut: LoginState()
+    object Loading: LoginState()
 }

@@ -5,12 +5,41 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragment.CurrentAppointmentsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_margin="8dp"
-        android:id="@+id/rv_currentAppointments"
+
+    <FrameLayout
+        android:id="@+id/currentAppointmentContent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_currentAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="visible"
+            tools:listitem="@layout/appointment_item" />
+
+
+        <TextView
+            android:id="@+id/tvEmptyAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:text="@string/appointments_are_not_available"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       tools:listitem="@layout/appointment_item"/>
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </FrameLayout>

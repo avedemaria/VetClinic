@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnLogin.setOnLongClickListener {
-            binding.etEmail.setText( "test4396a0d3-404f-4942-9f33-4ddd1f2c89d4@test.com")
+            binding.etEmail.setText("test4396a0d3-404f-4942-9f33-4ddd1f2c89d4@test.com")
             binding.etPassword.setText("password")
             true
 
@@ -94,15 +94,27 @@ class LoginFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.loginState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is LoginState.Error -> Toast.makeText(
-                    requireContext(), "${state.message}", Toast.LENGTH_SHORT
-                ).show()
+                is LoginState.Error -> {
+                    binding.progressIndicator.visibility = View.GONE
+                    binding.btnLogin.isEnabled = false
+
+                    Toast.makeText(
+                        requireContext(), "${state.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
 
                 is LoginState.IsAuthenticated -> Log.d(TAG, "заглушка для isAuthenticated")
 
                 is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
+                    binding.progressIndicator.visibility = View.GONE
+                    binding.btnLogin.isEnabled = true
                     launchMainFragment()
+                }
+
+                LoginState.Loading -> {
+                    binding.progressIndicator.visibility = View.VISIBLE
+                    binding.btnLogin.isEnabled = false
                 }
 
             }

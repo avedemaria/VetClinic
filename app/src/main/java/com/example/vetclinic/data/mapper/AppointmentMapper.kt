@@ -3,6 +3,8 @@ package com.example.vetclinic.data.mapper
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentStatus
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.formatToLocalDateTime
 import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,19 +28,41 @@ class AppointmentMapper @Inject constructor() {
 
     fun appointmentEntityToAppointmentDto(entity: Appointment): AppointmentDto {
 
-        val parsedDateTime =
-            LocalDateTime.parse(entity.dateTime,
-                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
-
         return AppointmentDto(
             id = entity.id,
             userId = entity.userId,
             petId = entity.petId,
             doctorId = entity.doctorId,
             serviceId = entity.serviceId,
-            dateTime = parsedDateTime,
+            dateTime = entity.dateTime,
             status = entity.status.toString(),
             isArchived = entity.isArchived
+        )
+    }
+
+
+    fun appointmentToAppointmentWithDetails(
+        appointment: Appointment,
+        serviceName: String,
+        doctorName: String,
+        doctorRole: String,
+        userName: String,
+        petName: String
+    ): AppointmentWithDetails {
+        return AppointmentWithDetails(
+            id = appointment.id,
+            userId = appointment.userId,
+            petId = appointment.petId,
+            doctorId = appointment.doctorId,
+            serviceId = appointment.serviceId,
+            dateTime = appointment.dateTime,
+            status = appointment.status,
+            isArchived = appointment.isArchived,
+            serviceName = serviceName,
+            doctorName = doctorName,
+            doctorRole = doctorRole,
+            petName = petName,
+            userName = userName
         )
     }
 

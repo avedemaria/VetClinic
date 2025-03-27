@@ -15,31 +15,42 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/appointmentDateTimeTextView"
+            android:id="@+id/tvAppointmentDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12 марта 2025, 14:30"
+            tools:text="12 марта 2025, 14:30"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/doctorNameTextView"
+            android:id="@+id/tvDoctorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Иванов Алексей Петрович"
+            tools:text="Иванов Алексей Петрович"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/doctorSpecialtyTextView"
+            android:id="@+id/tvDoctorRole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Хирург"
             android:textSize="14sp"
             android:textColor="@color/dark_grey" />
+
+
+        <TextView
+            android:id="@+id/tvServiceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Санация ротовой полости"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/dark_blue" />
 
 
         <LinearLayout
@@ -55,11 +66,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/owner_title"
                 android:textSize="14sp"
-                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textColor="@color/dark_grey"
                 />
 
             <TextView
-                android:id="@+id/petOwnerTextView"
+                android:id="@+id/tvPetOwner"
+                android:layout_marginStart="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text = "Ольга Иванова"/>
@@ -78,31 +91,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Питомец: "
+                android:textStyle="bold"
                 android:textColor="@color/dark_grey"
                 android:textSize="14sp"
                 />
 
             <TextView
-                android:id="@+id/petTextView"
+                android:id="@+id/tvPet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/dark_grey"
+                android:layout_marginStart="4dp"
                 tools:text = "Барсик"/>
 
         </LinearLayout>
 
 
         <TextView
-            android:id="@+id/appointmentStatusTextView"
+            android:id="@+id/tvAppointmentStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Прием назначен"
+            tools:text="Прием назначен"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:padding="6dp"
-            tools:background = "@color/status_blue"
-            android:background = "@drawable/status_background"
+            tools:background = "@drawable/status_background_scheduled"
             android:gravity="center"
             android:layout_gravity="end"
             android:layout_marginTop="8dp" />

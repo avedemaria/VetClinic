@@ -12,21 +12,19 @@ class DayViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
 
-
-
     fun onBind(day: Day) {
 
         when (binding) {
             is ItemDayBinding -> {
-                binding.tvDay.text = day.date
+                binding.tvDay.text = day.date.dayOfMonth.toString()
             }
 
             is ItemDayClickedBinding -> {
-                binding.tvDayClicked.text = day.date
+                binding.tvDayClicked.text = day.date.dayOfMonth.toString()
             }
         }
 
-        binding.root.setOnClickListener{
+        binding.root.setOnClickListener {
             if (!day.isSelected) {
                 onDayClickedListener.onDayClicked(day)
             }

@@ -2,14 +2,14 @@ package com.example.vetclinic.domain.entities
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.sql.Time
+import java.time.LocalDate
 
 
 @Parcelize
 data class Day(
     val id: String,
-    val date: String,
+    val date: LocalDate,
     val isSelected: Boolean = false
 
-    ) : Parcelable {
+) : Parcelable {
 }

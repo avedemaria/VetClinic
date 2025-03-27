@@ -33,6 +33,11 @@ interface SupabaseApiService {
     suspend fun getServiceFromSupabaseDbById(@Query("id") serviceId: String):
             Response<List<ServiceDto>>
 
+    @GET("rest/v1/doctors")
+    suspend fun getDoctorFromSupabaseDbById(@Query("uid") doctorId: String):
+            Response<List<DoctorDto>>
+
+
     @GET("rest/v1/pets")
     suspend fun getPetsFromSupabaseDb(@Query("user_id") userId: String):
             Response<List<PetDto>>
@@ -78,12 +83,6 @@ interface SupabaseApiService {
     ): Response<List<ServiceDto>>
 
 
-    @GET("rest/v1/appointments")
-    suspend fun getAppointments(
-        @Query("select") select: String = "*, doctors: doctor_id(*),pets:pet_id(*)" +
-                ",users:user_id(*),services:service_id(*)"
-    ): Response<List<AppointmentDto>>
-
 
     @POST("rest/v1/appointments")
     suspend fun addAppointment(@Body appointmentCreateDto: AppointmentDto): Response<Unit>
@@ -113,11 +112,20 @@ interface SupabaseApiService {
     ): Response<Unit>
 
 
-    @PATCH("rest/v1/timeslots")
-    suspend fun updateTimeSlotStatusToBooked(
+    @PATCH("rest/v1/time_slots")
+    suspend fun updateTimeSlot(
         @Query("id") timeSlotId: String,
-        @Body updateRequest: TimeSlotUpdateRequest
+        @Body timeSlotDto: TimeSlotDto
     ): Response<Unit>
+
+
+    @GET("rest/v1/time_slots")
+    suspend fun getTimeSlotById(@Query("id") timeSlotId: String): List<TimeSlotDto>
+
+    @GET("rest/v1/appointments")
+    suspend fun getAppointmentsByUserId(
+        @Query("user_id") userId: String
+    ): Response<List<AppointmentDto>>
 }
 
 

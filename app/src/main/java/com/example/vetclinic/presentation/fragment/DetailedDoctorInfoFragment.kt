@@ -45,10 +45,6 @@ class DetailedDoctorInfoFragment : Fragment() {
 
     private lateinit var servicesAdapter: DoctorServicesAdapter
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +57,7 @@ class DetailedDoctorInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        component.inject(this)
 
 
         Log.d("Doctor", "${args.doctor}")
@@ -117,7 +114,6 @@ class DetailedDoctorInfoFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.serviceState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ServiceUiState.Empty -> Log.d(TAG, "DoctorUiState.Empty-заглушка для теста")
                 is ServiceUiState.Error -> Toast.makeText(
                     requireContext(),
                     "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
