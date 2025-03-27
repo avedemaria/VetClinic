@@ -12,41 +12,34 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase,
-    private val userDataStore: UserDataStore
-
+    private val getUserUseCase: GetUserUseCase, private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _homeState = MutableLiveData<HomeState>()
     val homeState: LiveData<HomeState> get() = _homeState
 
 
-    init {
-        getUserIdAndLoadUserName()
-    }
-
-
     fun getUserIdAndLoadUserName() {
         viewModelScope.launch {
-//            userDataStore.userIdFlow.collect { userId ->
-            val userId =  userDataStore.getUserId()
-                if (!userId.isNullOrEmpty()) {
-                    loadUserName(userId)
-                } else {
-                    _homeState.value = HomeState.Error("User not found")
-                }
+//            val userId = userDataStore.getUserId() ?: return@launch
+            val userId = "1db3eb25-7b6e-4729-b226-fe3ce18c5c80"
+            Log.d(TAG, "userId2 $userId")
+
+            if (userId.isNotEmpty()) {
+                loadUserName(userId)
+            } else {
+                _homeState.value = HomeState.Error("User not found")
             }
         }
+    }
 
     private fun loadUserName(userId: String) {
         _homeState.value = HomeState.Loading
         viewModelScope.launch {
-            getUserUseCase.getUserFromRoom(userId)
-                .onSuccess { user ->
+            getUserUseCase.getUserFromRoom(userId).onSuccess { user ->
                     Log.d(TAG, "Loaded user: $user")
                     _homeState.value = HomeState.Result(user.userName)
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     Log.e(TAG, "Error loading user: $error")
                     _homeState.value = HomeState.Error(error.message ?: "Неизвестная ошибка")
                 }
@@ -54,12 +47,11 @@ class HomeViewModel @Inject constructor(
     }
 
 
-
     companion object {
         private const val TAG = "HomeViewModel"
     }
 
-    }
+}
 
 
 

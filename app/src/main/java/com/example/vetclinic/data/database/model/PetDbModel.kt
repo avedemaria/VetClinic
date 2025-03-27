@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "pets",
-    foreignKeys = [ForeignKey(
+/*    foreignKeys = [ForeignKey(
         entity = UserDbModel::class,
         parentColumns = ["uid"],
         childColumns = ["user_id"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index(value = ["user_id"])]
+    indices = [Index(value = ["user_id"])]*/
 )
 data class PetDbModel(
     @PrimaryKey

@@ -72,12 +72,14 @@ class PetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         onAddPetButtonClicked()
 
         setUpAdapter()
 
         observeViewModel()
 
+        viewModel.getPetsData()
     }
 
 
@@ -216,7 +218,7 @@ class PetFragment : Fragment() {
                 val newName = editText.text.toString().trim()
                 if (newName.isNotBlank() && newName != pet.petName) {
                     val updatedPet = pet.copy(petName = newName)
-                    viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+                    viewModel.updatePet(pet.petId, updatedPet)
 
                 }
                 dialog.dismiss()
@@ -235,7 +237,7 @@ class PetFragment : Fragment() {
             .setItems(petTypes) { dialog, which ->
                 val selectedType = petTypes[which]
                 val updatedPet = pet.copy(petType = selectedType)
-                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+                viewModel.updatePet(pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)
             .show()
@@ -261,7 +263,7 @@ class PetFragment : Fragment() {
 
                 val updatedPet = pet.copy(petBDay = selectedDate)
 
-                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+                viewModel.updatePet(pet.petId, updatedPet)
             }, year, month, day)
 
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
@@ -280,7 +282,7 @@ class PetFragment : Fragment() {
             .setItems(genders) { dialog, which ->
                 val selectedGender = genders[which]
                 val updatedPet = pet.copy(petGender = selectedGender)
-                viewModel.updatePet(pet.userId, pet.petId, updatedPet)
+                viewModel.updatePet( pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)
             .show()
