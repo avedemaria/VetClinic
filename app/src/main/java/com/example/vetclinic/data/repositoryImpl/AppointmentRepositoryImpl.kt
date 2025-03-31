@@ -8,7 +8,6 @@ import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.Appointment
@@ -19,7 +18,6 @@ import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.User
 import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.decodeIfNotEmptyOrDefault
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.channel
@@ -33,12 +31,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.subscribe
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -71,6 +66,42 @@ class AppointmentRepositoryImpl @Inject constructor(
             subscribeToAppointmentChanges()
         }
 
+    }
+
+
+    override suspend fun subscribeToAppointmentChanges(): Flow<List<AppointmentWithDetails>> {
+        val userId = userDataStore.getUserId() ?: ""
+
+        return flow {
+            // Get and emit initial list
+            var currentAppointments = getAppointmentsByUserId(userId, false)
+                .getOrDefault(emptyList())
+            emit(currentAppointments)
+
+            // Setup Supabase channel
+            val channel = supabaseClient.channel("appointment_changes")
+            val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+                table = "appointments"
+            }
+            subscription = channel
+            channel.subscribe()
+            Log.d(TAG, "subscribed")
+
+            // Collect changes
+            changeFlow.collect { update ->
+                val updatedRecord = update.record
+                val appointmentId = updatedRecord["id"]?.jsonPrimitive?.contentOrNull
+
+
+                val status = updatedRecord["status"]?.jsonPrimitive?.contentOrNull
+                val isArchived = updatedRecord["is_archived"]?.jsonPrimitive?.booleanOrNull == true
+                val isCompleted = status == AppointmentStatus.COMPLETED.toString()
+
+
+                val appointmentUserId = updatedRecord["user_id"]?.jsonPrimitive?.contentOrNull
+
+            }
+        }
     }
 
 
@@ -201,40 +232,6 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun subscribeToAppointmentChanges(): Flow<List<AppointmentWithDetails>> {
-        val userId = userDataStore.getUserId() ?: ""
-
-        return flow {
-            // Get and emit initial list
-            var currentAppointments = getAppointmentsByUserId(userId, false)
-                .getOrDefault(emptyList())
-            emit(currentAppointments)
-
-            // Setup Supabase channel
-            val channel = supabaseClient.channel("appointment_changes")
-            val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-                table = "appointments"
-            }
-            subscription = channel
-            channel.subscribe()
-            Log.d(TAG, "subscribed")
-
-            // Collect changes
-            changeFlow.collect { update ->
-                val updatedRecord = update.record
-                val appointmentId = updatedRecord["id"]?.jsonPrimitive?.contentOrNull
-
-
-                val status = updatedRecord["status"]?.jsonPrimitive?.contentOrNull
-                val isArchived = updatedRecord["is_archived"]?.jsonPrimitive?.booleanOrNull == true
-                val isCompleted = status == AppointmentStatus.COMPLETED.toString()
-
-
-                val appointmentUserId = updatedRecord["user_id"]?.jsonPrimitive?.contentOrNull
-
-            }
-        }
-    }
 
 
     override suspend fun unsubscribeFromAppointmentChanges() {
