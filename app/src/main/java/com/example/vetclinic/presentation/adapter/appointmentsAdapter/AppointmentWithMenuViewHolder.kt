@@ -5,21 +5,27 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
-import com.example.vetclinic.databinding.AppointmentItemBinding
 import com.example.vetclinic.databinding.AppointmentItemWithMenuBinding
-import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.formatAppointmentDateTime
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-class AppointmentViewHolder(
-    private val binding: AppointmentItemBinding,
+class AppointmentWithMenuViewHolder(
+    private val binding: AppointmentItemWithMenuBinding,
+    private val listener: OnAppointmentMenuClickListener
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
+
+    init {
+        binding.btnMore.setOnClickListener {
+            showPopupMenu(it)
+        }
+    }
+
+
     fun bind(appointment: AppointmentWithDetails) {
+
 
         with(binding) {
             tvDoctorName.text = appointment.doctorName
@@ -28,7 +34,7 @@ class AppointmentViewHolder(
             tvPetOwner.text = appointment.userName
             tvPet.text = appointment.petName
             tvAppointmentDateTime.text = appointment.dateTime.formatAppointmentDateTime()
-
+            btnMore.tag = appointment
 
 
             when (appointment.status) {
@@ -57,6 +63,25 @@ class AppointmentViewHolder(
                 }
             }
         }
+    }
+
+    private fun showPopupMenu(view: android.view.View) {
+        val popupMenu = PopupMenu(view.context, view)
+
+        popupMenu.menuInflater.inflate(R.menu.appointment_menu, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.item_cancel_appointment -> {
+                    val appointment = view.tag as? AppointmentWithDetails
+                    appointment?.let { listener.onAppointmentMenuClicked(it) }
+                    true
+                }
+
+                else -> false
+            }
+        }
+        popupMenu.show()
     }
 
 }

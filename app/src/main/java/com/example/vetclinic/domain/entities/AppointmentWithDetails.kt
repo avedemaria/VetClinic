@@ -13,9 +13,10 @@ data class AppointmentWithDetails(
     val dateTime: String,
     val status: AppointmentStatus,
     val isArchived: Boolean,
+    val isConfirmed: Boolean = false,
     val serviceName: String,
     val doctorName: String,
     val doctorRole: String,
     val petName: String,
-    val userName: String
+    val userName: String,
 ) : Parcelable

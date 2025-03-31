@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -122,10 +123,10 @@ class PetFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                 }
 
-
                 PetUiState.Loading -> {
                     binding.petContent.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
+                    Log.d(TAG, "заглушка для loading")
                 }
 
                 is PetUiState.Success -> {
@@ -136,13 +137,14 @@ class PetFragment : Fragment() {
                 }
 
                 PetUiState.Deleted -> {
-                    binding.petContent.visibility = View.VISIBLE
+                    binding.petContent.visibility = View.GONE
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
                         requireContext(),
                         "Питомец успешно удалён",
                         Toast.LENGTH_SHORT
                     ).show()
+                    Log.d(TAG, "Заглушка для deleted")
 
                 }
             }
@@ -187,7 +189,8 @@ class PetFragment : Fragment() {
     private fun showDeleteConfirmationDialog(pet: Pet, position: Int) {
         val dialogBuilder = AlertDialog.Builder(requireContext())
             .setTitle("Удалить питомца")
-            .setMessage("Вы уверены, что хотите удалить данные о питомце?")
+            .setMessage("Вы уверены, что хотите удалить данные о питомце?" +
+                    " Все записи о приёмах питомца так же будут удалены")
             .setPositiveButton("Да") { _, _ ->
                 viewModel.deletePet(pet)
             }
@@ -244,6 +247,7 @@ class PetFragment : Fragment() {
     }
 
 
+    @SuppressLint("DefaultLocale")
     private fun showDatePickerDialog(pet: Pet) {
         val calendar = Calendar.getInstance()
 
@@ -294,5 +298,9 @@ class PetFragment : Fragment() {
         _binding = null
     }
 
+
+    companion object {
+        private const val TAG = "PetFragment"
+    }
 
 }

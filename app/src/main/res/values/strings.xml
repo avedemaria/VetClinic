@@ -57,4 +57,7 @@
     <string name="confirm_password_hint">Подтвердите пароль</string>
     <string name="update_password">Обновить пароль</string>
     <string name="appointments_are_not_available">Нет доступных приёмов</string>
+    <string name="buttom_more_options">Buttom more options</string>
+    <string name="button_moreoptions">Button more options</string>
+    <string name="button_calendar">button_calendar</string>
 </resources>

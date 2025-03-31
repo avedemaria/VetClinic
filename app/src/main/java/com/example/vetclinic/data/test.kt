@@ -1,17 +1,13 @@
-import com.example.vetclinic.data.RepositoryImpl
-import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.Day
 import com.example.vetclinic.domain.entities.TimeSlot
-import com.example.vetclinic.domain.usecases.GetTimeSlotsUseCase
-import java.time.LocalDate
 
 import java.time.LocalTime
 import java.util.UUID
-import kotlin.random.Random
 
 fun main() {
 
-
+    println(AppointmentStatus.COMPLETED)
 
 
 }

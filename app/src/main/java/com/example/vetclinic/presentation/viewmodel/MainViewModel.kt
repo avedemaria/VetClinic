@@ -101,6 +101,7 @@ private suspend fun fetchAndProcessPetData(userId: String, user: User?) {
         petResult.isSuccess -> {
             val pets = petResult.getOrNull()
             if (!pets.isNullOrEmpty()) {
+                Log.d("MainViewModel", "pets: $pets")
                 _mainState.value = MainState.Result(user, pets)
             } else {
                 _mainState.value = MainState.Error("No pets found")
@@ -114,10 +115,7 @@ private suspend fun fetchAndProcessPetData(userId: String, user: User?) {
             )
         }
     }
-
-
 }
-
 }
 
 

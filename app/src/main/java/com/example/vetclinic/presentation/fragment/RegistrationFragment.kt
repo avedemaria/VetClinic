@@ -2,6 +2,7 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.RegistrationState
 import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.textfield.TextInputEditText
 import jakarta.inject.Inject
 import java.util.UUID
 
@@ -63,13 +65,12 @@ class RegistrationFragment : Fragment() {
 
         binding.btnCreateAccount.setOnClickListener {
 
-            val name = binding.etName.text.toString()
-            val lastName = binding.etLastName.text.toString()
-            val petName = binding.etPetName.text.toString()
-            val phoneNumber = binding.etPhoneNumber.text.toString()
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-
+            val name = setUpInput(binding.etName)
+            val lastName = setUpInput(binding.etLastName)
+            val petName = setUpInput(binding.etPetName)
+            val phoneNumber = setUpInput(binding.etPhoneNumber)
+            val email = setUpInput(binding.etEmail)
+            val password = setUpInput(binding.etPassword)
 
             viewModel.registerUser(name, lastName, petName, phoneNumber, email, password)
 
@@ -82,7 +83,7 @@ class RegistrationFragment : Fragment() {
 
 
 
-        binding.tvBackToLogin.setOnClickListener{
+        binding.tvBackToLogin.setOnClickListener {
             launchLoginFragment()
         }
 
@@ -102,6 +103,10 @@ class RegistrationFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun setUpInput(input: TextInputEditText): String {
+        return input.text?.trim().toString()
     }
 
 

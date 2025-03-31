@@ -104,9 +104,9 @@ class BookAppointmentFragment : Fragment() {
         binding.tvDoctorInfo.text = getStyledDoctorInfo(doctor)
         binding.tvServiceInfo.text = getStyledServiceInfo(service)
 
-        binding.btnCreateAppointment.setOnClickListener {
-            showConfirmationDialog(service, doctor)
-        }
+//        binding.btnCreateAppointment.setOnClickListener {
+//            showConfirmationDialog(service, doctor)
+//        }
 
         setUpAdapters()
         observeViewModel()
@@ -157,6 +157,18 @@ class BookAppointmentFragment : Fragment() {
                     timeSlotAdapter.submitList(updatedTimeSlots)
 
 
+                    //confirmationDialog
+
+                    binding.btnCreateAppointment.setOnClickListener {
+                        showConfirmationDialog(
+                            args.service,
+                            args.doctor,
+                            state.selectedDay,
+                            state.selectedTimeSlot,
+                            state.pets
+                        )
+                    }
+
                 }
 
                 is BookAppointmentState.AppointmentAdded -> launchAppointmentFragment()
@@ -194,15 +206,15 @@ class BookAppointmentFragment : Fragment() {
 
     private fun showConfirmationDialog(
         service: Service,
-        doctor: Doctor
+        doctor: Doctor,
+        selectedDay: Day?,
+        selectedTimeSlot: TimeSlot?,
+        pets: List<Pet>
     ) {
-        val selectedDay = viewModel.selectedDay
-        val selectedTimeSlot = viewModel.selectedTimeSlot
+
         val selectedPetIndex = binding.spinnerPets.selectedItemPosition
-        val pets = viewModel.getPetsFromCurrentState()
         val selectedPet = pets[selectedPetIndex]
         if (selectedDay == null || selectedTimeSlot == null) {
-
             Toast.makeText(
                 requireContext(),
                 "Пожалуйста, выберите день и время",

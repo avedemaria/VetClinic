@@ -1,4 +1,4 @@
-package com.example.vetclinic.data
+package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
 import com.example.vetclinic.data.database.model.VetClinicDao
@@ -184,15 +184,12 @@ class RepositoryImpl @Inject constructor(
                     }"
                 )
             }
-
             val petDtos = response.body() ?: emptyList()
-
             if (petDtos.isNotEmpty()) {
                 val petDbModels = petDtos.map { petMapper.petDtoToPetDbModel(it) }
-
                 Log.d(TAG, "PetDbModels first of map: $petDbModels")
+                vetClinicDao.insertPets(petDbModels)
 
-                vetClinicDao.insertPet(petDbModels.first())
             }
 
             petDtos.map { petMapper.petDtoToPetEntity(it) }
@@ -229,8 +226,10 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> =
         kotlin.runCatching {
+
+            val userIdWithParam = "eq.$userId"
             val updatedUserDto = userMapper.userEntityToUserDto(updatedUser)
-            val response = supabaseApiService.updateUser(userId, updatedUserDto)
+            val response = supabaseApiService.updateUser(userIdWithParam, updatedUserDto)
 
             if (response.isSuccessful) {
                 Log.d(TAG, "Successfully updated user in Supabase DB")
@@ -269,7 +268,7 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-    override suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> = kotlin.runCatching {
+    override suspend fun deletePetFromSupabaseDb(pet: Pet, userId: String): Result<List<Pet>> = kotlin.runCatching {
 
         val idWithOperator = "eq.${pet.petId}"
 
@@ -278,6 +277,7 @@ class RepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             Log.d(TAG, "Successfully deleted pet in Supabase DB")
             deletePetFromRoom(pet)
+            getPetsFromSupabaseDb(userId).getOrNull()?: emptyList()
         } else {
             val errorBody = response.errorBody()?.string()
             throw Exception("Failed to delete pet. ${response.code()} - $errorBody\")")

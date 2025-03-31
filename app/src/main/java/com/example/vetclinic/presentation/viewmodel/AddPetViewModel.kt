@@ -17,7 +17,8 @@ import java.util.UUID
 
 class AddPetViewModel @Inject constructor(
     private val addPetUseCase: AddPetUseCase,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+
 ) : ViewModel() {
 
 

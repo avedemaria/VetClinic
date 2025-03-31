@@ -24,6 +24,18 @@ class DayWithTimeSlotsMapper @Inject constructor() {
         )
     }
 
+    fun timeSlotEntityToDto(entity: TimeSlot): TimeSlotDto {
+        return TimeSlotDto(
+            id = entity.id,
+            doctorId = entity.doctorId,
+            serviceId = entity.serviceId,
+            dayId = entity.dayId,
+            startTime = entity.startTime,
+            endTime = entity.endTime,
+            isBooked = entity.isBooked
+        )
+    }
+
 
     fun dayWithTimeSlotsDtoToEntity(dto: DayWithTimeSlotsDto): DayWithTimeSlots {
         return DayWithTimeSlots(
@@ -32,8 +44,16 @@ class DayWithTimeSlotsMapper @Inject constructor() {
         )
     }
 
-    fun dayWithTimeSlotsDtoToDayDto(dayWithTimeSlotsDto: DayWithTimeSlotsDto): DayDto {
-        return DayDto(id = dayWithTimeSlotsDto.id, date = dayWithTimeSlotsDto.date)
+    fun dayWithTimeSlotsEntityToDto(entity: DayWithTimeSlots): DayWithTimeSlotsDto {
+        return DayWithTimeSlotsDto(
+            id = entity.day.id,
+            date = entity.day.date.toString(),
+            timeSlots = entity.timeSlots.map(::timeSlotEntityToDto)
+        )
+    }
+
+    fun dayWithTimeSlotsDtoToDayDto(dto: DayWithTimeSlotsDto): DayDto {
+        return DayDto(id = dto.id, date = dto.date)
     }
 
     fun dayWithTimeSlotsDtoListToDayDtoList(dayWithTimeSlotsDtoList: List<DayWithTimeSlotsDto>):

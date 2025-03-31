@@ -48,9 +48,9 @@ interface SupabaseApiService {
     @POST("rest/v1/pets")
     suspend fun addPet(@Body petDto: PetDto): Response<Unit>
 
-    @PATCH("rest/v1/users?uid=eq.{userId}")
+    @PATCH("rest/v1/users")
     suspend fun updateUser(
-        @Path("userId") userId: String,
+        @Query("uid") userId: String,
         @Body updatedUser: UserDTO
     ): Response<Unit>
 
@@ -83,7 +83,6 @@ interface SupabaseApiService {
     ): Response<List<ServiceDto>>
 
 
-
     @POST("rest/v1/appointments")
     suspend fun addAppointment(@Body appointmentCreateDto: AppointmentDto): Response<Unit>
 
@@ -95,6 +94,8 @@ interface SupabaseApiService {
         @Query("time_slots.doctor_id") doctorId: String,
         @Query("time_slots.service_id") serviceId: String,
         @Query("date") dateRange: String,
+        @Query("order") dateOrder: String = "date.asc",
+        @Query("time_slots.order") timeSlotsOrder: String = "start_time.asc",
         @Query("limit") limit: Int = 1000
     ): Response<List<DayWithTimeSlotsDto>>
 
@@ -124,8 +125,16 @@ interface SupabaseApiService {
 
     @GET("rest/v1/appointments")
     suspend fun getAppointmentsByUserId(
-        @Query("user_id") userId: String
+        @Query("user_id") userId: String,
+        @Query("is_archived") isArchived: String,
+        @Query("order") order: String = "date_time.asc"
     ): Response<List<AppointmentDto>>
+
+    @PATCH("rest/v1/appointments")
+    suspend fun updateAppointmentStatus(
+        @Query("id") appointmentId: String,
+        @Body appointmentDto: AppointmentDto
+    ): Response<Unit>
 }
 
 

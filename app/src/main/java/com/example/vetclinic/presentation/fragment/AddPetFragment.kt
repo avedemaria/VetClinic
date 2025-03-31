@@ -111,7 +111,7 @@ class AddPetFragment : Fragment() {
                 ).show()
 
                 AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
-                AddPetUiState.Success ->    parentFragmentManager.beginTransaction()
+                AddPetUiState.Success ->   parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, PetFragment())
                     .addToBackStack(null)
                     .commit()

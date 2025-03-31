@@ -38,8 +38,8 @@ class BookAppointmentViewModel @Inject constructor(
     private var allDaysWithTimeSlots: List<DayWithTimeSlots> = emptyList()
     private var filteredTimeSlots: List<TimeSlot> = emptyList()
     private var pets: List<Pet> = emptyList()
-    var selectedDay: Day? = null
-    var selectedTimeSlot: TimeSlot? = null
+    private var selectedDay: Day? = null
+    private var selectedTimeSlot: TimeSlot? = null
 
 
     init {
@@ -47,13 +47,6 @@ class BookAppointmentViewModel @Inject constructor(
             val userId = userDataStore.getUserId() ?: ""
             Log.d(TAG, "Received userId: $userId")
             getPets(userId)
-        }
-    }
-
-    fun getPetsFromCurrentState(): List<Pet> {
-        return when (val currentState = _bookAppointmentState.value) {
-            is BookAppointmentState.Success -> currentState.pets
-            else -> emptyList()
         }
     }
 

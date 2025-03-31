@@ -1,9 +1,9 @@
 package com.example.vetclinic.di
 
-import com.example.vetclinic.data.AppointmentRepositoryImpl
-import com.example.vetclinic.data.RepositoryImpl
-import com.example.vetclinic.data.TimeSlotsRepositoryImpl
-import com.example.vetclinic.data.UserDataStoreImpl
+import com.example.vetclinic.data.repositoryImpl.AppointmentRepositoryImpl
+import com.example.vetclinic.data.repositoryImpl.RepositoryImpl
+import com.example.vetclinic.data.repositoryImpl.TimeSlotsRepositoryImpl
+import com.example.vetclinic.data.repositoryImpl.UserDataStoreImpl
 import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.Repository
 import com.example.vetclinic.domain.TimeSlotsRepository

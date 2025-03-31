@@ -26,13 +26,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Введите имя"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
@@ -54,18 +47,6 @@
                 android:text="@string/change_data"
                 android:textAlignment="center"
                 android:textColor="@color/dark_blue" />
-
-
-            <TextView
-                android:id="@+id/btnSaveName"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:paddingTop="16dp"
-                android:text="@string/save"
-                android:textAlignment="center"
-                android:textColor="@color/dark_blue"
-                android:visibility="gone" />
 
 
         </LinearLayout>
@@ -183,6 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:inputType="phone"
                 android:hint="Введите номер"
                 android:textSize="16sp"
                 android:visibility="gone" />

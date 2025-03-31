@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.fragment.AddPetFragment
 import com.example.vetclinic.presentation.fragment.AppointmentsFragment
-import com.example.vetclinic.presentation.fragment.ArchiveAppointmentsFragment
+import com.example.vetclinic.presentation.fragment.ArchivedAppointmentsFragment
 import com.example.vetclinic.presentation.fragment.BookAppointmentFragment
 import com.example.vetclinic.presentation.fragment.CurrentAppointmentsFragment
 import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
@@ -71,7 +71,7 @@ interface AppComponent {
 
     fun inject(currentAppointmentsFragment: CurrentAppointmentsFragment)
 
-    fun inject(archiveAppointmentsFragment: ArchiveAppointmentsFragment)
+    fun inject(archivedAppointmentsFragment: ArchivedAppointmentsFragment)
 
 
     @Component.Factory

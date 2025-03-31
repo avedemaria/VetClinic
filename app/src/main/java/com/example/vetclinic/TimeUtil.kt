@@ -3,9 +3,8 @@ package com.example.vetclinic
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
-import java.util.Date
 
 fun String.extractDayOfMonth(): Int {
     val parsedDate = LocalDate.parse(this)
@@ -18,25 +17,6 @@ fun String.extractTime(): String {
     return parsedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
 }
 
-
-fun String.formatDayMonthYear(): String {
-    return try {
-        val parsedDate = LocalDate.parse(this, DateTimeFormatter.ISO_LOCAL_DATE)
-        parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-    } catch (e: Exception) {
-        this
-    }
-}
-
-fun String.toLocalDateWithDefaults(): LocalDate {
-    val currentDate = LocalDate.now()
-    // Добавляем текущий год и месяц, если они не заданы в строке
-    return LocalDate.parse(
-        "${currentDate.year}-${
-            currentDate.monthValue.toString().padStart(2, '0')
-        }-$this", DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    )
-}
 
 fun LocalDate.formatDateTime(timeSlot: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -81,8 +61,28 @@ fun LocalDate.toFormattedString(): String {
     return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 }
 
+
+fun String.toEpochMilli(): Long {
+    val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    val localDateTime = LocalDateTime.parse(this, dateTimeFormatter)
+    return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli()
+}
+
 fun String.formatToLocalDateTime(): String {
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
     val localDateTime = LocalDateTime.parse(this, formatter)
     return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+}
+
+fun String?.toLocalDateOrNull(format: String = "yyyy-MM-dd"): LocalDate? {
+    return try {
+        if (this.isNullOrEmpty()) {
+            null
+        } else {
+            val formatter = DateTimeFormatter.ofPattern(format)
+            LocalDate.parse(this, formatter)
+        }
+    } catch (e: Exception) {
+        null
+    }
 }

@@ -69,6 +69,14 @@ class MainFragment : Fragment() {
 
         component.inject(this)
 
+        
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            })
+
 
         // Получаем NavController из вложенного NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
@@ -121,8 +129,6 @@ class MainFragment : Fragment() {
             } else {
                 binding.bottomNavigationView.visibility = View.VISIBLE
                 binding.fab.visibility = View.VISIBLE
-
-
                 setUpBottomNavViewAnimation()
 
             }

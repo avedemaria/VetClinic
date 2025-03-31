@@ -1,7 +1,6 @@
 package com.example.vetclinic.data.network.model
 
 import com.squareup.moshi.Json
-import java.time.LocalDateTime
 
 data class AppointmentDto(
     @Json(name = "id") val id: String,
@@ -11,7 +10,8 @@ data class AppointmentDto(
     @Json(name = "service_id") val serviceId: String,
     @Json(name = "date_time") val dateTime: String,
     @Json(name = "status") val status: String,
-    @Json(name = "is_archived") val isArchived: Boolean
+    @Json(name = "is_archived") val isArchived: Boolean,
+    @Json(name = "is_confirmed") val isConfirmed: Boolean
 
 )
 

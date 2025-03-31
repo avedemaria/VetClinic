@@ -4,10 +4,7 @@ import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.formatToLocalDateTime
 import jakarta.inject.Inject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class AppointmentMapper @Inject constructor() {
 
@@ -19,7 +16,7 @@ class AppointmentMapper @Inject constructor() {
             petId = dto.petId,
             doctorId = dto.doctorId,
             serviceId = dto.serviceId,
-            dateTime = dto.dateTime.toString(),
+            dateTime = dto.dateTime,
             status = dto.status.toStatusEnum(),
             isArchived = dto.isArchived
         )
@@ -36,7 +33,8 @@ class AppointmentMapper @Inject constructor() {
             serviceId = entity.serviceId,
             dateTime = entity.dateTime,
             status = entity.status.toString(),
-            isArchived = entity.isArchived
+            isArchived = entity.isArchived,
+            isConfirmed = entity.isConfirmed
         )
     }
 
@@ -58,11 +56,28 @@ class AppointmentMapper @Inject constructor() {
             dateTime = appointment.dateTime,
             status = appointment.status,
             isArchived = appointment.isArchived,
+            isConfirmed = appointment.isConfirmed,
             serviceName = serviceName,
             doctorName = doctorName,
             doctorRole = doctorRole,
             petName = petName,
             userName = userName
+        )
+    }
+
+
+    fun appointmentWithDetailsToAppointment(appointmentWithDetails: AppointmentWithDetails):
+            Appointment {
+        return Appointment(
+            id = appointmentWithDetails.id,
+            userId = appointmentWithDetails.userId,
+            petId = appointmentWithDetails.petId,
+            doctorId = appointmentWithDetails.doctorId,
+            serviceId = appointmentWithDetails.serviceId,
+            dateTime = appointmentWithDetails.dateTime,
+            status = appointmentWithDetails.status,
+            isArchived = appointmentWithDetails.isArchived,
+            isConfirmed = appointmentWithDetails.isConfirmed
         )
     }
 

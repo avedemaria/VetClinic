@@ -28,17 +28,17 @@ class PetViewModel @Inject constructor(
          viewModelScope.launch {
              val userId = userDataStore.getUserId()
 
-             Log.d(TAG, "userId: $userId")
+             Log.d(TAG, "userId1: $userId")
 
              if (userId != null) {
                  _petState.value = PetUiState.Loading
 
-                 Log.d(TAG, "userId: $userId")
+                 Log.d(TAG, "userId1: $userId")
                  val result = getPetsUseCase.getPetsFromRoom(userId)
                  Log.d(TAG, "Result: $result")
                  if (result.isSuccess) {
                      val pets = result.getOrThrow()
-
+                     Log.d("PetViewModel", "Загружаем питомцев для userId: $userId  $pets")
                      if (pets.isEmpty()) {
                          return@launch
                      }
@@ -71,15 +71,14 @@ class PetViewModel @Inject constructor(
 
     fun deletePet(pet: Pet) {
         _petState.value = PetUiState.Loading
-
-
-
         viewModelScope.launch {
-
-            val result = deletePetUseCase.deletePetFromSupabaseDb(pet)
+            val userId = userDataStore.getUserId()?:""
+            val result = deletePetUseCase.deletePetFromSupabaseDb(pet, userId)
 
             if (result.isSuccess) {
+                val pets = result.getOrNull()?: emptyList()
                 _petState.value = PetUiState.Deleted
+                _petState.value = PetUiState.Success(pets)
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
                 Log.e(TAG, "Error while deleting pet $errorMessage")

@@ -1,23 +1,27 @@
 package com.example.vetclinic.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
-import com.example.vetclinic.databinding.FragmentDetailedDoctorInfoBinding
+import com.example.vetclinic.domain.entities.AppointmentStatus
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
-import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsState
+import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointmentMenuClickListener
+import com.example.vetclinic.presentation.viewmodel.AppointmentsState
 import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
@@ -59,8 +63,15 @@ class CurrentAppointmentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
 
-        setUpAdapter()
 
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    findNavController().popBackStack(R.id.homeFragment, true)  // Возврат к главному фрагменту
+//                }
+//            })
+
+        setUpAdapter()
         observeViewModel()
 
 
@@ -69,7 +80,13 @@ class CurrentAppointmentsFragment : Fragment() {
 
     private fun setUpAdapter() {
 
-        appointmentsAdapter = AppointmentsAdapter()
+        appointmentsAdapter = AppointmentsAdapter(object : OnAppointmentMenuClickListener {
+            override fun onAppointmentMenuClicked(appointment: AppointmentWithDetails) {
+                showCancelAppointmentDialog(appointment)
+                Log.d(TAG, "updated Appointment1: $appointment")
+
+            }
+        })
 
         binding.rvCurrentAppointments.apply {
             layoutManager = LinearLayoutManager(
@@ -82,16 +99,38 @@ class CurrentAppointmentsFragment : Fragment() {
     }
 
 
+    private fun showCancelAppointmentDialog(appointment: AppointmentWithDetails) {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Подтвердите отмену приёма")
+            .setMessage("Вы уверены, что хотите отменить приём?")
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Да") { _, _ ->
+                viewModel.updateAppointmentStatus(
+                    appointment.copy(status = AppointmentStatus.CANCELLED, isArchived = true)
+                )
+            }
+            .create()
+            .show()
+
+        Log.d(TAG, "updated Appointment2: $appointment")
+
+
+    }
+
+
     private fun observeViewModel() {
         viewModel.appointmentState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                CurrentAppointmentsState.Empty -> {
+                AppointmentsState.Empty -> {
                     binding.rvCurrentAppointments.visibility = View.GONE
                     binding.tvEmptyAppointments.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.GONE
                 }
 
-                is CurrentAppointmentsState.Error -> {
+                is AppointmentsState.Error -> {
                     binding.currentAppointmentContent.isEnabled = false
                     binding.progressBar.visibility = View.GONE
 
@@ -101,12 +140,12 @@ class CurrentAppointmentsFragment : Fragment() {
                     ).show()
                 }
 
-                CurrentAppointmentsState.Loading -> {
+                AppointmentsState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.currentAppointmentContent.isEnabled = false
                 }
 
-                is CurrentAppointmentsState.Success -> {
+                is AppointmentsState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     binding.currentAppointmentContent.isEnabled = true
 
@@ -115,6 +154,11 @@ class CurrentAppointmentsFragment : Fragment() {
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 

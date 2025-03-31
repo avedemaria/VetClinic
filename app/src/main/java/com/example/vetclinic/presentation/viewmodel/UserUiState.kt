@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.viewmodel
 
-import com.example.vetclinic.domain.entities.DepartmentWithDoctors
 import com.example.vetclinic.domain.entities.User
 
 sealed class UserUiState {
@@ -11,7 +10,7 @@ sealed class UserUiState {
     data class EditingField(val field: FieldType): UserUiState()
 
     enum class FieldType {
-        NAME, PHONE
+         PHONE
     }
 
 

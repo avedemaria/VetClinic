@@ -1,11 +1,10 @@
-package com.example.vetclinic.data
+package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
 import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.data.network.model.TimeSlotUpdateRequest
 import com.example.vetclinic.domain.TimeSlotsRepository
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import jakarta.inject.Inject
@@ -62,7 +61,6 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             )
         }
 
-
         val newTimeSlots =
             updatedDayWithTimeSlotsDtoList.flatMap { it.timeSlots }.filter { newTimeSlot ->
                 existingDaysWithTimeSlots.flatMap { it.timeSlots }.none {
@@ -105,7 +103,6 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             val doctorIdWithParam = "eq.$doctorId"
             val serviceIdWithParam = "eq.$serviceId"
             val dateRangeWithParam = "gte.$startDate, lte.$endDate"
-
 
             val response =
                 supabaseApiService.getDaysWithTimeSlots(
@@ -180,10 +177,16 @@ class TimeSlotsRepositoryImpl @Inject constructor(
 
         val today = LocalDate.now()
 
+
         return (0 until 14).map { dayDates ->
             val date = today.plusDays(dayDates.toLong()).toString()
             val dayId = UUID.randomUUID().toString()
-            val timeSlots = generateTimeSlotsForDay(dayId, doctorId, serviceId, duration)
+            val timeSlots =
+                generateTimeSlotsForDay(
+                    dayId,
+                    doctorId,
+                    serviceId,
+                    duration)
 
             DayWithTimeSlotsDto(
                 id = dayId,
@@ -203,7 +206,6 @@ class TimeSlotsRepositoryImpl @Inject constructor(
 
         val startTime = LocalTime.of(10, 0)
         val endTime = LocalTime.of(20, 0)
-
 
         val slots = mutableListOf<TimeSlotDto>()
 
@@ -254,11 +256,6 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 val existingDaysWithTimeSlots = response.body() ?: emptyList()
 
-
-                if (existingDaysWithTimeSlots.isEmpty()) {
-                    Log.d(TAG, "No existing days and time slots found")
-
-                }
                 Result.success(existingDaysWithTimeSlots)
             } else {
                 Log.e(
@@ -267,8 +264,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
                             " ${response.message()}"
                 )
                 Result.failure(
-                    Exception
-                        (
+                    Exception(
                         "Failed to fetch existing days and timeslots ${response.code()}" +
                                 " ${response.message()}"
                     )

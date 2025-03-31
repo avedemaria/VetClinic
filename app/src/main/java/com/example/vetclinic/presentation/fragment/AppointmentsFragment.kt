@@ -5,20 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAppointmentsBinding
-import com.example.vetclinic.databinding.FragmentUserBinding
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.UserViewModel
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.google.android.material.button.MaterialButtonToggleGroup
-import jakarta.inject.Inject
 
 
 class AppointmentsFragment : Fragment() {
 
-//    lateinit var toggleGroup: MaterialButtonToggleGroup
+
 
     private var _binding: FragmentAppointmentsBinding? = null
     private val binding
@@ -44,8 +38,6 @@ class AppointmentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
 
-//        toggleGroup = binding.toggleGroup
-
         loadChildFragment(CurrentAppointmentsFragment())
 
         binding.toggleGroup.addOnButtonCheckedListener { toggleButtonGroup, checkedId, isChecked ->
@@ -53,7 +45,7 @@ class AppointmentsFragment : Fragment() {
             if (isChecked) {
                 when (checkedId) {
                     R.id.btnCurrentAppointments -> loadChildFragment(CurrentAppointmentsFragment())
-                    R.id.btnArchivedAppointments -> loadChildFragment(ArchiveAppointmentsFragment())
+                    R.id.btnArchivedAppointments -> loadChildFragment(ArchivedAppointmentsFragment())
                 }
             }
         }
@@ -66,11 +58,5 @@ class AppointmentsFragment : Fragment() {
             .commit()
     }
 
-//    private fun updateToggleGroupVisibility() {
-//        val currentFragment =
-//            childFragmentManager.findFragmentById(R.id.fragmentAppointmentsContainer)
-//
-//
-//
-//    }
+
 }

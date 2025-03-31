@@ -34,7 +34,7 @@ interface Repository {
 
     suspend fun getPetsFromSupabaseDb(userId: String): Result<List<Pet>>
 
-    suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit>
+    suspend fun deletePetFromSupabaseDb(pet: Pet, userId: String): Result<List<Pet>>
 
     suspend fun getDoctorList(): Result<List<Doctor>>
 

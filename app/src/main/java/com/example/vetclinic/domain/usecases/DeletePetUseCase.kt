@@ -8,8 +8,8 @@ class DeletePetUseCase @Inject constructor(
     private val repository: Repository
 ) {
 
-    suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> {
-        return repository.deletePetFromSupabaseDb(pet)
+    suspend fun deletePetFromSupabaseDb(pet: Pet, userId:String): Result<List<Pet>> {
+        return repository.deletePetFromSupabaseDb(pet, userId)
     }
 
 }

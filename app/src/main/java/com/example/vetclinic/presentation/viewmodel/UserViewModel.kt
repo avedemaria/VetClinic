@@ -22,6 +22,8 @@ class UserViewModel @Inject constructor(
     val userState: LiveData<UserUiState> get() = _userState
 
 
+    private var currentUser: User? = null
+
     init {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
@@ -37,7 +39,8 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             getUserUseCase.getUserFromRoom(userId)
                 .onSuccess { user ->
-                        _userState.value = UserUiState.Success(user)
+                    currentUser = user
+                    _userState.value = UserUiState.Success(user)
                 }
                 .onFailure { error ->
                     _userState.value = UserUiState.Error(error.message ?: "Неизвестная ошибка")
@@ -50,55 +53,60 @@ class UserViewModel @Inject constructor(
         _userState.value = UserUiState.EditingField(field)
     }
 
-    fun updateField(userId: String, field: String, newValue: String) {
-
-        val currentUser = (userState.value as? UserUiState.Success)?.user
-
-        if (currentUser == null) {
-            _userState.value = UserUiState.Error("Нет данных о пользователе")
-            return
-        }
-
-
-        if (newValue.isBlank()) {
-            _userState.value = UserUiState.Error("Поле не может быть пустым")
-            return
-        }
-
-
-
-        val validationResult = validateField(field, newValue)
-        if (validationResult != null) {
-            _userState.value = UserUiState.Error(validationResult)
-            return
-        }
-
-
-        val updatedUser = when (field) {
-            UserField.PHONE_NUMBER.name -> currentUser.copy(phoneNumber = newValue)
-            UserField.USER_NAME.name -> currentUser.copy(userName = newValue)
-            else -> {
-                _userState.value = UserUiState.Error("Неверное поле")
-                return
-            }
-        }
-
-        if (updatedUser != currentUser) {
-            updateUserInSupabase(userId, updatedUser)
-
-            updateUserInRoom(updatedUser)
-
+    fun finishEditing() {
+        this@UserViewModel.currentUser?.let {
+            _userState.value = UserUiState.Success(it)
         }
     }
 
+    fun updateField(field: String, newValue: String) {
 
-    private fun updateUserInSupabase(userId: String, updatedUser: User) {
+        viewModelScope.launch {
+
+            val currentUser = this@UserViewModel.currentUser
+
+            if (currentUser == null) {
+                _userState.value = UserUiState.Error("Нет данных о пользователе")
+                return@launch
+            }
+
+            if (newValue.isBlank()) {
+                _userState.value = UserUiState.Error("Поле не может быть пустым")
+                return@launch
+            }
+
+
+            validateField(field, newValue)?.let {
+                _userState.value = UserUiState.Error(it)
+                return@launch
+            }
+
+            val updatedUser = when (field) {
+                UserField.PHONE_NUMBER.name -> currentUser.copy(phoneNumber = newValue)
+                else -> {
+                    _userState.value = UserUiState.Error("Неверное поле")
+                    return@launch
+                }
+            }
+
+            if (updatedUser != currentUser) {
+                updateUser(updatedUser)
+            }
+        }
+
+    }
+
+
+    fun updateUser(updatedUser: User) {
+
         _userState.value = UserUiState.Loading
 
         viewModelScope.launch {
+            val userId = userDataStore.getUserId()?:""
             val updatedResult = updateUserUseCase.updateUserInSupabaseDb(userId, updatedUser)
 
             if (updatedResult.isSuccess) {
+
                 _userState.value = UserUiState.Success(updatedUser)
             } else {
                 _userState.value = UserUiState.Error("Не получилось обновить данные на сервере")
@@ -107,27 +115,12 @@ class UserViewModel @Inject constructor(
     }
 
 
-    private fun updateUserInRoom(user: User) {
-        viewModelScope.launch {
-            val result = updateUserUseCase.updateUserInRoom(user)
-
-            if (result.isSuccess) {
-                _userState.value = UserUiState.Success(user)
-            } else {
-                _userState.value = UserUiState.Error("Не получилось обновить данные")
-            }
-        }
-
-    }
-
-
     //Валидация
 
 
-    fun validateField(field: String, value: String): String? {
+    private fun validateField(field: String, value: String): String? {
         return when (field) {
             UserField.PHONE_NUMBER.name -> validatePhoneNumber(value)
-            UserField.USER_NAME.name -> validateUserName(value)
             else -> "Неизвестное поле"
         }
     }
@@ -142,18 +135,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun validateUserName(name: String): String? {
-        return if (name.isNotBlank()) {
-            null
-        } else {
-            "Имя не может быть пустым"
-        }
-    }
 
 }
 
 enum class UserField {
-    PHONE_NUMBER,
-    USER_NAME
-
+    PHONE_NUMBER
 }
