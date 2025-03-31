@@ -2,6 +2,7 @@ package com.example.vetclinic.di
 
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
+import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
 import com.example.vetclinic.presentation.viewmodel.ArchivedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
 import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
@@ -111,6 +112,11 @@ interface ViewModelModule {
     @ViewModelKey(ArchivedAppointmentsViewModel::class)
     @Binds
     fun bindArchivedAppointmentsViewModel(impl: ArchivedAppointmentsViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(AdminHomeViewModel::class)
+    @Binds
+    fun bindAdminHomeViewModel(impl: AdminHomeViewModel): ViewModel
 
 
 }

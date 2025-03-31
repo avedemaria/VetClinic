@@ -12,4 +12,5 @@
     <color name="dark_red">#AF3131</color>
     <color name="light_grey">#E2E0E0</color>
     <color name="time_slots_blue">#44AF9F</color>
+    <color name="grey">#8C8585</color>
 </resources>

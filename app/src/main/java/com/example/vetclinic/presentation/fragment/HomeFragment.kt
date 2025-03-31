@@ -35,7 +35,6 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by activityViewModels { viewModelFactory }
 
 
-
     private var _binding: FragmentHomeBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
@@ -74,6 +73,11 @@ class HomeFragment : Fragment() {
         Log.d("HomeFragment", "onViewCreated")
 
         viewModel.getUserIdAndLoadUserName()
+
+
+        binding.btnAdmin.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAdminHomeFragment())
+        }
 
     }
 

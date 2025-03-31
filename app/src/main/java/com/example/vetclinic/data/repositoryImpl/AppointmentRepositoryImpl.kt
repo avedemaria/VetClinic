@@ -129,6 +129,34 @@ class AppointmentRepositoryImpl @Inject constructor(
         }
 
 
+    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =
+        kotlin.runCatching {
+            val startOfDay = "${date}T10:00:00"
+            val endOfDay = "${date}T20:00:00"
+
+            val response =
+                supabaseApiService.getAppointmentsByDate("gte.$startOfDay",
+                    "lt.$endOfDay")
+            if (response.isSuccessful) {
+                val appointmentDtos = response.body() ?: throw Exception("Empty response body")
+                val appointments =
+                    appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
+
+                appointments.map { appointment ->
+                    getAppointmentWithDetails(appointment)
+                }
+            } else {
+                throw Exception(
+                    "Error fetching appointments for admin: ${response.code()} " +
+                            "- ${response.message()}"
+                )
+            }
+        }
+            .onFailure { e ->
+                Log.e(TAG, "Error while fetching appointments for admin", e)
+                emptyList<AppointmentWithDetails>()
+            }
+
     override suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails
     ): Result<Unit> =
@@ -204,9 +232,9 @@ class AppointmentRepositoryImpl @Inject constructor(
 
                 val appointmentUserId = updatedRecord["user_id"]?.jsonPrimitive?.contentOrNull
 
-                }
             }
         }
+    }
 
 
     override suspend fun unsubscribeFromAppointmentChanges() {

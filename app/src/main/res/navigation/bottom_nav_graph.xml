@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_homeFragment_to_servicesWithDepFragment"
             app:destination="@id/servicesWithDepFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
     </fragment>
 
     <fragment
@@ -99,6 +102,10 @@
             android:id="@+id/action_bookAppointmentFragment_to_appointmentFragment"
             app:destination="@id/appointmentFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/adminHomeFragment"
+        android:name="com.example.vetclinic.presentation.fragment.AdminHomeFragment"
+        android:label="AdminHomeFragment" />
 
 
 </navigation>

@@ -13,4 +13,9 @@ class GetAppointmentUseCase @Inject constructor(private val repository: Appointm
     ): Result<List<AppointmentWithDetails>> {
         return repository.getAppointmentsByUserId(userId, isArchived)
     }
+
+
+    suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> {
+        return repository.getAppointmentsByDate(date)
+    }
 }

@@ -18,6 +18,8 @@ interface AppointmentRepository {
         isArchived: Boolean
     ): Result<List<AppointmentWithDetails>>
 
+    suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>>
+
     suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails
     ): Result<Unit>
@@ -30,9 +32,9 @@ interface AppointmentRepository {
 
     suspend fun getUserFromRoomById(userId: String): User
 
-    suspend fun subscribeToAppointmentChanges (): Flow<List<AppointmentWithDetails>>
+    suspend fun subscribeToAppointmentChanges(): Flow<List<AppointmentWithDetails>>
 
-    suspend fun unsubscribeFromAppointmentChanges ()
+    suspend fun unsubscribeFromAppointmentChanges()
 
 
 }

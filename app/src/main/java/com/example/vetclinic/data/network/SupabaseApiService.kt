@@ -135,6 +135,13 @@ interface SupabaseApiService {
         @Query("id") appointmentId: String,
         @Body appointmentDto: AppointmentDto
     ): Response<Unit>
+
+    @GET("rest/v1/appointments")
+    suspend fun getAppointmentsByDate(
+        @Query("date_time") startOfDay: String,
+        @Query("date_time") endOfDay: String,
+        @Query("order") order: String = "date_time.asc"
+    ): Response<List<AppointmentDto>>
 }
 
 
