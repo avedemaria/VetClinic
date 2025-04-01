@@ -10,6 +10,8 @@ import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.network.SupabaseApiFactory
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.github.jan.supabase.SupabaseClient
@@ -35,6 +37,12 @@ class DataModule {
             install(Postgrest)
             install(Realtime)
         }
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     }
 
 

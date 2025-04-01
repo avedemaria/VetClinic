@@ -39,13 +39,14 @@ class AppointmentMapper @Inject constructor() {
     }
 
 
+
     fun appointmentToAppointmentWithDetails(
         appointment: Appointment,
         serviceName: String,
         doctorName: String,
         doctorRole: String,
         userName: String,
-        petName: String
+        petName: String,
     ): AppointmentWithDetails {
         return AppointmentWithDetails(
             id = appointment.id,

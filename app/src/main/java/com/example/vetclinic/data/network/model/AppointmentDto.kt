@@ -1,6 +1,7 @@
 package com.example.vetclinic.data.network.model
 
 import com.squareup.moshi.Json
+import kotlinx.serialization.Serializable
 
 data class AppointmentDto(
     @Json(name = "id") val id: String,

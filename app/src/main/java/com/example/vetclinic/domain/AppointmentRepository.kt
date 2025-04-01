@@ -1,5 +1,6 @@
 package com.example.vetclinic.domain
 
+import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.entities.Doctor
@@ -7,6 +8,7 @@ import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.json.JsonObject
 
 interface AppointmentRepository {
 
@@ -32,7 +34,7 @@ interface AppointmentRepository {
 
     suspend fun getUserFromRoomById(userId: String): User
 
-    suspend fun subscribeToAppointmentChanges(): Flow<List<AppointmentWithDetails>>
+    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
 
     suspend fun unsubscribeFromAppointmentChanges()
 

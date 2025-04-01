@@ -8,35 +8,30 @@ import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.Appointment
-import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.Service
 import com.example.vetclinic.domain.entities.User
+import com.squareup.moshi.Moshi
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import jakarta.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
 
 
 class AppointmentRepositoryImpl @Inject constructor(
@@ -48,7 +43,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val serviceMapper: ServiceMapper,
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
-    private val userDataStore: UserDataStore
+    private val moshi: Moshi,
 ) : AppointmentRepository {
 
 
@@ -56,52 +51,45 @@ class AppointmentRepositoryImpl @Inject constructor(
     val appointmentsUpdates: SharedFlow<AppointmentWithDetails> =
         _appointmentsUpdates.asSharedFlow()
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private var subscription: RealtimeChannel? = null
 
+    private val jsonAdapter = moshi.adapter(AppointmentDto::class.java)
 
-    init {
-        coroutineScope.launch {
-            subscribeToAppointmentChanges()
+
+    override suspend fun subscribeToAppointmentChanges(
+        callback: (Appointment) -> Unit,
+    ) {
+        val channel = supabaseClient.channel("appointments")
+        val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+            table = "appointments"
         }
+        subscription = channel
+        channel.subscribe()
+        Log.d(TAG, "Supabase channel subscribed successfully")
 
+        Log.d(TAG, "Starting to collect changes from Supabase")
+        changeFlow.collect { updatedValue ->
+            val updatedRecord = updatedValue.record.toString()
+
+            try {
+                val appointmentDto = jsonAdapter.fromJson(updatedRecord)
+                appointmentDto?.let { dto ->
+                    callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
+            }
+
+
+        }
     }
 
 
-    override suspend fun subscribeToAppointmentChanges(): Flow<List<AppointmentWithDetails>> {
-        val userId = userDataStore.getUserId() ?: ""
-
-        return flow {
-            // Get and emit initial list
-            var currentAppointments = getAppointmentsByUserId(userId, false)
-                .getOrDefault(emptyList())
-            emit(currentAppointments)
-
-            // Setup Supabase channel
-            val channel = supabaseClient.channel("appointment_changes")
-            val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-                table = "appointments"
-            }
-            subscription = channel
-            channel.subscribe()
-            Log.d(TAG, "subscribed")
-
-            // Collect changes
-            changeFlow.collect { update ->
-                val updatedRecord = update.record
-                val appointmentId = updatedRecord["id"]?.jsonPrimitive?.contentOrNull
-
-
-                val status = updatedRecord["status"]?.jsonPrimitive?.contentOrNull
-                val isArchived = updatedRecord["is_archived"]?.jsonPrimitive?.booleanOrNull == true
-                val isCompleted = status == AppointmentStatus.COMPLETED.toString()
-
-
-                val appointmentUserId = updatedRecord["user_id"]?.jsonPrimitive?.contentOrNull
-
-            }
-        }
+    override suspend fun unsubscribeFromAppointmentChanges() {
+        subscription?.unsubscribe()
+        Log.d(TAG, "unsubscribed")
+        subscription = null
     }
 
 
@@ -128,7 +116,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     override suspend fun getAppointmentsByUserId(
         userId: String,
-        isArchived: Boolean
+        isArchived: Boolean,
     ): Result<List<AppointmentWithDetails>> =
         kotlin.runCatching {
 
@@ -166,8 +154,10 @@ class AppointmentRepositoryImpl @Inject constructor(
             val endOfDay = "${date}T20:00:00"
 
             val response =
-                supabaseApiService.getAppointmentsByDate("gte.$startOfDay",
-                    "lt.$endOfDay")
+                supabaseApiService.getAppointmentsByDate(
+                    "gte.$startOfDay",
+                    "lt.$endOfDay"
+                )
             if (response.isSuccessful) {
                 val appointmentDtos = response.body() ?: throw Exception("Empty response body")
                 val appointments =
@@ -189,7 +179,7 @@ class AppointmentRepositoryImpl @Inject constructor(
             }
 
     override suspend fun updateAppointmentStatus(
-        updatedAppointment: AppointmentWithDetails
+        updatedAppointment: AppointmentWithDetails,
     ): Result<Unit> =
         kotlin.runCatching {
 
@@ -232,13 +222,6 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     }
 
-
-
-    override suspend fun unsubscribeFromAppointmentChanges() {
-        subscription?.unsubscribe()
-        Log.d(TAG, "unsubscribed")
-        subscription = null
-    }
 
     override suspend fun getDoctorById(doctorId: String): Doctor {
         val doctorIdWithParam = "eq.$doctorId"

@@ -80,7 +80,6 @@ class PetFragment : Fragment() {
 
         observeViewModel()
 
-        viewModel.getPetsData()
     }
 
 
@@ -119,7 +118,7 @@ class PetFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    binding.petContent.visibility = View.GONE
+                    binding.petContent.isEnabled = false
                     binding.progressBar.visibility = View.GONE
                 }
 
