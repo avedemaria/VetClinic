@@ -26,21 +26,24 @@ class LoginViewModel @Inject constructor(
     val loginState: LiveData<LoginState> get() = _loginState
 
 
-    init {
-        checkUserSession()
-    }
+    private var userRole: String? = null
+
+//    init {
+//        checkUserSession()
+//    }
 
 
-    fun checkUserSession() {
-        viewModelScope.launch {
-            val isAuthenticated = loginUserUseCase.checkUserSession()
-            _loginState.value = if (isAuthenticated) {
-                LoginState.IsAuthenticated
-            } else {
-                LoginState.LoggedOut
-            }
-        }
-    }
+//    fun checkUserSession() {
+//        viewModelScope.launch {
+//            val isAuthenticated = loginUserUseCase.checkUserSession()
+//            _loginState.value = if (isAuthenticated) {
+////                LoginState.IsAuthenticated
+//            } else {
+//                LoginState.LoggedOut
+//            }
+//        }
+//    }
+
 
     fun loginUser(email: String, password: String) {
 
@@ -52,26 +55,34 @@ class LoginViewModel @Inject constructor(
 
                 userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken)
 
-                Log.d("LoginViewModel", "Saving userId: ${it.user?.id}")
+                Log.d(TAG, "Saving userId: ${it.user?.id}")
                 it.user?.id?.let { userId ->
                     val userResult = getUserUseCase.getUserFromSupabaseDb(userId)
 
                     if (userResult.isSuccess) {
+                        userRole = userResult.getOrNull()?.role
+                        Log.d(TAG, "saved user role: $userRole")
+                        userDataStore.saveUserRole(userRole ?: "")
+
                         getPetsUseCase.getPetsFromSupabaseDb(userId)
                     } else {
                         _loginState.value = LoginState.Error(userResult.exceptionOrNull()?.message)
                     }
 
-                    _loginState.value = LoginState.Result(it)
+                    _loginState.value = LoginState.Result(it, userRole ?: "")
                 }
             }
                 .onFailure {
                     _loginState.value = LoginState.Error(it.message)
                 }
-                }
         }
-
-
     }
+
+
+    companion object {
+        private const val TAG = "LoginViewModel"
+    }
+
+}
 
 

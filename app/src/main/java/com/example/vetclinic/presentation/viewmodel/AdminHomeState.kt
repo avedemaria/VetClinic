@@ -12,5 +12,6 @@ sealed class AdminHomeState {
         val appointments: List<AppointmentWithDetails>,
         val selectedDate: LocalDate?
     ) : AdminHomeState()
+    object LoggedOut: AdminHomeState()
 
 }

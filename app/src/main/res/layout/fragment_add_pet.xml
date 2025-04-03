@@ -90,34 +90,31 @@
         android:textSize="16sp"
         android:text="Дата рождения:" />
 
+
     <LinearLayout
-        android:layout_margin="8dp"
+        android:id ="@+id/llBDay"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="?attr/selectableItemBackground"
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etDay"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <TextView
+            android:id="@+id/tvBday"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="День"
-            android:inputType="number"/>
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:hint="День/Месяц/Год"/>
 
-        <Spinner
-            android:id="@+id/spinnerMonth"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_height="1dp"
+            android:background="@color/black" />
 
-        <EditText
-            android:id="@+id/etYear"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="Год"
-            android:inputType="number"/>
+
     </LinearLayout>
 
     <View

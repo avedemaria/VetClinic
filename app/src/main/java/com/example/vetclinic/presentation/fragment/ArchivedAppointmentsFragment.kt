@@ -9,27 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentArchiveAppointmentsBinding
-import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
-import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointmentMenuClickListener
+import com.example.vetclinic.presentation.fragment.CurrentAppointmentsFragment.Companion
 import com.example.vetclinic.presentation.viewmodel.AppointmentsState
-import com.example.vetclinic.presentation.viewmodel.ArchivedAppointmentsState
-import com.example.vetclinic.presentation.viewmodel.ArchivedAppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
+import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.example.vetclinic.toLocalDateOrNull
 import jakarta.inject.Inject
-import okhttp3.internal.addHeaderLenient
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Calendar
@@ -41,7 +41,7 @@ class ArchivedAppointmentsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: ArchivedAppointmentsViewModel by viewModels { viewModelFactory }
+    private val viewModel: DetailedAppointmentsViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -58,7 +58,7 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentArchiveAppointmentsBinding.inflate(
             inflater, container,
@@ -75,7 +75,7 @@ class ArchivedAppointmentsFragment : Fragment() {
         setUpListeners()
         setUpAdapter()
         observeViewModel()
-
+        Log.d(TAG, "$viewModel")
 
     }
 
@@ -116,61 +116,71 @@ class ArchivedAppointmentsFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.appointmentState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ArchivedAppointmentsState.Empty -> {
-                    binding.rvArchivedAppointments.visibility = View.GONE
-                    binding.tvEmptyAppointments.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                }
 
-                is ArchivedAppointmentsState.Error -> {
-                    binding.archivedAppointmentContent.isEnabled = false
-                    binding.progressBar.visibility = View.GONE
-
-                    Toast.makeText(
-                        requireContext(),
-                        "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                ArchivedAppointmentsState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.tvEmptyAppointments.visibility = View.GONE
-                    binding.archivedAppointmentContent.isEnabled = false
-                }
-
-                is ArchivedAppointmentsState.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.archivedAppointmentContent.isEnabled = true
-                    binding.rvArchivedAppointments.visibility = View.VISIBLE
-
-
-                    val selectedDate = state.selectedDate
-                    val filteredAppointments = selectedDate?.let {
-                        state.appointments.filter { appointment -> appointment.
-                        dateTime.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss") == it
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.appointmentsState.collect { state ->
+                    when (state) {
+                        DetailedAppointmentsState.Empty -> {
+                            binding.rvArchivedAppointments.visibility = View.GONE
+                            binding.tvEmptyAppointments.visibility = View.VISIBLE
+                            binding.progressBar.visibility = View.GONE
                         }
-                    } ?: state.appointments
 
-                    if (filteredAppointments.isEmpty()) {
-                        binding.rvArchivedAppointments.visibility = View.GONE
-                        binding.tvEmptyAppointments.visibility = View.VISIBLE
-                    } else {
-                        binding.rvArchivedAppointments.visibility = View.VISIBLE
-                        binding.tvEmptyAppointments.visibility = View.GONE
+                        is DetailedAppointmentsState.Error -> {
+                            binding.archivedAppointmentContent.isEnabled = false
+                            binding.progressBar.visibility = View.GONE
+
+                            Toast.makeText(
+                                requireContext(),
+                                "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        DetailedAppointmentsState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.tvEmptyAppointments.visibility = View.GONE
+                            binding.archivedAppointmentContent.isEnabled = false
+                        }
+
+                        is DetailedAppointmentsState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.archivedAppointmentContent.isEnabled = true
+                            binding.rvArchivedAppointments.visibility = View.VISIBLE
+
+
+                            val selectedDate = state.selectedDate
+                            val appointments = state.appointments
+
+                            val filteredAppointments =
+                                appointments.filter { it.isArchived }.filter { appointment ->
+                                    val appointmentDate =
+                                        appointment.dateTime.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss")
+                                    if (appointmentDate != null && selectedDate != null) {
+                                        // Show appointments from the selected date
+                                        appointmentDate.isEqual(selectedDate)
+                                    } else {
+                                        // If date parsing fails or no date selected, show everything
+                                        true
+                                    }
+                                }
+                            if (filteredAppointments.isEmpty()) {
+                                binding.rvArchivedAppointments.visibility = View.GONE
+                                binding.tvEmptyAppointments.visibility = View.VISIBLE
+                            } else {
+                                binding.rvArchivedAppointments.visibility = View.VISIBLE
+                                binding.tvEmptyAppointments.visibility = View.GONE
+                            }
+
+                            appointmentsAdapter.submitList(filteredAppointments)
+
+
+                        }
                     }
-
-                    appointmentsAdapter.submitList(filteredAppointments)
-
-
-
                 }
             }
-
         }
     }
-
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
@@ -179,8 +189,10 @@ class ArchivedAppointmentsFragment : Fragment() {
         val lastCompletedDate = viewModel.getLastCompletedAppointmentDate()
 
         if (lastCompletedDate == null) {
-            Toast.makeText(requireContext(), "No appointments found",
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), "No appointments found",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -195,7 +207,7 @@ class ArchivedAppointmentsFragment : Fragment() {
             { _, year, month, dayOfMonth ->
                 val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
                 viewModel.setUpSelectedDate(selectedDate)//устанавливаем значение selected day во вьюмодель из диалога, далее в success
-                                                          // можно будет его использовать для отображения нужного списка
+                // можно будет его использовать для отображения нужного списка
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -214,6 +226,20 @@ class ArchivedAppointmentsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.subscribeToAppointmentChanges()
+        Log.d(TAG, "subscribed to websocket")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Отписка от WebSocket
+        Log.d(TAG, "Unsubscribed from ArchivedAppointmentsFragment")
+        viewModel.unsubscribeFromChanges()
     }
 
 

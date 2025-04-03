@@ -126,7 +126,6 @@ interface SupabaseApiService {
     @GET("rest/v1/appointments")
     suspend fun getAppointmentsByUserId(
         @Query("user_id") userId: String,
-        @Query("is_archived") isArchived: String,
         @Query("order") order: String = "date_time.asc"
     ): Response<List<AppointmentDto>>
 
@@ -142,8 +141,13 @@ interface SupabaseApiService {
         @Query("date_time") endOfDay: String,
         @Query("order") order: String = "date_time.asc"
     ): Response<List<AppointmentDto>>
+
+//    @GET("rest/v1/users")
+//    suspend fun getUserRoleById(
+//        @Query("uid") userId: String = "role",
+//        @Query("select") select:
+//    ): Response<String>
+
 }
-
-
 
 

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.entities.Pet
 
 
@@ -20,7 +21,7 @@ interface VetClinicDao {
     fun getPetsByUserId(userId: String): List<PetDbModel>
 
     @Query("SELECT * FROM pets WHERE pet_id=:petId")
-    fun getPetById(petId:String): PetDbModel
+    fun getPetById(petId: String): PetDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserDbModel)
@@ -49,5 +50,15 @@ interface VetClinicDao {
 
     @Query("DELETE FROM pets")
     suspend fun clearAllPets()
+
+    @Query("SELECT * FROM appointments WHERE user_id=:userId")
+    suspend fun getAppointmentsByUserId(userId: String): List<AppointmentWithDetailsDbModel>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAppointments (appointments: List<AppointmentWithDetailsDbModel>)
+
+    @Update
+    suspend fun updateAppointment(appointment:AppointmentWithDetailsDbModel)
+
 
 }

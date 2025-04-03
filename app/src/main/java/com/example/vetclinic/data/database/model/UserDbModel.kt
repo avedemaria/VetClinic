@@ -19,7 +19,8 @@ data class UserDbModel(
     @ColumnInfo(name = "user_name") val userName: String,
     @ColumnInfo(name = "user_last_name") val userLastName: String,
     @ColumnInfo(name = "phone_number") val phoneNumber: String,
-    @ColumnInfo(name = "email") val email: String
+    @ColumnInfo(name = "email") val email: String,
+    @ColumnInfo(name = "role") val role: String
 ) {
 
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.example.vetclinic.CustomDatePicker
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAddPetBinding
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -47,7 +48,7 @@ class AddPetFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAddPetBinding.inflate(inflater, container, false)
         return binding.root
@@ -60,12 +61,16 @@ class AddPetFragment : Fragment() {
 
         setUpPetTypeSpinner()
         setUpPetGenderSpinner()
-        setUpMonthSpinner()
 
         binding.btnAddPet.setOnClickListener {
             onAddPetButtonClick()
         }
 
+
+
+        binding.llBDay.setOnClickListener{
+            showDatePickerDialog()
+        }
 
         observeViewModel()
 
@@ -78,16 +83,12 @@ class AddPetFragment : Fragment() {
         val petType = binding.spinnerPetType.selectedItem.toString()
         val petGender = binding.spinnerPetGender.selectedItem.toString()
 
-
-        val day = binding.etDay.text.toString()
-        val month = binding.spinnerMonth.selectedItem.toString()
-        val year = binding.etYear.text.toString()
-
-        val petBirthday = "$day-$month-$year"
+        val petBirthday = binding.tvBday.text.toString()
 
 
-        if (petType == CHOOSE_TYPE || petGender == CHOOSE_GENDER
-            || month == CHOOSE_MONTH || petName.isBlank() || day.isBlank() || year.isBlank()) {
+        if (petType == CHOOSE_TYPE || petGender == CHOOSE_GENDER ||
+            petName.isBlank() || petBirthday.isBlank()
+        ) {
             Toast.makeText(
                 requireContext(), "Заполните все обязательные поля",
                 Toast.LENGTH_SHORT
@@ -96,7 +97,7 @@ class AddPetFragment : Fragment() {
             return
         }
 
-            viewModel.addPetData(petName, petType, petGender, petBirthday)
+        viewModel.addPetData(petName, petType, petGender, petBirthday)
 
     }
 
@@ -111,13 +112,21 @@ class AddPetFragment : Fragment() {
                 ).show()
 
                 AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
-                AddPetUiState.Success ->   parentFragmentManager.beginTransaction()
+                AddPetUiState.Success -> parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, PetFragment())
                     .addToBackStack(null)
                     .commit()
             }
         }
     }
+
+
+    private fun showDatePickerDialog() {
+        CustomDatePicker(requireContext()){selectedDate ->
+            binding.tvBday.setText(selectedDate)
+        }.show()
+    }
+
 
     private fun setUpPetTypeSpinner() {
         val petTypes = arrayOf(CHOOSE_TYPE, "Кот", "Собака", "Грызун")
@@ -146,29 +155,6 @@ class AddPetFragment : Fragment() {
     }
 
 
-    private fun setUpMonthSpinner() {
-        val months = arrayOf(
-            CHOOSE_MONTH,
-            "01",
-            "02",
-            "03",
-            "04",
-            "05",
-            "06",
-            "07",
-            "08",
-            "09",
-            "10",
-            "11",
-            "12"
-        )
-
-        val spinnerAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
-        binding.spinnerMonth.adapter = spinnerAdapter
-
-        binding.spinnerMonth.setSelection(0)
-    }
 
 
     override fun onDestroyView() {
@@ -181,7 +167,6 @@ class AddPetFragment : Fragment() {
         private const val TAG = "AddPetFragment"
         private const val CHOOSE_TYPE = "Выберите тип питомца"
         private const val CHOOSE_GENDER = "Выберите пол питомца"
-        private const val CHOOSE_MONTH = "Выберите месяц"
     }
 }
 

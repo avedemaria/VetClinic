@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
@@ -46,7 +47,7 @@ class AdminHomeFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -62,6 +63,10 @@ class AdminHomeFragment : Fragment() {
         observeViewModel()
 
 
+        binding.btnAdminLogOut.setOnClickListener {
+            viewModel.logOut()
+        }
+
     }
 
 
@@ -72,6 +77,7 @@ class AdminHomeFragment : Fragment() {
                 is AdminHomeState.Error -> Log.d(TAG, "заглушка для Error")
                 AdminHomeState.Loading -> Log.d(TAG, "заглушка для Loading")
                 is AdminHomeState.Success -> appointmentsAdapter.submitList(state.appointments)
+                is AdminHomeState.LoggedOut -> launchLoginFragment()
             }
         }
     }
@@ -91,6 +97,11 @@ class AdminHomeFragment : Fragment() {
             )
             adapter = appointmentsAdapter
         }
+    }
+
+
+    private fun launchLoginFragment() {
+        findNavController().navigate(AdminHomeFragmentDirections.actionAdminHomeFragment2ToLoginFragment())
     }
 
 

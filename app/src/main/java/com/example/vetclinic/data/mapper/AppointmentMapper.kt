@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.mapper
 
+import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentStatus
@@ -39,6 +40,46 @@ class AppointmentMapper @Inject constructor() {
     }
 
 
+    fun appointmentWithDetailsToAppointmentWithDetailsDbModel(entity: AppointmentWithDetails)
+            : AppointmentWithDetailsDbModel {
+        return AppointmentWithDetailsDbModel(
+            id = entity.id,
+            userId = entity.userId,
+            petId = entity.petId,
+            doctorId = entity.doctorId,
+            serviceId = entity.serviceId,
+            dateTime = entity.dateTime,
+            status = entity.status.toString(),
+            isArchived = entity.isArchived,
+            isConfirmed = entity.isConfirmed,
+            serviceName = entity.serviceName,
+            doctorName = entity.doctorName,
+            doctorRole = entity.doctorRole,
+            petName = entity.petName,
+            userName = entity.userName
+        )
+    }
+
+
+    fun appointmentWithDetailsDbModelToEntity(dbModel: AppointmentWithDetailsDbModel):
+            AppointmentWithDetails {
+        return AppointmentWithDetails(
+            id = dbModel.id,
+            userId = dbModel.userId,
+            petId = dbModel.petId,
+            doctorId = dbModel.doctorId,
+            serviceId = dbModel.serviceId,
+            dateTime = dbModel.dateTime,
+            status = dbModel.status.toStatusEnum(),
+            isArchived = dbModel.isArchived,
+            isConfirmed = dbModel.isConfirmed,
+            serviceName = dbModel.serviceName,
+            doctorName = dbModel.doctorName,
+            doctorRole = dbModel.doctorRole,
+            petName = dbModel.petName,
+            userName = dbModel.userName
+        )
+    }
 
     fun appointmentToAppointmentWithDetails(
         appointment: Appointment,

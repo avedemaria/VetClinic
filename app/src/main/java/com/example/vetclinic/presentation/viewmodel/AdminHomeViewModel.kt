@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
@@ -14,7 +15,8 @@ import java.time.LocalDate
 
 class AdminHomeViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
-    private val updateAppointmentUseCase: UpdateAppointmentUseCase
+    private val updateAppointmentUseCase: UpdateAppointmentUseCase,
+    private val loginUseCase: LogInUserUseCase
 ) : ViewModel() {
 
     private val _appointmentsState = MutableLiveData<AdminHomeState>()
@@ -54,5 +56,13 @@ class AdminHomeViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun logOut () {
+        _appointmentsState.value = AdminHomeState.Loading
+        viewModelScope.launch {
+            loginUseCase.logOut()
+            _appointmentsState.value = AdminHomeState.LoggedOut
+        }
     }
 }

@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_loginFragment_to_resetPasswordWithEmailFragment"
             app:destination="@id/resetPasswordWithEmailFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_adminHomeFragment2"
+            app:destination="@id/adminHomeFragment2" />
     </fragment>
 
 
@@ -81,6 +84,17 @@
         <action
             android:id="@+id/action_loadingFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_adminHomeFragment2"
+            app:destination="@id/adminHomeFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminHomeFragment2"
+        android:name="com.example.vetclinic.presentation.fragment.AdminHomeFragment"
+        android:label="AdminHomeFragment" >
+        <action
+            android:id="@+id/action_adminHomeFragment2_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
 </navigation>

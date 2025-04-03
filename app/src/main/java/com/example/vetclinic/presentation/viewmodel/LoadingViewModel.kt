@@ -10,7 +10,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class LoadingViewModel @Inject constructor(
-    userDataStore: UserDataStore
+  private val userDataStore: UserDataStore
 ) : ViewModel() {
 
 
@@ -21,9 +21,20 @@ class LoadingViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: ""
             Log.d("LoadingFragment", "userId: $userId")
-            _loadingState.value = LoadingState.Result(userId)
+            val userRole = userDataStore.getUserRole()?:""
+            Log.d("LoadingFragment", "userRole: $userRole")
+            _loadingState.value = LoadingState.Result(userId, userRole)
         }
 
     }
+
+
+    fun clearUserSession () {
+        _loadingState.value = LoadingState.Loading
+        viewModelScope.launch {
+            userDataStore.clearUserSession()
+        }
+    }
+
 
 }

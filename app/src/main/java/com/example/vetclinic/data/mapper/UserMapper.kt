@@ -14,7 +14,8 @@ class UserMapper @Inject constructor() {
             userName = entity.userName,
             userLastName = entity.userLastName,
             phoneNumber = entity.phoneNumber,
-            email = entity.email
+            email = entity.email,
+            role = entity.role
         )
     }
 
@@ -24,7 +25,8 @@ class UserMapper @Inject constructor() {
             userName = dto.userName,
             userLastName = dto.userLastName,
             phoneNumber = dto.phoneNumber,
-            email = dto.email
+            email = dto.email,
+            role = dto.role
         )
     }
 
@@ -38,7 +40,8 @@ class UserMapper @Inject constructor() {
             userName = dbModel.userName,
             userLastName = dbModel.userLastName,
             phoneNumber = dbModel.phoneNumber,
-            email = dbModel.email
+            email = dbModel.email,
+            role = dbModel.role
         )
     }
 
@@ -48,7 +51,8 @@ class UserMapper @Inject constructor() {
             userName = entity.userName,
             userLastName = entity.userLastName,
             phoneNumber = entity.phoneNumber,
-            email = entity.email
+            email = entity.email,
+            role = entity.role
         )
     }
 
@@ -58,7 +62,8 @@ class UserMapper @Inject constructor() {
             userName = dto.userName,
             userLastName = dto.userLastName,
             phoneNumber = dto.phoneNumber,
-            email = dto.email
+            email = dto.email,
+            role = dto.role
         )
     }
 

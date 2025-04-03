@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentLoadingBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.LoadingState
@@ -43,7 +44,7 @@ class LoadingFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentLoadingBinding.inflate(inflater, container, false)
         return binding.root
@@ -56,23 +57,59 @@ class LoadingFragment : Fragment() {
 
         viewModel.loadingState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is LoadingState.Error -> Log.d(TAG, "заглушка для Error")
+                is LoadingState.Error -> {
+                    Log.d(TAG, "заглушка для Error")
+                    findNavController().navigate(
+                        LoadingFragmentDirections.actionLoadingFragmentToLoginFragment()
+                    )
+                }
+
                 LoadingState.Loading -> Log.d(TAG, "заглушка для Loading")
                 is LoadingState.Result -> {
                     val userId = state.userId
+                    val userRole = state.userRole
 
-                    if (!userId.isNullOrEmpty()) {
+                    if (userId.isEmpty()) {
+                        // No user ID means not logged in, go to login
                         findNavController().navigate(
-                            LoadingFragmentDirections.actionLoadingFragmentToMainFragment()
+                            LoadingFragmentDirections.actionLoadingFragmentToLoginFragment()
+                        )
+                    } else if (userRole.isEmpty()) {
+                        // User ID exists but role is empty - direct to login to refresh role
+                        // First clear user session to avoid loop
+                        viewModel.clearUserSession()
+                        findNavController().navigate(
+                            LoadingFragmentDirections.actionLoadingFragmentToLoginFragment()
                         )
                     } else {
-                        findNavController()
-                            .navigate(LoadingFragmentDirections.actionLoadingFragmentToLoginFragment())
+                        when (userRole) {
+                            "admin" -> if (userId.isNotEmpty()) {
+                                findNavController().navigate(
+                                    LoadingFragmentDirections
+                                        .actionLoadingFragmentToAdminHomeFragment2()
+                                )
+                            } else {
+                                findNavController().navigate(
+                                    LoadingFragmentDirections
+                                        .actionLoadingFragmentToLoginFragment()
+                                )
+                            }
+
+                            "user" -> if (userId.isNotEmpty()) {
+                                findNavController().navigate(
+                                    LoadingFragmentDirections.actionLoadingFragmentToMainFragment()
+                                )
+                            } else {
+                                viewModel.clearUserSession()
+                                findNavController().navigate(
+                                    LoadingFragmentDirections.actionLoadingFragmentToLoginFragment()
+                                )
+                            }
+                        }
                     }
-
                 }
-
             }
+
         }
     }
 

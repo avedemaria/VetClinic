@@ -1,0 +1,65 @@
+<!-- res/layout/date_picker_dialog.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- Контейнер для дня -->
+    <LinearLayout
+        android:id="@+id/day_container"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <TextView
+            android:text="День"
+            android:textColor="@color/dark_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <android.widget.NumberPicker
+            android:id="@+id/day_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Контейнер для месяца -->
+    <LinearLayout
+        android:id="@+id/month_container"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <TextView
+            android:text="Месяц"
+            android:textColor="@color/dark_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <android.widget.NumberPicker
+            android:id="@+id/month_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Контейнер для года -->
+    <LinearLayout
+        android:id="@+id/year_container"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+        <TextView
+            android:text="Год"
+            android:textColor="@color/dark_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <android.widget.NumberPicker
+            android:id="@+id/year_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>

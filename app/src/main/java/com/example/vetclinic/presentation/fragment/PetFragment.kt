@@ -10,13 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.NumberPicker
+import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.CustomDatePicker
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentPetBinding
 import com.example.vetclinic.domain.entities.Pet
@@ -28,8 +35,8 @@ import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 import java.util.Calendar
-
 
 class PetFragment : Fragment() {
 
@@ -63,7 +70,7 @@ class PetFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPetBinding.inflate(inflater, container, false)
         return binding.root
@@ -90,7 +97,7 @@ class PetFragment : Fragment() {
                 when (parameter) {
                     PetParameter.NAME.name -> showPetNameDialog(pet)
                     PetParameter.TYPE.name -> showPetTypeDialog(pet)
-                    PetParameter.BDAY.name -> showDatePickerDialog(pet)
+                    PetParameter.BDAY.name -> showCustomDatePicker(pet)
                     PetParameter.GENDER.name -> showPetGenderDialog(pet)
                 }
 
@@ -109,45 +116,45 @@ class PetFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.petState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is PetUiState.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "An error has occurred: ${state.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
-                    binding.petContent.isEnabled = false
-                    binding.progressBar.visibility = View.GONE
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.toastEvent.collect { event ->
+                Toast.makeText(requireContext(), event, Toast.LENGTH_SHORT).show()
+            }
+        }
 
-                PetUiState.Loading -> {
-                    binding.petContent.visibility = View.GONE
-                    binding.progressBar.visibility = View.VISIBLE
-                    Log.d(TAG, "заглушка для loading")
-                }
 
-                is PetUiState.Success -> {
-                    binding.petContent.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    Log.d("PetFragment", "Data received: ${state.pets}")
-                    petsAdapter.submitList(state.pets)
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.petState.collect { state ->
+                    when (state) {
+                        is PetUiState.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Ошибка: ${state.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                PetUiState.Deleted -> {
-                    binding.petContent.visibility = View.GONE
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        requireContext(),
-                        "Питомец успешно удалён",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d(TAG, "Заглушка для deleted")
+                            binding.petContent.isEnabled = false
+                            binding.progressBar.visibility = View.GONE
+                        }
 
+                        PetUiState.Loading -> {
+                            binding.petContent.visibility = View.GONE
+                            binding.progressBar.visibility = View.VISIBLE
+                            Log.d(TAG, "Загрузка данных...")
+                        }
+
+                        is PetUiState.Success -> {
+                            binding.petContent.visibility = View.VISIBLE
+                            binding.progressBar.visibility = View.GONE
+                            petsAdapter.submitList(state.pets)
+                            Log.d(TAG, "Данные загружены: ${state.pets}")
+                        }
+
+                    }
                 }
             }
-
         }
     }
 
@@ -169,7 +176,7 @@ class PetFragment : Fragment() {
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
+                    target: RecyclerView.ViewHolder,
                 ): Boolean {
                     return false
                 }
@@ -188,8 +195,10 @@ class PetFragment : Fragment() {
     private fun showDeleteConfirmationDialog(pet: Pet, position: Int) {
         val dialogBuilder = AlertDialog.Builder(requireContext())
             .setTitle("Удалить питомца")
-            .setMessage("Вы уверены, что хотите удалить данные о питомце?" +
-                    " Все записи о приёмах питомца так же будут удалены")
+            .setMessage(
+                "Вы уверены, что хотите удалить данные о питомце?" +
+                        " Все записи о приёмах питомца так же будут удалены"
+            )
             .setPositiveButton("Да") { _, _ ->
                 viewModel.deletePet(pet)
             }
@@ -246,34 +255,41 @@ class PetFragment : Fragment() {
     }
 
 
-    @SuppressLint("DefaultLocale")
-    private fun showDatePickerDialog(pet: Pet) {
-        val calendar = Calendar.getInstance()
+//    @SuppressLint("DefaultLocale")
+//    private fun showDatePickerDialog(pet: Pet) {
+//        val calendar = Calendar.getInstance()
+//
+//        val year = calendar.get(Calendar.YEAR)
+//        val month = calendar.get(Calendar.MONTH)
+//        val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//        val datePickerDialog =
+//            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+//                val selectedDate =
+//                    String.format(
+//                        "%02d-%02d-%04d",
+//                        selectedDay,
+//                        selectedMonth + 1,
+//                        selectedYear
+//                    )
+//
+//                val updatedPet = pet.copy(petBDay = selectedDate)
+//
+//                viewModel.updatePet(pet.petId, updatedPet)
+//            }, year, month, day)
+//
+//        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+//
+//        datePickerDialog.show()
+//
+//
+//    }
 
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val datePickerDialog =
-            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate =
-                    String.format(
-                        "%02d-%02d-%04d",
-                        selectedDay,
-                        selectedMonth + 1,
-                        selectedYear
-                    )
-
-                val updatedPet = pet.copy(petBDay = selectedDate)
-
-                viewModel.updatePet(pet.petId, updatedPet)
-            }, year, month, day)
-
-        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-
-        datePickerDialog.show()
-
-
+    private fun showCustomDatePicker(pet: Pet) {
+        CustomDatePicker(requireContext()) { selectedDate ->
+            val updatedPet = pet.copy(petBDay = selectedDate)
+            viewModel.updatePet(pet.petId, updatedPet)
+        }.show()
     }
 
 
@@ -285,7 +301,7 @@ class PetFragment : Fragment() {
             .setItems(genders) { dialog, which ->
                 val selectedGender = genders[which]
                 val updatedPet = pet.copy(petGender = selectedGender)
-                viewModel.updatePet( pet.petId, updatedPet)
+                viewModel.updatePet(pet.petId, updatedPet)
             }
             .setNegativeButton("Отмена", null)
             .show()

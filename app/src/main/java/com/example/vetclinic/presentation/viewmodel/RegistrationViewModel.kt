@@ -24,7 +24,7 @@ class RegistrationViewModel @Inject constructor(
     private val addPetUseCase: AddPetUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val getPetsUseCase: GetPetsUseCase,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
 ) : ViewModel() {
 
 
@@ -45,65 +45,65 @@ class RegistrationViewModel @Inject constructor(
             return
         }
 
-            viewModelScope.launch(Dispatchers.IO) {
-                registerUserUseCase.registerUser(email, password)
-                    .onSuccess { supabaseUser ->
-                        Log.d(
-                            TAG,
-                            "Auth successful, creating user with ID: ${supabaseUser.user?.id}"
-                        )
+        viewModelScope.launch(Dispatchers.IO) {
+            registerUserUseCase.registerUser(email, password)
+                .onSuccess { supabaseUser ->
+                    Log.d(
+                        TAG,
+                        "Auth successful, creating user with ID: ${supabaseUser.user?.id}"
+                    )
 
-                        val userId = supabaseUser.user?.id ?: return@onSuccess
-                        val petId = UUID.randomUUID().toString()
+                    val userId = supabaseUser.user?.id ?: return@onSuccess
+                    val petId = UUID.randomUUID().toString()
 
-                        val user = User(
-                            userId,
-                            userName,
-                            userLastName,
-                            phoneNumber,
-                            email
-                        )
+                    val user = User(
+                        userId,
+                        userName,
+                        userLastName,
+                        phoneNumber,
+                        email
+                    )
 
-                        val pet = Pet(
-                            petId,
-                            userId,
-                            petName
-                        )
+                    val pet = Pet(
+                        petId,
+                        userId,
+                        petName
+                    )
 
-                        userDataStore.saveUserSession(userId, supabaseUser.accessToken)
+                    userDataStore.saveUserSession(userId, supabaseUser.accessToken)
 
 
 
-                        addUserUseCase.addUserToSupabaseDb(user).onSuccess {
-                            Log.d(TAG, "user added to supabase $user")
-                            getUserUseCase.getUserFromSupabaseDb(user.uid)
+                    addUserUseCase.addUserToSupabaseDb(user).onSuccess {
+                        Log.d(TAG, "user added to supabase $user")
+                        getUserUseCase.getUserFromSupabaseDb(user.uid)
 
-                        }.onFailure { error ->
-                            Log.e(TAG, "Failed to add user to DB", error)
-                            _registrationState.postValue(
-                                RegistrationState.Error(
-                                    error.message ?: "Failed to add user to DB"
-                                )
+                    }.onFailure { error ->
+                        Log.e(TAG, "Failed to add user to DB", error)
+                        _registrationState.postValue(
+                            RegistrationState.Error(
+                                error.message ?: "Failed to add user to DB"
                             )
-                        }
-
-
-                        addPetUseCase.addPetToSupabaseDb(pet).onSuccess { savedPet ->
-                            Log.d(TAG, "pet added to supabase $savedPet")
-                            //sync
-                            getPetsUseCase.getPetsFromSupabaseDb(userId)
-
-
-                            Log.d(TAG, "User and pet added to Room")
-                            _registrationState.postValue(RegistrationState.Result)
-                        }
-
+                        )
                     }
-                    .onFailure { error ->
-                        Log.e(TAG, "Failed to register", error)
-                        _registrationState.postValue(RegistrationState.Error(error.message))
+
+
+                    addPetUseCase.addPetToSupabaseDb(pet).onSuccess { savedPet ->
+                        Log.d(TAG, "pet added to supabase $savedPet")
+                        //sync
+                        getPetsUseCase.getPetsFromSupabaseDb(userId)
+
+
+                        Log.d(TAG, "User and pet added to Room")
+                        _registrationState.postValue(RegistrationState.Result)
                     }
-            }
+
+                }
+                .onFailure { error ->
+                    Log.e(TAG, "Failed to register", error)
+                    _registrationState.postValue(RegistrationState.Error(error.message))
+                }
+        }
 
     }
 
@@ -114,13 +114,16 @@ class RegistrationViewModel @Inject constructor(
         petName: String,
         phoneNumber: String,
         email: String,
-        password: String
+        password: String,
     ): Boolean {
+
+        val phonePattern = "^(?:\\+7|7|8)(\\d{10})\$".toRegex()
+
         val validations = listOf(
             name.isNotBlank() to "Name is required",
             lastName.isNotBlank() to "Last name is required",
             petName.isNotBlank() to "Pet name is required",
-            phoneNumber.isNotBlank() to "Phone number is required",
+            phonePattern.matches(phoneNumber) to "Valid phone number is required",
             android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                 .matches() to "Valid email is required",
             (password.length >= 6) to "Password must be at least 6 characters"

@@ -6,24 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
 import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointmentMenuClickListener
-import com.example.vetclinic.presentation.viewmodel.AppointmentsState
-import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
+import com.example.vetclinic.presentation.fragment.ArchivedAppointmentsFragment.Companion
+import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 
 class CurrentAppointmentsFragment : Fragment() {
@@ -32,7 +35,8 @@ class CurrentAppointmentsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: CurrentAppointmentsViewModel by viewModels { viewModelFactory }
+    private val viewModel: DetailedAppointmentsViewModel by viewModels({ requireParentFragment() })
+    { viewModelFactory }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -49,7 +53,7 @@ class CurrentAppointmentsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentCurrentAppointmentsBinding.inflate(
             inflater, container,
@@ -73,7 +77,7 @@ class CurrentAppointmentsFragment : Fragment() {
 
         setUpAdapter()
         observeViewModel()
-
+        Log.d(TAG, "$viewModel")
 
     }
 
@@ -122,37 +126,45 @@ class CurrentAppointmentsFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.appointmentState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                AppointmentsState.Empty -> {
-                    binding.rvCurrentAppointments.visibility = View.GONE
-                    binding.tvEmptyAppointments.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.appointmentsState.collect { state ->
+                    when (state) {
+                        DetailedAppointmentsState.Empty -> {
+                            binding.rvCurrentAppointments.visibility = View.GONE
+                            binding.tvEmptyAppointments.visibility = View.VISIBLE
+                            binding.progressBar.visibility = View.GONE
+                        }
 
-                is AppointmentsState.Error -> {
-                    binding.currentAppointmentContent.isEnabled = false
-                    binding.progressBar.visibility = View.GONE
+                        is DetailedAppointmentsState.Error -> {
+                            binding.currentAppointmentContent.isEnabled = false
+                            binding.tvEmptyAppointments.visibility = View.VISIBLE
+                            binding.progressBar.visibility = View.GONE
 
-                    Toast.makeText(
-                        requireContext(),
-                        "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
+                            Toast.makeText(
+                                requireContext(),
+                                "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
-                AppointmentsState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.currentAppointmentContent.isEnabled = false
-                }
+                        DetailedAppointmentsState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.currentAppointmentContent.isEnabled = false
+                        }
 
-                is AppointmentsState.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.currentAppointmentContent.isEnabled = true
+                        is DetailedAppointmentsState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.currentAppointmentContent.isEnabled = true
 
-                    appointmentsAdapter.submitList(state.appointments)
+                            val appointments = state.appointments
+                            val filteredAppointments = appointments.filter { !it.isArchived }
+
+                            appointmentsAdapter.submitList(filteredAppointments)
+                        }
+                    }
+
                 }
             }
-
         }
     }
 
@@ -161,8 +173,21 @@ class CurrentAppointmentsFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.subscribeToAppointmentChanges()
+        Log.d(TAG, "subscribed to CurrentAppointmentsFragment")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Отписка от WebSocket
+        Log.d(TAG, "Unsubscribed from CurrentAppointmentsFragment")
+        viewModel.unsubscribeFromChanges()
+    }
 
     companion object {
         private const val TAG = "CurrentAppointmentsFragment"
     }
+
 }

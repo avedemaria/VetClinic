@@ -16,14 +16,13 @@ interface AppointmentRepository {
 
 
     suspend fun getAppointmentsByUserId(
-        userId: String,
-        isArchived: Boolean
+        userId: String
     ): Result<List<AppointmentWithDetails>>
 
     suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>>
 
     suspend fun updateAppointmentStatus(
-        updatedAppointment: AppointmentWithDetails
+        updatedAppointment: AppointmentWithDetails,
     ): Result<Unit>
 
     suspend fun getDoctorById(doctorId: String): Doctor
@@ -34,9 +33,13 @@ interface AppointmentRepository {
 
     suspend fun getUserFromRoomById(userId: String): User
 
-    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
+//    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
+
+    suspend fun subscribeToAppointmentChanges(): Flow<Appointment>
 
     suspend fun unsubscribeFromAppointmentChanges()
+
+    suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>>
 
 
 }

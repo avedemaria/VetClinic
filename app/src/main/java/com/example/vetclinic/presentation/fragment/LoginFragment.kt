@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
@@ -96,20 +96,23 @@ class LoginFragment : Fragment() {
             when (state) {
                 is LoginState.Error -> {
                     binding.progressIndicator.visibility = View.GONE
-                    binding.btnLogin.isEnabled = false
+                    binding.btnLogin.isEnabled = true
 
                     Toast.makeText(
                         requireContext(), "${state.message}", Toast.LENGTH_SHORT
                     ).show()
                 }
 
-                is LoginState.IsAuthenticated -> Log.d(TAG, "заглушка для isAuthenticated")
-
-                is LoginState.LoggedOut -> Log.d(TAG, "заглушка для LoggedOut")
                 is LoginState.Result -> {
                     binding.progressIndicator.visibility = View.GONE
                     binding.btnLogin.isEnabled = true
-                    launchMainFragment()
+
+                    if (state.userRole == "admin") {
+                        launchAdminFragment()
+                    } else {
+                        launchMainFragment()
+                    }
+
                 }
 
                 LoginState.Loading -> {
@@ -119,6 +122,11 @@ class LoginFragment : Fragment() {
 
             }
         }
+    }
+
+
+    private fun launchAdminFragment() {
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAdminHomeFragment2())
     }
 
     private fun launchMainFragment() {

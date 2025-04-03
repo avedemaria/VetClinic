@@ -9,9 +9,11 @@ data class User(
     val userLastName: String,
     val phoneNumber: String,
     val email: String,
+    val role:String = "default"
 
     ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
@@ -28,6 +30,7 @@ data class User(
             writeString(userLastName)
             writeString(phoneNumber)
             writeString(email)
+            writeString(role)
         }
 
     }

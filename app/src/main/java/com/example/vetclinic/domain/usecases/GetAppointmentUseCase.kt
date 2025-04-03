@@ -7,11 +7,13 @@ import jakarta.inject.Inject
 class GetAppointmentUseCase @Inject constructor(private val repository: AppointmentRepository) {
 
 
-    suspend fun getAppointmentsByUserId(
-        userId: String,
-        isArchived: Boolean
-    ): Result<List<AppointmentWithDetails>> {
-        return repository.getAppointmentsByUserId(userId, isArchived)
+    suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>> {
+        return repository.getAppointmentsByUserIdFromRoom(userId)
+    }
+
+
+    suspend fun getAppointmentsByUserIdFromSupabase(userId: String): Result<List<AppointmentWithDetails>> {
+        return repository.getAppointmentsByUserId(userId)
     }
 
 

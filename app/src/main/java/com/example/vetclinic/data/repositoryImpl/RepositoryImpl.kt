@@ -35,7 +35,7 @@ class RepositoryImpl @Inject constructor(
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
     private val doctorMapper: DoctorMapper,
-    private val serviceMapper: ServiceMapper
+    private val serviceMapper: ServiceMapper,
 ) : Repository {
 
 
@@ -179,9 +179,7 @@ class RepositoryImpl @Inject constructor(
 
             if (!response.isSuccessful) {
                 throw Exception(
-                    "Server error: ${response.code()} - ${
-                        response.errorBody()?.string()
-                    }"
+                    "Server error: ${response.code()} - ${response.errorBody()?.string()}"
                 )
             }
             val petDtos = response.body() ?: emptyList()
@@ -268,25 +266,43 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-    override suspend fun deletePetFromSupabaseDb(pet: Pet, userId: String): Result<List<Pet>> = kotlin.runCatching {
+//    override suspend fun deletePetFromSupabaseDb(pet: Pet, userId: String): Result<List<Pet>> = kotlin.runCatching {
+//
+//        val idWithOperator = "eq.${pet.petId}"
+//
+//        val response = supabaseApiService.deletePet(idWithOperator)
+//
+//        if (response.isSuccessful) {
+//            Log.d(TAG, "Successfully deleted pet in Supabase DB")
+//            deletePetFromRoom(pet)
+//            getPetsFromSupabaseDb(userId).getOrNull()?: emptyList()
+//        } else {
+//            val errorBody = response.errorBody()?.string()
+//            throw Exception("Failed to delete pet. ${response.code()} - $errorBody\")")
+//        }
+//    }
+//        .onFailure { error ->
+//            Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
+//        }
+
+    override suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> = kotlin.runCatching {
+        // Сначала пытаемся удалить питомца из Room
+        deletePetFromRoom(pet)
 
         val idWithOperator = "eq.${pet.petId}"
-
         val response = supabaseApiService.deletePet(idWithOperator)
 
-        if (response.isSuccessful) {
-            Log.d(TAG, "Successfully deleted pet in Supabase DB")
-            deletePetFromRoom(pet)
-            getPetsFromSupabaseDb(userId).getOrNull()?: emptyList()
-        } else {
+        if (!response.isSuccessful) {
+            // Если ошибка на сервере, откатываем изменения в Room
+            addPetToRoom(pet) // Вставляем обратно в Room, если не получилось удалить с сервера
             val errorBody = response.errorBody()?.string()
-            throw Exception("Failed to delete pet. ${response.code()} - $errorBody\")")
+            throw Exception("Failed to delete pet. ${response.code()} - $errorBody")
         }
+        Log.d(TAG, "Successfully deleted pet in Supabase DB")
+        Unit
+    }.onFailure { error ->
+        Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
     }
-        .onFailure { error ->
-            Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
-        }
-
 
     override suspend fun getDoctorList(): Result<List<Doctor>> = fetchData(
         apiCall = { supabaseApiService.getDoctors() },
@@ -330,7 +346,7 @@ class RepositoryImpl @Inject constructor(
     private suspend fun <T, R> addDataToSupabaseDb(
         entity: T,
         apiCall: suspend (R) -> Response<Unit>,
-        mapper: (T) -> R
+        mapper: (T) -> R,
     ): Result<Unit> = runCatching {
         val mappedEntity = mapper(entity)
         val response = apiCall(mappedEntity)
@@ -352,7 +368,7 @@ class RepositoryImpl @Inject constructor(
     private suspend fun <T, R> fetchData(
         apiCall: suspend () -> Response<T>,
         mapper: (T) -> R,
-        entityTag: String
+        entityTag: String,
     ): Result<R> = kotlin.runCatching {
         val response = apiCall()
         val body = response.body()
@@ -383,7 +399,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun addPetToRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
 
         val models = petMapper.petEntityToPetDbModel(pet)
-        Log.d(TAG,"Pet model is: $models")
+        Log.d(TAG, "Pet model is: $models")
         vetClinicDao.insertPet(models)
 
     }

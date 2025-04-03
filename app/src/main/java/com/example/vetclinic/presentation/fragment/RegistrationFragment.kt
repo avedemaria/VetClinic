@@ -51,7 +51,7 @@ class RegistrationFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
@@ -60,14 +60,13 @@ class RegistrationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        observeViewModel()
-
 
         binding.btnCreateAccount.setOnClickListener {
 
-            val name = setUpInput(binding.etName)
-            val lastName = setUpInput(binding.etLastName)
-            val petName = setUpInput(binding.etPetName)
+            val name = setUpInput(binding.etName).replaceFirstChar { it.uppercase() }
+            val lastName = setUpInput(binding.etLastName).replaceFirstChar { it.uppercase() }
+            val petName = setUpInput(binding.etPetName).replaceFirstChar { it.uppercase() }
+
             val phoneNumber = setUpInput(binding.etPhoneNumber)
             val email = setUpInput(binding.etEmail)
             val password = setUpInput(binding.etPassword)
@@ -76,16 +75,19 @@ class RegistrationFragment : Fragment() {
 
         }
 
-        binding.btnCreateAccount.setOnLongClickListener {
+        binding.btnCreateAccount.setOnLongClickListener{
             generateMockForm()
             true
         }
 
 
 
-        binding.tvBackToLogin.setOnClickListener {
+        binding.tvBackToLogin.setOnClickListener{
             launchLoginFragment()
         }
+
+        observeViewModel()
+
 
     }
 

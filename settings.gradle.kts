@@ -16,6 +16,7 @@ pluginManagement {
         kotlin("plugin.serialization") version "1.9.0"
         kotlin("jvm") version "1.9.0"
     }
+
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

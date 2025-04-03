@@ -39,6 +39,14 @@ class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Pre
         }
     }
 
+    override suspend fun saveUserRole(userRole: String) {
+        dataStore.edit { preferences ->
+            preferences[KEY_USER_ROLE] = userRole
+            Log.d("UserDataStore", "savedUserRole^ $userRole")
+        }
+    }
+
+
     override suspend fun getUserId(): String? {
         return dataStore.data.first()[KEY_USER_ID]
     }
@@ -48,21 +56,23 @@ class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Pre
     }
 
 
+    override suspend fun getUserRole(): String? {
+        return dataStore.data.first()[KEY_USER_ROLE]
+    }
+
     override suspend fun clearUserSession() {
         dataStore.edit { preferences ->
             preferences.remove(KEY_USER_ID)
             preferences.remove(KEY_ACCESS_TOKEN)
+            preferences.remove(KEY_USER_ROLE)
         }
 
     }
 
-    override val userIdFlow: Flow<String?>
-        get() = dataStore.data.map { preferences ->
-            preferences[KEY_USER_ID]
-        }
 
     companion object {
         private val KEY_USER_ID = stringPreferencesKey("key_user_id")
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("key_access_token")
+        private val KEY_USER_ROLE = stringPreferencesKey("key_user_role")
     }
 }

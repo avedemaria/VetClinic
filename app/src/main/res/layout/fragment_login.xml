@@ -95,10 +95,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     android:layout_marginEnd="4dp"
                     android:text="@string/dont_have_account"
                     android:textColor="@color/dark_blue"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_register"
@@ -106,9 +108,11 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     android:text="@string/TV_register"
                     android:textColor="#075D52"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -116,23 +120,12 @@
                 android:id="@+id/tv_forgot_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/tv_forgorPassword"
                 android:textColor="#075D52"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/admin_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/tv_admin_login"
-                android:textColor="#075D52"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
 
         </LinearLayout>
