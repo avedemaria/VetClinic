@@ -2,25 +2,21 @@ package com.example.vetclinic.presentation.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAdminHomeBinding
-import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
-import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
 import com.example.vetclinic.presentation.viewmodel.AdminHomeState
 import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
-import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
@@ -71,7 +67,7 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.appointmentState.observe(viewLifecycleOwner) { state ->
+        viewModel.adminState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 AdminHomeState.Empty -> Log.d(TAG, "заглушка для Empty")
                 is AdminHomeState.Error -> Log.d(TAG, "заглушка для Error")

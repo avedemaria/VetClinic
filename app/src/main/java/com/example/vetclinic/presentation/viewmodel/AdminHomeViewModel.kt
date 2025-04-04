@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
@@ -16,11 +17,13 @@ import java.time.LocalDate
 class AdminHomeViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
-    private val loginUseCase: LogInUserUseCase
+    private val loginUseCase: LogInUserUseCase,
+    private val userDataStore: UserDataStore
+
 ) : ViewModel() {
 
-    private val _appointmentsState = MutableLiveData<AdminHomeState>()
-    val appointmentState: LiveData<AdminHomeState> get() = _appointmentsState
+    private val _adminState = MutableLiveData<AdminHomeState>()
+    val adminState: LiveData<AdminHomeState> get() = _adminState
 
 
     init {
@@ -30,20 +33,20 @@ class AdminHomeViewModel @Inject constructor(
 
 
     private fun getAppointmentsByDate(date: String) {
-        _appointmentsState.value = AdminHomeState.Loading
+        _adminState.value = AdminHomeState.Loading
 
         viewModelScope.launch {
             val result = getAppointmentUseCase.getAppointmentsByDate(date)
             if (result.isSuccess) {
                 val appointments = result.getOrNull() ?: emptyList()
-                _appointmentsState.value = AdminHomeState.Success(appointments, null)
+                _adminState.value = AdminHomeState.Success(appointments, null)
             }
         }
     }
 
 
     fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
-        _appointmentsState.value = AdminHomeState.Loading
+        _adminState.value = AdminHomeState.Loading
 
         viewModelScope.launch {
             val date = LocalDate.now().toString()
@@ -51,18 +54,25 @@ class AdminHomeViewModel @Inject constructor(
             if (result.isSuccess) {
                 getAppointmentsByDate(date)
             } else {
-                _appointmentsState.value =
+                _adminState.value =
                     AdminHomeState.Error(result.exceptionOrNull()?.message.toString())
             }
         }
 
     }
 
-    fun logOut () {
-        _appointmentsState.value = AdminHomeState.Loading
+    fun logOut() {
+        _adminState.value = AdminHomeState.Loading
+
         viewModelScope.launch {
-            loginUseCase.logOut()
-            _appointmentsState.value = AdminHomeState.LoggedOut
+            val result = loginUseCase.logOut()
+            if (result.isSuccess) {
+                userDataStore.clearUserSession()
+                _adminState.value = AdminHomeState.LoggedOut
+            } else {
+                val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
+                _adminState.value = AdminHomeState.Error(errorMessage)
+            }
         }
     }
 }

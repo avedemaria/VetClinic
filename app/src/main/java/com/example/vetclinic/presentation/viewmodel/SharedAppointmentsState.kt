@@ -3,13 +3,13 @@ package com.example.vetclinic.presentation.viewmodel
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import java.time.LocalDate
 
-sealed class DetailedAppointmentsState {
-    object Loading : DetailedAppointmentsState()
+sealed class SharedAppointmentsState {
+    object Loading : SharedAppointmentsState()
     data class Success(
         val appointments: List<AppointmentWithDetails>,
         val selectedDate: LocalDate? = null,
-    ) : DetailedAppointmentsState()
+    ) : SharedAppointmentsState()
 
-    data class Error(val message: String) : DetailedAppointmentsState()
-    object Empty : DetailedAppointmentsState()
+    data class Error(val message: String) : SharedAppointmentsState()
+    object Empty : SharedAppointmentsState()
 }

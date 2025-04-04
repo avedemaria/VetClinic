@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,9 +20,8 @@ import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointmentMenuClickListener
-import com.example.vetclinic.presentation.fragment.ArchivedAppointmentsFragment.Companion
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsState
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -35,7 +33,7 @@ class CurrentAppointmentsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: DetailedAppointmentsViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: SharedAppointmentsViewModel by viewModels({ requireParentFragment() })
     { viewModelFactory }
 
     private val component by lazy {
@@ -130,13 +128,13 @@ class CurrentAppointmentsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
                     when (state) {
-                        DetailedAppointmentsState.Empty -> {
+                        SharedAppointmentsState.Empty -> {
                             binding.rvCurrentAppointments.visibility = View.GONE
                             binding.tvEmptyAppointments.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
                         }
 
-                        is DetailedAppointmentsState.Error -> {
+                        is SharedAppointmentsState.Error -> {
                             binding.currentAppointmentContent.isEnabled = false
                             binding.tvEmptyAppointments.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
@@ -147,12 +145,12 @@ class CurrentAppointmentsFragment : Fragment() {
                             ).show()
                         }
 
-                        DetailedAppointmentsState.Loading -> {
+                        SharedAppointmentsState.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                             binding.currentAppointmentContent.isEnabled = false
                         }
 
-                        is DetailedAppointmentsState.Success -> {
+                        is SharedAppointmentsState.Success -> {
                             binding.progressBar.visibility = View.GONE
                             binding.currentAppointmentContent.isEnabled = true
 
@@ -173,18 +171,18 @@ class CurrentAppointmentsFragment : Fragment() {
         _binding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.subscribeToAppointmentChanges()
-        Log.d(TAG, "subscribed to CurrentAppointmentsFragment")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Отписка от WebSocket
-        Log.d(TAG, "Unsubscribed from CurrentAppointmentsFragment")
-        viewModel.unsubscribeFromChanges()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.subscribeToAppointmentChanges()
+//        Log.d(TAG, "subscribed to CurrentAppointmentsFragment")
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        // Отписка от WebSocket
+//        Log.d(TAG, "Unsubscribed from CurrentAppointmentsFragment")
+//        viewModel.unsubscribeFromChanges()
+//    }
 
     companion object {
         private const val TAG = "CurrentAppointmentsFragment"

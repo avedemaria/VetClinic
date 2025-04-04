@@ -15,10 +15,8 @@ import com.example.vetclinic.databinding.FragmentAppointmentsBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.AppointmentsState
 import com.example.vetclinic.presentation.viewmodel.AppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 

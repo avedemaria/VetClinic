@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
 import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
 import com.example.vetclinic.presentation.viewmodel.AppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.ArchivedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
-import com.example.vetclinic.presentation.viewmodel.CurrentAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.LoadingViewModel
@@ -19,6 +16,7 @@ import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.viewmodel.SettingsViewModel
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import dagger.Binds
 import dagger.Module
@@ -105,15 +103,15 @@ interface ViewModelModule {
     @Binds
     fun bindBookAppointmentViewModel(impl: BookAppointmentViewModel): ViewModel
 
-    @IntoMap
-    @ViewModelKey(CurrentAppointmentsViewModel::class)
-    @Binds
-    fun bindCurrentAppointmentsViewModel(impl: CurrentAppointmentsViewModel): ViewModel
-
-    @IntoMap
-    @ViewModelKey(ArchivedAppointmentsViewModel::class)
-    @Binds
-    fun bindArchivedAppointmentsViewModel(impl: ArchivedAppointmentsViewModel): ViewModel
+//    @IntoMap
+//    @ViewModelKey(CurrentAppointmentsViewModel::class)
+//    @Binds
+//    fun bindCurrentAppointmentsViewModel(impl: CurrentAppointmentsViewModel): ViewModel
+//
+//    @IntoMap
+//    @ViewModelKey(ArchivedAppointmentsViewModel::class)
+//    @Binds
+//    fun bindArchivedAppointmentsViewModel(impl: ArchivedAppointmentsViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(AdminHomeViewModel::class)
@@ -127,9 +125,9 @@ interface ViewModelModule {
     fun bindAppointmentsViewModel(impl: AppointmentsViewModel): ViewModel
 
     @IntoMap
-    @ViewModelKey(DetailedAppointmentsViewModel::class)
+    @ViewModelKey(SharedAppointmentsViewModel::class)
     @Binds
-    fun bindDetailedAppointmentsViewModel(impl: DetailedAppointmentsViewModel): ViewModel
+    fun bindDetailedAppointmentsViewModel(impl: SharedAppointmentsViewModel): ViewModel
 
 
 }

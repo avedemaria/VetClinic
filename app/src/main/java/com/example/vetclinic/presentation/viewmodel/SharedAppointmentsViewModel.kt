@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.UserDataStore
-import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
@@ -14,15 +13,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class DetailedAppointmentsViewModel @Inject constructor(
+class SharedAppointmentsViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val userDataStore: UserDataStore,
 ) : ViewModel() {
 
     private val _appointmentsState =
-        MutableStateFlow<DetailedAppointmentsState>(DetailedAppointmentsState.Loading)
-    val appointmentsState: MutableStateFlow<DetailedAppointmentsState> get() = _appointmentsState
+        MutableStateFlow<SharedAppointmentsState>(SharedAppointmentsState.Loading)
+    val appointmentsState: MutableStateFlow<SharedAppointmentsState> get() = _appointmentsState
 
 //    private var storedItems = listOf<AppointmentWithDetails>()
 
@@ -33,7 +32,7 @@ class DetailedAppointmentsViewModel @Inject constructor(
             val userId = userDataStore.getUserId().orEmpty()
             Log.d(TAG, "userId: $userId")
             getAppointmentsByUserId(userId)
-//            subscribeToAppointmentChanges()
+            subscribeToAppointmentChanges()
         }
     }
 
@@ -49,18 +48,18 @@ class DetailedAppointmentsViewModel @Inject constructor(
 
     private fun setLastCompletedAppointmentDate(appointments: List<AppointmentWithDetails>) {
         val lastCompletedAppointment =
-            appointments.maxByOrNull { it.dateTime } // Получаем последний прием по дате
+            appointments.maxByOrNull { it.dateTime }
         lastCompletedAppointmentDate =
             lastCompletedAppointment?.dateTime?.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss")
         Log.d(TAG, "lastCompletedAppointmentDate: $lastCompletedAppointmentDate")
     }
 
-    // Функция для установки выбранной даты
+
     fun setUpSelectedDate(date: LocalDate) {
         selectedDate = date
         _appointmentsState.value.let { currentState ->
-            if (currentState is DetailedAppointmentsState.Success) {
-                _appointmentsState.value = DetailedAppointmentsState.Success(
+            if (currentState is SharedAppointmentsState.Success) {
+                _appointmentsState.value = SharedAppointmentsState.Success(
                     currentState.appointments,
                     selectedDate
                 )
@@ -69,26 +68,26 @@ class DetailedAppointmentsViewModel @Inject constructor(
     }
 
     private suspend fun getAppointmentsByUserId(userId: String) {
-        _appointmentsState.value = DetailedAppointmentsState.Loading
+        _appointmentsState.value = SharedAppointmentsState.Loading
         getAppointmentUseCase.getAppointmentsByUserIdFromRoom(userId).fold(
             onSuccess = { appointments ->
                 if (appointments.isEmpty()) {
-                    _appointmentsState.value = DetailedAppointmentsState.Empty
+                    _appointmentsState.value = SharedAppointmentsState.Empty
                 } else {
-                    _appointmentsState.value = DetailedAppointmentsState.Success(appointments)
+                    _appointmentsState.value = SharedAppointmentsState.Success(appointments)
                     setLastCompletedAppointmentDate(appointments)
                     selectedDate = lastCompletedAppointmentDate
                 }
             },
             onFailure = { e ->
                 _appointmentsState.value =
-                    DetailedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
+                    SharedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
             })
     }
 
 
     fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
-        _appointmentsState.value = DetailedAppointmentsState.Loading
+        _appointmentsState.value = SharedAppointmentsState.Loading
         viewModelScope.launch {
             val result = updateAppointmentUseCase.updateAppointmentStatus(updatedAppointment)
             if (result.isSuccess) {
@@ -96,7 +95,7 @@ class DetailedAppointmentsViewModel @Inject constructor(
                 getAppointmentsByUserId(userId)
             } else {
                 _appointmentsState.value =
-                    DetailedAppointmentsState.Error(result.exceptionOrNull()?.message.toString())
+                    SharedAppointmentsState.Error(result.exceptionOrNull()?.message.toString())
             }
         }
     }
@@ -108,7 +107,7 @@ class DetailedAppointmentsViewModel @Inject constructor(
             updateAppointmentUseCase.subscribeToAppointmentChanges().collect { updatedAppointment ->
                 _appointmentsState.value = _appointmentsState.value.let { currentState ->
                     when (currentState) {
-                        is DetailedAppointmentsState.Success -> {
+                        is SharedAppointmentsState.Success -> {
 
                             val appointmentsWithDetails = currentState.appointments
 
@@ -127,7 +126,7 @@ class DetailedAppointmentsViewModel @Inject constructor(
                             updateAppointmentUseCase.updateAppointmentInRoom(
                                 updatedAppointmentWithDetails
                             )
-                            DetailedAppointmentsState.Success(updatedList, selectedDate)
+                            SharedAppointmentsState.Success(updatedList, selectedDate)
                         }
                         else -> currentState
                     }
@@ -143,10 +142,10 @@ class DetailedAppointmentsViewModel @Inject constructor(
         }
     }
 
-//    override fun onCleared() {
-//        super.onCleared()
-//        unsubscribeFromChanges()
-//    }
+    override fun onCleared() {
+        super.onCleared()
+        unsubscribeFromChanges()
+    }
 
     companion object {
         private const val TAG = "DetailedAppointmentsViewModel"

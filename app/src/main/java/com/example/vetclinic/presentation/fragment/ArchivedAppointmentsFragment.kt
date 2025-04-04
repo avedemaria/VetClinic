@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,10 +21,8 @@ import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.AppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointmentMenuClickListener
-import com.example.vetclinic.presentation.fragment.CurrentAppointmentsFragment.Companion
-import com.example.vetclinic.presentation.viewmodel.AppointmentsState
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsState
-import com.example.vetclinic.presentation.viewmodel.DetailedAppointmentsViewModel
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.example.vetclinic.toLocalDateOrNull
 import jakarta.inject.Inject
@@ -41,7 +38,7 @@ class ArchivedAppointmentsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: DetailedAppointmentsViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
+    private val viewModel: SharedAppointmentsViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -121,13 +118,13 @@ class ArchivedAppointmentsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
                     when (state) {
-                        DetailedAppointmentsState.Empty -> {
+                        SharedAppointmentsState.Empty -> {
                             binding.rvArchivedAppointments.visibility = View.GONE
                             binding.tvEmptyAppointments.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
                         }
 
-                        is DetailedAppointmentsState.Error -> {
+                        is SharedAppointmentsState.Error -> {
                             binding.archivedAppointmentContent.isEnabled = false
                             binding.progressBar.visibility = View.GONE
 
@@ -137,13 +134,13 @@ class ArchivedAppointmentsFragment : Fragment() {
                             ).show()
                         }
 
-                        DetailedAppointmentsState.Loading -> {
+                        SharedAppointmentsState.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                             binding.tvEmptyAppointments.visibility = View.GONE
                             binding.archivedAppointmentContent.isEnabled = false
                         }
 
-                        is DetailedAppointmentsState.Success -> {
+                        is SharedAppointmentsState.Success -> {
                             binding.progressBar.visibility = View.GONE
                             binding.archivedAppointmentContent.isEnabled = true
                             binding.rvArchivedAppointments.visibility = View.VISIBLE
@@ -229,18 +226,18 @@ class ArchivedAppointmentsFragment : Fragment() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.subscribeToAppointmentChanges()
-        Log.d(TAG, "subscribed to websocket")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Отписка от WebSocket
-        Log.d(TAG, "Unsubscribed from ArchivedAppointmentsFragment")
-        viewModel.unsubscribeFromChanges()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.subscribeToAppointmentChanges()
+//        Log.d(TAG, "subscribed to websocket")
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        // Отписка от WebSocket
+//        Log.d(TAG, "Unsubscribed from ArchivedAppointmentsFragment")
+//        viewModel.unsubscribeFromChanges()
+//    }
 
 
     companion object {
