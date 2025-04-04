@@ -10,7 +10,7 @@ import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.usecases.AddPetUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
+import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -19,7 +19,7 @@ class AddPetViewModel @Inject constructor(
     private val addPetUseCase: AddPetUseCase,
     private val userDataStore: UserDataStore,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
 
     private val _userId = MutableLiveData<String?>()
@@ -45,6 +45,8 @@ class AddPetViewModel @Inject constructor(
             return
         }
 
+        val petAge = calculatePetAge(petBDay)
+
 
         val pet = Pet(
             petId = petId,
@@ -53,7 +55,7 @@ class AddPetViewModel @Inject constructor(
             petBDay = petBDay,
             petType = petType,
             petGender = petGender,
-            petAge = null
+            petAge = petAge
         )
 
 
@@ -75,24 +77,50 @@ class AddPetViewModel @Inject constructor(
     }
 
 
-//    fun calculatePetAge(petBday: String): Int {
-//        try {
-//            // Parse the birthday string to LocalDate
-//            // Assuming the birthday format is "yyyy-MM-dd"
-//            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-//            val birthDate = LocalDate.parse(petBday, formatter)
-//            val currentDate = LocalDate.now()
-//
-//            // Calculate the period between the two dates
-//            val period = Period.between(birthDate, currentDate)
-//
-//            // Return the age in years
-//            return period.years
-//        } catch (e: Exception) {
-//            // Handle parsing errors
-//            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
-//            return 0
-//        }
-//    }
+    private fun calculatePetAge(petBday: String): String {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val birthDate = LocalDate.parse(petBday, formatter)
+            val currentDate = LocalDate.now()
+            val period = Period.between(birthDate, currentDate)
+
+            val year = period.years
+            val month = period.months
+
+
+            val yearText = if (year > 0) {
+                "$year ${getYearSuffix(year)}"
+            } else {
+                ""
+            }
+
+            val monthText = if (month > 0 || year == 0) {
+                "$month ${getMonthSuffix(month)}"
+            } else {
+                ""
+            }
+
+            listOf(yearText, monthText).filter {
+                it.isNotEmpty()
+            }.joinToString(" ")
+
+        } catch (e: Exception) {
+            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
+            "0 мес."
+        }
+    }
+
+
+    private fun getYearSuffix(years: Int): String {
+        return when {
+            years % 10 == 1 && years % 100 != 11 -> "год"
+            years % 10 in 2..4 && (years % 100 !in 12..14) -> "года"
+            else -> "лет"
+        }
+    }
+
+    private fun getMonthSuffix(months: Int): String {
+        return "мес."
+    }
 
 }

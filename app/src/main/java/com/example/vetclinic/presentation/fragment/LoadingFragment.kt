@@ -83,7 +83,8 @@ class LoadingFragment : Fragment() {
                         )
                     } else {
                         when (userRole) {
-                            "admin" -> if (userId.isNotEmpty()) {
+                            ADMIN -> if (userId.isNotEmpty()) {
+                                viewModel.addPetAndUserToRoomForAdmin(userId)
                                 findNavController().navigate(
                                     LoadingFragmentDirections
                                         .actionLoadingFragmentToAdminHomeFragment2()
@@ -95,7 +96,7 @@ class LoadingFragment : Fragment() {
                                 )
                             }
 
-                            "user" -> if (userId.isNotEmpty()) {
+                            USER -> if (userId.isNotEmpty()) {
                                 findNavController().navigate(
                                     LoadingFragmentDirections.actionLoadingFragmentToMainFragment()
                                 )
@@ -116,6 +117,8 @@ class LoadingFragment : Fragment() {
 
     companion object {
         private const val TAG = "LoadingFragment"
+        private const val ADMIN = "admin"
+        private const val USER = "user"
     }
 
 

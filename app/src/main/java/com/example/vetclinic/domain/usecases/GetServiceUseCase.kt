@@ -11,9 +11,6 @@ class GetServiceUseCase @Inject constructor(private val repository: Repository) 
         return repository.getServiceList()
     }
 
-    suspend fun getServiceById(serviceId: String): Result<Service> {
-        return repository.getServiceById(serviceId)
-    }
 
     suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>> {
         Log.d(

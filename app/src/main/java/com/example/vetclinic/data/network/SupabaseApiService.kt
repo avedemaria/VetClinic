@@ -9,7 +9,6 @@ import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.data.network.model.TimeSlotUpdateRequest
 import com.example.vetclinic.data.network.model.UserDTO
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,17 +17,17 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 
 interface SupabaseApiService {
 
     @GET("rest/v1/users")
-    suspend fun getUserFromSupabaseDb(@Query("uid") userId: String):
+    suspend fun getUserFromSupabaseDbById(@Query("uid") userId: String):
             Response<List<UserDTO>>
 
+    @GET("rest/v1/pets")
+    suspend fun getPetFromSupabaseDbById(@Query("pet_id") petId: String):Response<List<PetDto>>
 
     @GET("rest/v1/services")
     suspend fun getServiceFromSupabaseDbById(@Query("id") serviceId: String):
@@ -42,6 +41,7 @@ interface SupabaseApiService {
     @GET("rest/v1/pets")
     suspend fun getPetsFromSupabaseDb(@Query("user_id") userId: String):
             Response<List<PetDto>>
+
 
     @POST("rest/v1/users")
     suspend fun addUser(@Body user: UserDTO): Response<Unit>
@@ -141,6 +141,8 @@ interface SupabaseApiService {
         @Query("date_time") startOfDay: String,
         @Query("date_time") endOfDay: String,
         @Query("order") order: String = "date_time.asc",
+        @Query("page") page: Int,
+        @Query("per_page") pageCount: Int
     ): Response<List<AppointmentDto>>
 
 

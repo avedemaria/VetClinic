@@ -77,7 +77,8 @@ class AppointmentMapper @Inject constructor() {
             doctorName = dbModel.doctorName,
             doctorRole = dbModel.doctorRole,
             petName = dbModel.petName,
-            userName = dbModel.userName
+            userName = dbModel.userName,
+            petAge = "0"
         )
     }
 
@@ -88,6 +89,7 @@ class AppointmentMapper @Inject constructor() {
         doctorRole: String,
         userName: String,
         petName: String,
+        petAge: String
     ): AppointmentWithDetails {
         return AppointmentWithDetails(
             id = appointment.id,
@@ -103,7 +105,8 @@ class AppointmentMapper @Inject constructor() {
             doctorName = doctorName,
             doctorRole = doctorRole,
             petName = petName,
-            userName = userName
+            userName = userName,
+            petAge = petAge
         )
     }
 

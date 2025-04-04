@@ -62,4 +62,5 @@
     <string name="button_calendar">button_calendar</string>
     <string name="button_admin_exit">buttonAdminExit</string>
     <string name="disabled_empty_button">disabledEmptyButton</string>
+    <string name="doctor_role_and_name">%s: %s</string>
 </resources>

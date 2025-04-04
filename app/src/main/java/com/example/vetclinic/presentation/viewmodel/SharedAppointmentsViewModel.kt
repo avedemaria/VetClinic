@@ -12,6 +12,9 @@ import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import com.example.vetclinic.toLocalDateOrNull
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
@@ -20,7 +23,7 @@ class SharedAppointmentsViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val userDataStore: UserDataStore,
-    private val supabaseApiService: SupabaseApiService
+    private val supabaseApiService: SupabaseApiService,
 ) : ViewModel() {
 
     private val _appointmentsState =
@@ -34,7 +37,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = userDataStore.getUserId().orEmpty()
             Log.d(TAG, "userId: $userId")
-            getAppointmentsByUserId(userId)
+            observeAppointmentsByUserId(userId)
             subscribeToAppointmentChanges()
         }
     }
@@ -70,10 +73,10 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAppointmentsByUserId(userId: String) {
+    private suspend fun observeAppointmentsByUserId(userId: String) {
         _appointmentsState.value = SharedAppointmentsState.Loading
-        getAppointmentUseCase.getAppointmentsByUserIdFromRoom(userId).fold(
-            onSuccess = { appointments ->
+        getAppointmentUseCase.observeAppointmentsInRoomByUserId(userId)
+            .onEach { appointments ->
                 if (appointments.isEmpty()) {
                     _appointmentsState.value = SharedAppointmentsState.Empty
                 } else {
@@ -81,11 +84,10 @@ class SharedAppointmentsViewModel @Inject constructor(
                     setLastCompletedAppointmentDate(appointments)
                     selectedDate = lastCompletedAppointmentDate
                 }
-            },
-            onFailure = { e ->
+            }.catch { e ->
                 _appointmentsState.value =
                     SharedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
-            })
+            }.launchIn(viewModelScope)
     }
 
 
@@ -93,10 +95,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         _appointmentsState.value = SharedAppointmentsState.Loading
         viewModelScope.launch {
             val result = updateAppointmentUseCase.updateAppointmentStatus(updatedAppointment)
-            if (result.isSuccess) {
-                val userId = userDataStore.getUserId() ?: throw Exception("UserId is not found")
-                getAppointmentsByUserId(userId)
-            } else {
+            if (!result.isSuccess) {
                 _appointmentsState.value =
                     SharedAppointmentsState.Error(result.exceptionOrNull()?.message.toString())
             }
@@ -165,7 +164,8 @@ class SharedAppointmentsViewModel @Inject constructor(
                     "SCHEDULED",
                     false,
                     false
-            ))
+                )
+            )
 
 
         }

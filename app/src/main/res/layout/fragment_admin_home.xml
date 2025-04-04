@@ -6,7 +6,7 @@
     tools:context=".presentation.fragment.CurrentAppointmentsFragment">
 
     <LinearLayout
-        android:id="@+id/archivedAppointmentContent"
+        android:id="@+id/appointmentContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

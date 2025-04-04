@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -69,10 +70,17 @@ class AdminHomeFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.adminState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                AdminHomeState.Empty -> Log.d(TAG, "заглушка для Empty")
-                is AdminHomeState.Error -> Log.d(TAG, "заглушка для Error")
-                AdminHomeState.Loading -> Log.d(TAG, "заглушка для Loading")
-                is AdminHomeState.Success -> appointmentsAdapter.submitList(state.appointments)
+                is AdminHomeState.Empty -> handleEmptyState()
+
+                is AdminHomeState.Error -> {
+                    handeErrorState(state)
+                    return@observe
+                }
+
+                is AdminHomeState.Loading -> handleLoadingState()
+
+                is AdminHomeState.Success -> handleSuccessState(state)
+
                 is AdminHomeState.LoggedOut -> launchLoginFragment()
             }
         }
@@ -93,6 +101,64 @@ class AdminHomeFragment : Fragment() {
             )
             adapter = appointmentsAdapter
         }
+    }
+
+
+    private fun handleEmptyState() {
+        setVisibility(
+            progressBarVisible = false,
+            rvAppointmentsVisible = false,
+            appointmentContentEnabled = true,
+            emptyAppointmentsVisible = true
+        )
+    }
+
+    private fun handleSuccessState(state:AdminHomeState.Success) {
+        setVisibility(
+            progressBarVisible = false,
+            rvAppointmentsVisible = true,
+            appointmentContentEnabled = true,
+            emptyAppointmentsVisible = false
+        )
+        appointmentsAdapter.submitList(state.appointments)
+    }
+
+    private fun handeErrorState(state: AdminHomeState.Error) {
+        setVisibility(
+            progressBarVisible = false,
+            rvAppointmentsVisible = true,
+            appointmentContentEnabled = false,
+            emptyAppointmentsVisible = false
+        )
+
+        showToast("Возникла ошибка: ${state.message}")
+    }
+
+    private fun handleLoadingState() {
+        setVisibility(
+            progressBarVisible = true,
+            rvAppointmentsVisible = false,
+            appointmentContentEnabled = false,
+            emptyAppointmentsVisible = false
+        )
+    }
+
+    private fun setVisibility(
+        progressBarVisible: Boolean,
+        rvAppointmentsVisible: Boolean,
+        appointmentContentEnabled: Boolean,
+        emptyAppointmentsVisible: Boolean,
+    ) {
+        binding.progressBar.visibility = if (progressBarVisible) View.VISIBLE else View.GONE
+        binding.rvAppointments.visibility = if (rvAppointmentsVisible) View.VISIBLE else View.GONE
+        binding.appointmentContent.isEnabled = appointmentContentEnabled
+        binding.tvEmptyAppointments.visibility =
+            if (emptyAppointmentsVisible) View.VISIBLE else View.GONE
+    }
+
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 

@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
+import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LogInUserUseCase,
@@ -20,6 +22,7 @@ class LoginViewModel @Inject constructor(
 
     private val getUserUseCase: GetUserUseCase,
     private val getPetsUseCase: GetPetsUseCase,
+    private val getAppointmentUseCase: GetAppointmentUseCase,
 ) : ViewModel() {
 
     private val _loginState = MutableLiveData<LoginState>()
@@ -64,12 +67,30 @@ class LoginViewModel @Inject constructor(
                         Log.d(TAG, "saved user role: $userRole")
                         userDataStore.saveUserRole(userRole ?: "")
 
-                        getPetsUseCase.getPetsFromSupabaseDb(userId)
+                        when (userRole) {
+                            USER -> {
+
+                                getPetsUseCase.getPetsFromSupabaseDb(userId)
+                            }
+
+                            ADMIN -> {
+                                getAppointmentUseCase.getAppointmentsByDate(
+                                    LocalDate.now().toString()
+                                )
+                                getAppointmentUseCase.getAppointmentsByDateFromRoom
+                            }
+
+                            else -> {
+                                _loginState.value = LoginState.Error("Неизвестная роль")
+                                return@launch
+                            }
+                        }
+                        _loginState.value = LoginState.Result(it, userRole ?: "")
                     } else {
                         _loginState.value = LoginState.Error(userResult.exceptionOrNull()?.message)
                     }
 
-                    _loginState.value = LoginState.Result(it, userRole ?: "")
+
                 }
             }
                 .onFailure {
@@ -79,8 +100,13 @@ class LoginViewModel @Inject constructor(
     }
 
 
+
+
+
     companion object {
         private const val TAG = "LoginViewModel"
+        private const val USER = "user"
+        private const val ADMIN = "admin"
     }
 
 }

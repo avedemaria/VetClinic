@@ -9,20 +9,22 @@ import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.extractTime
+import kotlinx.serialization.StringFormat
 
 class AdminAppointmentViewHolder(
     private val binding: ItemAppointmentAdminBinding,
-    private val listener: OnBellClickListener
+    private val listener: OnBellClickListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
 
 
 
     init {
-        binding.ivBell.setOnLongClickListener {
+        binding.ivBell.setOnLongClickListener { bellView ->
 //            val newState = binding.ivBell.isSelected == !binding.ivBell.isSelected
-            val appointment = it.tag as? AppointmentWithDetails
-            appointment?.let { listener.onBellClicked(it) }
+            val appointment = bellView.tag as? AppointmentWithDetails
+            
+            appointment?.let {listener.onBellClicked(it) }
             true
         }
 
@@ -34,10 +36,15 @@ class AdminAppointmentViewHolder(
         with(binding) {
             tvPetName.text = appointment.petName
             tvOwnerName.text = appointment.userName
-            tvDoctorRole.text = "${appointment.doctorRole}:"
-            tvDoctorName.text = " ${appointment.doctorName}"
+            tvDoctorName.text = binding.root.context.getString(
+                R.string.doctor_role_and_name,
+                appointment.doctorRole,
+                appointment.doctorName
+            )
             tvServiceName.text = appointment.serviceName
             tvTime.text = appointment.dateTime.extractTime()
+            tvPetAge.text = ", ${appointment.petAge}"
+
 
 
             when (appointment.status) {
@@ -71,11 +78,11 @@ class AdminAppointmentViewHolder(
             ivBell.tag = appointment
 
 
-           if (appointment.isArchived) {
-               root.alpha = CURRENT_ALPHA
-           } else {
-               root.alpha = ARCHIVED_ALPHA
-           }
+            if (appointment.isArchived) {
+                root.alpha = CURRENT_ALPHA
+            } else {
+                root.alpha = ARCHIVED_ALPHA
+            }
 
         }
     }

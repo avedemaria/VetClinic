@@ -25,21 +25,42 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:orientation="vertical"
+            android:layout_marginEnd="8dp"
             app:layout_constraintStart_toEndOf="@id/tvTime"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvStatus">
 
-            <TextView
-                android:id="@+id/tvPetName"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="Барсик" />
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvPetName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Барсик" />
+
+
+                <TextView
+                    android:id="@+id/tvPetAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="4 года 5 мес."/>
+
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/tvOwnerName"
@@ -50,35 +71,17 @@
                 tools:text="Владелец: Иванов Иван" />
 
 
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-                <TextView
-                    android:id="@+id/tvDoctorRole"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Хирург:"
-                    android:textSize="12sp"
-                    android:textColor="@color/grey" />
                 <TextView
                     android:id="@+id/tvDoctorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:layout_marginEnd="8dp"
+                    android:text="@string/doctor_role_and_name"
+                    android:breakStrategy="simple"
                     android:textColor="@color/grey"
-                    android:textSize="12sp"
-                    tools:text=" Смирнов Алексей" />
+                    android:textSize="12sp" />
 
-
-
-
-            </LinearLayout>
 
 
 

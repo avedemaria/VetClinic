@@ -150,7 +150,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> = runCatching {
 
         val idWithParameter = "eq.$userId"
-        val response = supabaseApiService.getUserFromSupabaseDb(idWithParameter)
+        val response = supabaseApiService.getUserFromSupabaseDbById(idWithParameter)
 
         if (!response.isSuccessful) {
             throw Exception("Server error: ${response.code()} - ${response.errorBody()?.string()}")
@@ -195,19 +195,6 @@ class RepositoryImpl @Inject constructor(
             Log.e(TAG, "Error fetching Pet: ${e.message}", e)
         }
 
-
-    override suspend fun getServiceById(serviceId: String): Result<Service> = kotlin.runCatching {
-        val idWithParameter = "eq.$serviceId"
-
-        val response = supabaseApiService.getServiceFromSupabaseDbById(idWithParameter)
-        val serviceDto = response.body()?.firstOrNull()
-            ?: throw Exception("The service with $serviceId is not found")
-
-        serviceMapper.serviceDtoToServiceEntity(serviceDto)
-    }
-        .onFailure { e ->
-            Log.e(TAG, "Error fetching service by id: ${e.message}", e)
-        }
 
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> = addDataToSupabaseDb(
@@ -470,6 +457,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun clearAllData() {
         vetClinicDao.clearAllPets()
         vetClinicDao.clearUserData()
+        vetClinicDao.clearAllAppointments()
     }
 
 
@@ -478,7 +466,6 @@ class RepositoryImpl @Inject constructor(
         private const val SERVICE_LIST_TAG = "services"
         private const val DOCTOR_LIST_TAG = "doctors"
         private const val DEPARTMENT_LIST_TAG = "departments"
-        private const val TIME_SLOTS_TAG = "timeSlots"
     }
 }
 

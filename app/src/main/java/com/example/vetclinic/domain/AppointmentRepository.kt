@@ -16,7 +16,7 @@ interface AppointmentRepository {
 
 
     suspend fun getAppointmentsByUserId(
-        userId: String
+        userId: String,
     ): Result<List<AppointmentWithDetails>>
 
     suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>>
@@ -29,6 +29,10 @@ interface AppointmentRepository {
 
     suspend fun getServiceById(serviceId: String): Service
 
+    suspend fun getPetFromSupabaseById(petId: String): Pet
+
+    suspend fun getUserFromSupabaseById(userId: String): User
+
     suspend fun getPetFromRoomById(petId: String): Pet
 
     suspend fun getUserFromRoomById(userId: String): User
@@ -38,8 +42,12 @@ interface AppointmentRepository {
 //    suspend fun subscribeToAppointmentChanges(): Flow<Appointment>
 
     suspend fun unsubscribeFromAppointmentChanges()
+//
+//    suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>>
 
-    suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>>
+    suspend fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>>
+
+//    suspend fun getAppointmentsByDateFromRoom(date: String): Result<List<AppointmentWithDetails>>
 
 
 }

@@ -44,8 +44,6 @@ interface Repository {
 
     suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>>
 
-    suspend fun getServiceById(serviceId: String): Result<Service>
-
     suspend fun checkUserSession(): Boolean
 
     suspend fun addUserAndPetToRoom(user: User, pet: Pet)

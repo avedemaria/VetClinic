@@ -20,4 +20,5 @@ data class AppointmentWithDetails(
     val doctorRole: String,
     val petName: String,
     val userName: String,
+    val petAge: String
 ) : Parcelable

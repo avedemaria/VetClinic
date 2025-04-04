@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 
@@ -158,7 +159,7 @@ class AppointmentRepositoryImpl @Inject constructor(
                 val appointments =
                     appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
                 val appointmentsWithDetails = appointments.map { appointmentEntity ->
-                    getAppointmentWithDetails(appointmentEntity)
+                    getAppointmentWithDetailsForUser(appointmentEntity)
                 }
 
                 val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
@@ -167,8 +168,8 @@ class AppointmentRepositoryImpl @Inject constructor(
 
                 withContext(Dispatchers.IO) {
                     vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
-                    val appointmentsInDb = vetClinicDao.getAppointmentsByUserId(userId)
-                    Log.d(TAG, "Appointments in Room after insert: $appointmentsInDb")
+//                    val appointmentsInDb = vetClinicDao.getAppointmentsByUserId(userId)
+//                    Log.d(TAG, "Appointments in Room after insert: $appointmentsInDb")
                 }
 
                 appointmentsWithDetails
@@ -191,17 +192,25 @@ class AppointmentRepositoryImpl @Inject constructor(
 
             val response =
                 supabaseApiService.getAppointmentsByDate(
-                    "gte.$startOfDay",
-                    "lt.$endOfDay"
+                    startOfDay = "gte.$startOfDay",
+                    endOfDay = "lt.$endOfDay",
+                    page = 1,
+                    pageCount = 2
                 )
             if (response.isSuccessful) {
                 val appointmentDtos = response.body() ?: throw Exception("Empty response body")
                 val appointments =
                     appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
 
-                appointments.map { appointment ->
-                    getAppointmentWithDetails(appointment)
+                val appointmentsWithDetails = appointments.map { appointment ->
+                    getAppointmentWithDetailsForAdmin(appointment)
                 }
+                val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
+                    appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
+                }
+                vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
+
+                appointmentsWithDetails
             } else {
                 throw Exception(
                     "Error fetching appointments for admin: ${response.code()} " +
@@ -215,23 +224,29 @@ class AppointmentRepositoryImpl @Inject constructor(
             }
 
 
-    override suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>> =
-        kotlin.runCatching {
-            withContext(Dispatchers.IO) {
-                val appointmentDbModels = vetClinicDao.getAppointmentsByUserId(userId)
-                if (appointmentDbModels.isEmpty()) {
-                    throw NoSuchElementException("Appointments with userID $userId not found in Room")
-                }
+//    override suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>> =
+//        kotlin.runCatching {
+//            withContext(Dispatchers.IO) {
+//                val appointmentDbModels = vetClinicDao.getAppointmentsByUserId(userId)
+//                if (appointmentDbModels.isEmpty()) {
+//                    throw NoSuchElementException("Appointments with userID $userId not found in Room")
+//                }
+//
+//                appointmentDbModels.map {
+//                    appointmentMapper.appointmentWithDetailsDbModelToEntity(it)
+//                }
+//            }
+//        }
+//            .onFailure {
+//                Log.e(TAG, "Error while getting appointments from Room", it)
+//            }
 
-                appointmentDbModels.map {
-                    appointmentMapper.appointmentWithDetailsDbModelToEntity(it)
-                }
-            }
+
+    override suspend fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {
+        return vetClinicDao.observeAppointmentsByUserId(userId).map { list ->
+            list.map { appointmentMapper.appointmentWithDetailsDbModelToEntity(it) }
         }
-            .onFailure {
-                Log.e(TAG, "Error while getting appointments from Room", it)
-            }
-
+    }
 
     override suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails,
@@ -246,19 +261,21 @@ class AppointmentRepositoryImpl @Inject constructor(
             val response =
                 supabaseApiService.updateAppointmentStatus(appointmentIdWithParam, appointmentDto)
 
+            if (!response.isSuccessful) {
+                throw Exception("Error while updating appointment status in Supabase")
+            }
+
             vetClinicDao.updateAppointment(
                 appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(
                     updatedAppointment
                 )
             )
-            if (!response.isSuccessful) {
-                throw Exception("Error while updating appointment status in Supabase")
-            }
+
         }.onFailure { e ->
             Log.e(TAG, e.message.toString())
         }
 
-    private suspend fun getAppointmentWithDetails(appointment: Appointment): AppointmentWithDetails {
+    private suspend fun getAppointmentWithDetailsForUser(appointment: Appointment): AppointmentWithDetails {
 
         return coroutineScope {
             val serviceDeferred = async { getServiceById(appointment.serviceId) }
@@ -272,8 +289,31 @@ class AppointmentRepositoryImpl @Inject constructor(
             val pet = petDeferred.await()
             val user = userDeferred.await()
 
-            Log.d(TAG, "Loaded pet: $pet")
-            Log.d(TAG, "Loaded user: $user")
+            appointmentMapper.appointmentToAppointmentWithDetails(
+                appointment = appointment,
+                serviceName = service.serviceName,
+                doctorName = doctor.doctorName,
+                doctorRole = doctor.role,
+                userName = "${user.userName} ${user.userLastName}",
+                petName = pet.petName,
+                petAge = pet.petAge.toString()
+            )
+        }
+
+    }
+
+    private suspend fun getAppointmentWithDetailsForAdmin(appointment: Appointment): AppointmentWithDetails {
+
+        return coroutineScope {
+            val serviceDeferred = async { getServiceById(appointment.serviceId) }
+            val doctorDeferred = async { getDoctorById(appointment.doctorId) }
+            val petDeferred = async { getPetFromSupabaseById(appointment.petId) }
+            val userDeferred = async { getUserFromSupabaseById(appointment.userId) }
+
+            val service = serviceDeferred.await()
+            val doctor = doctorDeferred.await()
+            val pet = petDeferred.await()
+            val user = userDeferred.await()
 
             appointmentMapper.appointmentToAppointmentWithDetails(
                 appointment = appointment,
@@ -281,12 +321,47 @@ class AppointmentRepositoryImpl @Inject constructor(
                 doctorName = doctor.doctorName,
                 doctorRole = doctor.role,
                 userName = "${user.userName} ${user.userLastName}",
-                petName = pet.petName
+                petName = pet.petName,
+                petAge = pet.petAge.toString()
             )
         }
 
     }
 
+    override suspend fun getPetFromSupabaseById(petId: String): Pet {
+        return try {
+            val petIdWithParam = "eq.$petId"
+            val response = supabaseApiService.getPetFromSupabaseDbById(petIdWithParam)
+
+            if (response.isSuccessful) {
+                val petDtos = response.body() ?: throw Exception("Empty response body")
+                val pet = petDtos.map { petMapper.petDtoToPetEntity(it) }.firstOrNull()
+                pet ?: throw Exception("Pet not found in supabase")
+            } else {
+                throw Exception("Supabase request failed with code ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to get pet from supabase: ${e.message}")
+            throw Exception("Failed to get pet from supabase")
+        }
+    }
+
+    override suspend fun getUserFromSupabaseById(userId: String): User {
+        return try {
+            val userIdWithParam = "eq.$userId"
+            val response = supabaseApiService.getUserFromSupabaseDbById(userIdWithParam)
+            if (response.isSuccessful) {
+                val userDtos = response.body() ?: throw Exception("Empty response body")
+                val user = userDtos.map { userMapper.userDtoToUserEntity(it) }.firstOrNull()
+                user ?: throw Exception("Pet not found in supabase")
+            } else {
+                throw Exception("Supabase request failed with code ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to get user from supabase: ${e.message}")
+            throw Exception("Failed to get user from supabase")
+        }
+    }
 
     override suspend fun getDoctorById(doctorId: String): Doctor {
         val doctorIdWithParam = "eq.$doctorId"
@@ -298,11 +373,11 @@ class AppointmentRepositoryImpl @Inject constructor(
                 val doctor = doctorMapper.doctorDtoListToDoctorEntityList(doctorDtos).firstOrNull()
                 return doctor ?: throw Exception("Doctor not found")
             } else {
-                throw Exception("Error while fetching doctors fromSupabase")
+                throw Exception("Error while fetching doctors from Supabase ${response.code()}")
             }
         } catch (e: Exception) {
-            Log.d(TAG, "Failed to get doctor by ID: ${e.message}")
-            throw Exception("Failed to get doctor by ID: ${e.message}")
+            Log.d(TAG, "Failed to get doctor from supabase: ${e.message}")
+            throw Exception("Failed to get doctor from supabase: ${e.message}")
         }
     }
 
@@ -318,7 +393,7 @@ class AppointmentRepositoryImpl @Inject constructor(
                     serviceMapper.serviceDtoListToServiceEntityList(serviceDtos).firstOrNull()
                 return service ?: throw Exception("Service not found")
             } else {
-                throw Exception("Error while fetching services fromSupabase")
+                throw Exception("Error while fetching services from Supabase ${response.code()}")
             }
         } catch (e: Exception) {
             Log.d(TAG, "Failed to get service by ID: ${e.message}")
@@ -326,6 +401,7 @@ class AppointmentRepositoryImpl @Inject constructor(
         }
 
     }
+
 
     override suspend fun getPetFromRoomById(petId: String): Pet = withContext(Dispatchers.IO) {
         try {

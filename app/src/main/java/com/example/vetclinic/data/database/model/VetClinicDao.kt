@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.entities.Pet
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -51,14 +52,17 @@ interface VetClinicDao {
     @Query("DELETE FROM pets")
     suspend fun clearAllPets()
 
+    @Query("DELETE FROM appointments")
+    suspend fun clearAllAppointments()
+
     @Query("SELECT * FROM appointments WHERE user_id=:userId")
-    suspend fun getAppointmentsByUserId(userId: String): List<AppointmentWithDetailsDbModel>
+    suspend fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAppointments (appointments: List<AppointmentWithDetailsDbModel>)
+    suspend fun insertAppointments(appointments: List<AppointmentWithDetailsDbModel>)
 
     @Update
-    suspend fun updateAppointment(appointment:AppointmentWithDetailsDbModel)
+    suspend fun updateAppointment(appointment: AppointmentWithDetailsDbModel)
 
 
 }

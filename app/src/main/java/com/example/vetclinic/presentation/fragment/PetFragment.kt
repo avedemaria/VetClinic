@@ -36,6 +36,9 @@ import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class PetFragment : Fragment() {
@@ -255,39 +258,10 @@ class PetFragment : Fragment() {
     }
 
 
-//    @SuppressLint("DefaultLocale")
-//    private fun showDatePickerDialog(pet: Pet) {
-//        val calendar = Calendar.getInstance()
-//
-//        val year = calendar.get(Calendar.YEAR)
-//        val month = calendar.get(Calendar.MONTH)
-//        val day = calendar.get(Calendar.DAY_OF_MONTH)
-//
-//        val datePickerDialog =
-//            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-//                val selectedDate =
-//                    String.format(
-//                        "%02d-%02d-%04d",
-//                        selectedDay,
-//                        selectedMonth + 1,
-//                        selectedYear
-//                    )
-//
-//                val updatedPet = pet.copy(petBDay = selectedDate)
-//
-//                viewModel.updatePet(pet.petId, updatedPet)
-//            }, year, month, day)
-//
-//        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-//
-//        datePickerDialog.show()
-//
-//
-//    }
-
     private fun showCustomDatePicker(pet: Pet) {
         CustomDatePicker(requireContext()) { selectedDate ->
-            val updatedPet = pet.copy(petBDay = selectedDate)
+            val updatedPet =
+                pet.copy(petBDay = selectedDate, petAge = calculatePetAge(selectedDate).toString())
             viewModel.updatePet(pet.petId, updatedPet)
         }.show()
     }
@@ -305,6 +279,20 @@ class PetFragment : Fragment() {
             }
             .setNegativeButton("Отмена", null)
             .show()
+    }
+
+
+    private fun calculatePetAge(petBday: String): Int {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val birthDate = LocalDate.parse(petBday, formatter)
+            val currentDate = LocalDate.now()
+            val period = Period.between(birthDate, currentDate)
+            return period.years
+        } catch (e: Exception) {
+            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
+            return 0
+        }
     }
 
 
