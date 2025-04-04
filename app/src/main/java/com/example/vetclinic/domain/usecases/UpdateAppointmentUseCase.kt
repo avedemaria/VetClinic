@@ -20,17 +20,17 @@ class UpdateAppointmentUseCase @Inject constructor(
     suspend fun updateAppointmentInRoom(appointment: AppointmentWithDetails) {
         repository.updateAppointmentStatus(appointment)
     }
-//
-//    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit) {
-//        Log.d("UpdateAppointmentUseCase", "subscribed to channel")
-//        repository.subscribeToAppointmentChanges(callback)
-//    }
 
-
-    suspend fun subscribeToAppointmentChanges(): Flow<Appointment> {
+    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit) {
         Log.d("UpdateAppointmentUseCase", "subscribed to channel")
-        return repository.subscribeToAppointmentChanges()
+        repository.subscribeToAppointmentChanges(callback)
     }
+
+
+//    suspend fun subscribeToAppointmentChanges(): Flow<Appointment> {
+//        Log.d("UpdateAppointmentUseCase", "subscribed to channel")
+//        return repository.subscribeToAppointmentChanges()
+//    }
 
     suspend fun unsubscribeFromAppointmentChanges() {
         repository.unsubscribeFromAppointmentChanges()

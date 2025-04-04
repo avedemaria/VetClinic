@@ -58,59 +58,59 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val jsonAdapter = moshi.adapter(AppointmentDto::class.java)
 
 
-//    override suspend fun subscribeToAppointmentChanges(
-//        callback: (Appointment) -> Unit,
-//    ) {
-//        val channel = supabaseClient.channel("appointments")
-//        val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-//            table = "appointments"
-//        }
-//        subscription = channel
-//        channel.subscribe()
-//        Log.d(TAG, "Supabase channel subscribed successfully")
-//
-//        Log.d(TAG, "Starting to collect changes from Supabase")
-//        changeFlow.collect { updatedValue ->
-//            val updatedRecord = updatedValue.record.toString()
-//
-//            try {
-//                val appointmentDto = jsonAdapter.fromJson(updatedRecord)
-//                appointmentDto?.let { dto ->
-//                    callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
-//                }
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
-//            }
-//
-//
-//        }
-//    }
-//
-
-    override suspend fun subscribeToAppointmentChanges(): Flow<Appointment> {
+    override suspend fun subscribeToAppointmentChanges(
+        callback: (Appointment) -> Unit,
+    ) {
         val channel = supabaseClient.channel("appointments")
         val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
             table = "appointments"
         }
+        subscription = channel
         channel.subscribe()
         Log.d(TAG, "Supabase channel subscribed successfully")
 
-        return flow {
-            changeFlow.collect { updatedValue ->
-                val updatedRecord = updatedValue.record.toString()
+        Log.d(TAG, "Starting to collect changes from Supabase")
+        changeFlow.collect { updatedValue ->
+            val updatedRecord = updatedValue.record.toString()
 
-                try {
-                    val appointmentDto = jsonAdapter.fromJson(updatedRecord)
-                    appointmentDto?.let { dto ->
-                        emit(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
-                        // Emit изменения через Flow
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
+            try {
+                val appointmentDto = jsonAdapter.fromJson(updatedRecord)
+                appointmentDto?.let { dto ->
+                    callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
             }
+
+
         }
     }
+
+
+//    override suspend fun subscribeToAppointmentChanges(): Flow<Appointment> {
+//        val channel = supabaseClient.channel("appointments")
+//        val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+//            table = "appointments"
+//        }
+//        channel.subscribe()
+//        Log.d(TAG, "Supabase channel subscribed successfully")
+//
+//        return flow {
+//            changeFlow.collect { updatedValue ->
+//                val updatedRecord = updatedValue.record.toString()
+//
+//                try {
+//                    val appointmentDto = jsonAdapter.fromJson(updatedRecord)
+//                    appointmentDto?.let { dto ->
+//                        emit(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
+//                        // Emit изменения через Flow
+//                    }
+//                } catch (e: Exception) {
+//                    Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
+//                }
+//            }
+//        }
+//    }
 
     override suspend fun unsubscribeFromAppointmentChanges() {
         subscription?.unsubscribe()

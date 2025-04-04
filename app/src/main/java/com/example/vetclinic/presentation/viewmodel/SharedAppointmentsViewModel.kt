@@ -26,7 +26,6 @@ class SharedAppointmentsViewModel @Inject constructor(
 //    private var storedItems = listOf<AppointmentWithDetails>()
 
 
-
     init {
         viewModelScope.launch {
             val userId = userDataStore.getUserId().orEmpty()
@@ -100,11 +99,11 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
-  fun subscribeToAppointmentChanges() {
+    fun subscribeToAppointmentChanges() {
 
         viewModelScope.launch {
 
-            updateAppointmentUseCase.subscribeToAppointmentChanges().collect { updatedAppointment ->
+            updateAppointmentUseCase.subscribeToAppointmentChanges() { updatedAppointment ->
                 _appointmentsState.value = _appointmentsState.value.let { currentState ->
                     when (currentState) {
                         is SharedAppointmentsState.Success -> {
@@ -123,11 +122,15 @@ class SharedAppointmentsViewModel @Inject constructor(
                             }
                             val updatedAppointmentWithDetails =
                                 updatedList.first { it.id == updatedAppointment.id }
-                            updateAppointmentUseCase.updateAppointmentInRoom(
-                                updatedAppointmentWithDetails
-                            )
+
+                            viewModelScope.launch {
+                                updateAppointmentUseCase.updateAppointmentInRoom(
+                                    updatedAppointmentWithDetails
+                                )
+                            }
                             SharedAppointmentsState.Success(updatedList, selectedDate)
                         }
+
                         else -> currentState
                     }
                 }
@@ -136,7 +139,7 @@ class SharedAppointmentsViewModel @Inject constructor(
     }
 
 
-  fun unsubscribeFromChanges() {
+    fun unsubscribeFromChanges() {
         viewModelScope.launch {
             updateAppointmentUseCase.unsubscribeFromAppointmentChanges()
         }

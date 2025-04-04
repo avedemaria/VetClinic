@@ -33,9 +33,9 @@ interface AppointmentRepository {
 
     suspend fun getUserFromRoomById(userId: String): User
 
-//    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
+    suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
 
-    suspend fun subscribeToAppointmentChanges(): Flow<Appointment>
+//    suspend fun subscribeToAppointmentChanges(): Flow<Appointment>
 
     suspend fun unsubscribeFromAppointmentChanges()
 
