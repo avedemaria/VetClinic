@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.databinding.FragmentCurrentAppointmentsBinding
 import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
@@ -74,6 +75,11 @@ class CurrentAppointmentsFragment : Fragment() {
 //            })
 
         setUpAdapter()
+
+        binding.buttonMockApp.setOnClickListener {
+            viewModel.addMockAppointmentToSupabase()
+        }
+
         observeViewModel()
         Log.d(TAG, "$viewModel")
 
@@ -98,6 +104,8 @@ class CurrentAppointmentsFragment : Fragment() {
 
             adapter = appointmentsAdapter
         }
+
+
     }
 
 

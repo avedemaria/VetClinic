@@ -18,6 +18,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -51,18 +52,18 @@ interface SupabaseApiService {
     @PATCH("rest/v1/users")
     suspend fun updateUser(
         @Query("uid") userId: String,
-        @Body updatedUser: UserDTO
+        @Body updatedUser: UserDTO,
     ): Response<Unit>
 
     @PATCH("rest/v1/pets")
     suspend fun updatePet(
         @Query("pet_id") petId: String,
-        @Body updatedPet: PetDto
+        @Body updatedPet: PetDto,
     ): Response<Unit>
 
     @DELETE("rest/v1/pets")
     suspend fun deletePet(
-        @Query("pet_id") petId: String
+        @Query("pet_id") petId: String,
     ): Response<Unit>
 
 
@@ -79,7 +80,7 @@ interface SupabaseApiService {
 
     @GET("rest/v1/services")
     suspend fun getServicesByDepartmentId(
-        @Query("department_id") departmentId: String
+        @Query("department_id") departmentId: String,
     ): Response<List<ServiceDto>>
 
 
@@ -96,27 +97,27 @@ interface SupabaseApiService {
         @Query("date") dateRange: String,
         @Query("order") dateOrder: String = "date.asc",
         @Query("time_slots.order") timeSlotsOrder: String = "start_time.asc",
-        @Query("limit") limit: Int = 1000
+        @Query("limit") limit: Int = 1000,
     ): Response<List<DayWithTimeSlotsDto>>
 
 
     @POST("rest/v1/days?on_conflict=id,date")
     @Headers("Prefer: resolution=merge-duplicates")
     suspend fun insertDays(
-        @Body days: List<DayDto>
+        @Body days: List<DayDto>,
     ): Response<Unit>
 
     @POST("rest/v1/time_slots?on_conflict=id,start_time,end_time,day_id")
     @Headers("Prefer: resolution=merge-duplicates")
     suspend fun insertTimeSlots(
-        @Body timeSlots: List<TimeSlotDto>
+        @Body timeSlots: List<TimeSlotDto>,
     ): Response<Unit>
 
 
     @PATCH("rest/v1/time_slots")
     suspend fun updateTimeSlot(
         @Query("id") timeSlotId: String,
-        @Body timeSlotDto: TimeSlotDto
+        @Body timeSlotDto: TimeSlotDto,
     ): Response<Unit>
 
 
@@ -126,27 +127,25 @@ interface SupabaseApiService {
     @GET("rest/v1/appointments")
     suspend fun getAppointmentsByUserId(
         @Query("user_id") userId: String,
-        @Query("order") order: String = "date_time.asc"
+        @Query("order") order: String = "date_time.asc",
     ): Response<List<AppointmentDto>>
 
     @PATCH("rest/v1/appointments")
     suspend fun updateAppointmentStatus(
         @Query("id") appointmentId: String,
-        @Body appointmentDto: AppointmentDto
+        @Body appointmentDto: AppointmentDto,
     ): Response<Unit>
 
     @GET("rest/v1/appointments")
     suspend fun getAppointmentsByDate(
         @Query("date_time") startOfDay: String,
         @Query("date_time") endOfDay: String,
-        @Query("order") order: String = "date_time.asc"
+        @Query("order") order: String = "date_time.asc",
     ): Response<List<AppointmentDto>>
 
-//    @GET("rest/v1/users")
-//    suspend fun getUserRoleById(
-//        @Query("uid") userId: String = "role",
-//        @Query("select") select:
-//    ): Response<String>
+
+    @POST("rest/v1/appointments")
+    suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
 }
 

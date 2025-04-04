@@ -32,6 +32,13 @@
             android:visibility="gone" />
 
 
+        <Button
+            android:id="@+id/buttonMockApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="create appointment"
+            android:layout_gravity="center"/>
+
     </FrameLayout>
 
 

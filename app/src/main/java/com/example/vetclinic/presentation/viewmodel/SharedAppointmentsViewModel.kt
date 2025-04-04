@@ -3,6 +3,8 @@ package com.example.vetclinic.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
@@ -12,11 +14,13 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.UUID
 
 class SharedAppointmentsViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val userDataStore: UserDataStore,
+    private val supabaseApiService: SupabaseApiService
 ) : ViewModel() {
 
     private val _appointmentsState =
@@ -142,6 +146,28 @@ class SharedAppointmentsViewModel @Inject constructor(
     fun unsubscribeFromChanges() {
         viewModelScope.launch {
             updateAppointmentUseCase.unsubscribeFromAppointmentChanges()
+        }
+    }
+
+    fun addMockAppointmentToSupabase() {
+        viewModelScope.launch {
+            val currentDateTime = java.time.LocalDateTime.now() // текущее время
+            val isoTime = currentDateTime.minusMinutes(16).toString() // Пример: "2025-04-04T16:37"
+
+            supabaseApiService.addMockAppointment(
+                AppointmentDto(
+                    UUID.randomUUID().toString(),
+                    userDataStore.getUserId().toString(),
+                    "047b4d44-948b-45fc-9a60-91ba92b84361",
+                    "90c2725d-7897-49d5-a12e-f69fbaeec517",
+                    "b535a27a-7597-4f75-ac95-0ae208f559df",
+                    isoTime,
+                    "SCHEDULED",
+                    false,
+                    false
+            ))
+
+
         }
     }
 
