@@ -18,6 +18,7 @@ import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 interface SupabaseApiService {
@@ -27,7 +28,7 @@ interface SupabaseApiService {
             Response<List<UserDTO>>
 
     @GET("rest/v1/pets")
-    suspend fun getPetFromSupabaseDbById(@Query("pet_id") petId: String):Response<List<PetDto>>
+    suspend fun getPetFromSupabaseDbById(@Query("pet_id") petId: String): Response<List<PetDto>>
 
     @GET("rest/v1/services")
     suspend fun getServiceFromSupabaseDbById(@Query("id") serviceId: String):
@@ -138,13 +139,11 @@ interface SupabaseApiService {
 
     @GET("rest/v1/appointments")
     suspend fun getAppointmentsByDate(
-        @Query("date_time") startOfDay: String,
-        @Query("date_time") endOfDay: String,
-        @Query("order") order: String = "date_time.asc",
-        @Query("page") page: Int,
-        @Query("per_page") pageCount: Int
+        @Query("date_time") dateTime: String,
+        @Query("order") order: String = "asc.date_time",
+        @Query("offset") page: Int,
+        @Query("limit") pageCount: Int,
     ): Response<List<AppointmentDto>>
-
 
     @POST("rest/v1/appointments")
     suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>

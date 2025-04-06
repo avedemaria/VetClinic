@@ -73,7 +73,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun observeAppointmentsByUserId(userId: String) {
+    private fun observeAppointmentsByUserId(userId: String) {
         _appointmentsState.value = SharedAppointmentsState.Loading
         getAppointmentUseCase.observeAppointmentsInRoomByUserId(userId)
             .onEach { appointments ->

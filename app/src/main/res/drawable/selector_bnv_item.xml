@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected state: light green background -->
+    <item android:drawable="@color/light_blue" android:state_selected="true" />
+    <item android:drawable="@android:color/transparent" android:state_selected="false" />
+</selector>

@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -18,28 +20,44 @@ class AdminHomeViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val loginUseCase: LogInUserUseCase,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
 
-) : ViewModel() {
 
-    private val _adminState = MutableLiveData<AdminHomeState>()
-    val adminState: LiveData<AdminHomeState> get() = _adminState
+    ) : ViewModel() {
+
+    private val _adminState = MutableStateFlow<AdminHomeState>(AdminHomeState.Empty)
+    val adminState: MutableStateFlow<AdminHomeState> get() = _adminState
 
 
     init {
         val date = LocalDate.now().toString()
+
         getAppointmentsByDate(date)
     }
 
 
-    private fun getAppointmentsByDate(date: String) {
+//    private fun getAppointmentsByDate(date: String) {
+//        _adminState.value = AdminHomeState.Loading
+//
+//        viewModelScope.launch {
+//            val result = getAppointmentUseCase.getAppointmentsByDate(date)
+//            if (result.isSuccess) {
+//                val appointments = result.getOrNull() ?: emptyList()
+//                _adminState.value = AdminHomeState.Success(appointments, null)
+//            }
+//        }
+//    }
+
+    fun getAppointmentsByDate(selectedDate: String) {
         _adminState.value = AdminHomeState.Loading
 
         viewModelScope.launch {
-            val result = getAppointmentUseCase.getAppointmentsByDate(date)
-            if (result.isSuccess) {
-                val appointments = result.getOrNull() ?: emptyList()
-                _adminState.value = AdminHomeState.Success(appointments, null)
+            try {
+                getAppointmentUseCase.getAppointmentsByDate(selectedDate).collect { pagingData ->
+                    _adminState.value = AdminHomeState.Success(pagingData, selectedDate)
+                }
+            } catch (e:Exception) {
+                _adminState.value = AdminHomeState.Error("Ошибка загрузки: ${e.message}")
             }
         }
     }

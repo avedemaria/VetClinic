@@ -1,6 +1,17 @@
 package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
+import androidx.paging.map
+import com.example.vetclinic.data.AppointmentRemoteMediatorFactory
+import com.example.vetclinic.data.DetailedInfo
+import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.mapper.DoctorMapper
@@ -33,6 +44,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 
@@ -46,12 +58,9 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val userMapper: UserMapper,
     private val petMapper: PetMapper,
     private val moshi: Moshi,
-) : AppointmentRepository {
+    private val appointmentRemoteMediatorFactory: AppointmentRemoteMediatorFactory
+) : AppointmentRepository, DetailedInfo {
 
-
-    private val _appointmentsUpdates = MutableSharedFlow<AppointmentWithDetails>(replay = 1)
-    val appointmentsUpdates: SharedFlow<AppointmentWithDetails> =
-        _appointmentsUpdates.asSharedFlow()
 
 
     private var subscription: RealtimeChannel? = null
@@ -184,44 +193,64 @@ class AppointmentRepositoryImpl @Inject constructor(
             emptyList<AppointmentWithDetails>()
         }
 
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
+        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
 
-    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =
-        kotlin.runCatching {
-            val startOfDay = "${date}T10:00:00"
-            val endOfDay = "${date}T20:00:00"
+        // Получаем RemoteMediator через фабрику
+        val remoteMediator = appointmentRemoteMediatorFactory.create(date)
 
-            val response =
-                supabaseApiService.getAppointmentsByDate(
-                    startOfDay = "gte.$startOfDay",
-                    endOfDay = "lt.$endOfDay",
-                    page = 1,
-                    pageCount = 2
-                )
-            if (response.isSuccessful) {
-                val appointmentDtos = response.body() ?: throw Exception("Empty response body")
-                val appointments =
-                    appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
+        val pager = Pager(
+            config = PagingConfig(pageSize = 6),
+            remoteMediator = remoteMediator,
+            pagingSourceFactory = pagingSourceFactory
+        )
 
-                val appointmentsWithDetails = appointments.map { appointment ->
-                    getAppointmentWithDetailsForAdmin(appointment)
-                }
-                val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
-                    appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
-                }
-                vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
-
-                appointmentsWithDetails
-            } else {
-                throw Exception(
-                    "Error fetching appointments for admin: ${response.code()} " +
-                            "- ${response.message()}"
-                )
+        return pager.flow.map { pagingData ->
+            pagingData.map { dbModel ->
+                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
             }
         }
-            .onFailure { e ->
-                Log.e(TAG, "Error while fetching appointments for admin", e)
-                emptyList<AppointmentWithDetails>()
-            }
+    }
+
+//
+//    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =
+//        kotlin.runCatching {
+//            val startOfDay = "${date}T10:00:00"
+//            val endOfDay = "${date}T20:00:00"
+//
+//            val response =
+//                supabaseApiService.getAppointmentsByDate(
+//                    startOfDay = "gte.$startOfDay",
+//                    endOfDay = "lt.$endOfDay",
+//                    page = 1,
+//                    pageCount = 2
+//                )
+//            if (response.isSuccessful) {
+//                val appointmentDtos = response.body() ?: throw Exception("Empty response body")
+//                val appointments =
+//                    appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
+//
+//                val appointmentsWithDetails = appointments.map { appointment ->
+//                    getAppointmentWithDetailsForAdmin(appointment)
+//                }
+//                val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
+//                    appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
+//                }
+//                vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
+//
+//                appointmentsWithDetails
+//            } else {
+//                throw Exception(
+//                    "Error fetching appointments for admin: ${response.code()} " +
+//                            "- ${response.message()}"
+//                )
+//            }
+//        }
+//            .onFailure { e ->
+//                Log.e(TAG, "Error while fetching appointments for admin", e)
+//                emptyList<AppointmentWithDetails>()
+//            }
 
 
 //    override suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>> =
@@ -242,7 +271,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 //            }
 
 
-    override suspend fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {
+    override fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {
         return vetClinicDao.observeAppointmentsByUserId(userId).map { list ->
             list.map { appointmentMapper.appointmentWithDetailsDbModelToEntity(it) }
         }
@@ -302,7 +331,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     }
 
-    private suspend fun getAppointmentWithDetailsForAdmin(appointment: Appointment): AppointmentWithDetails {
+    suspend fun getAppointmentWithDetailsForAdmin(appointment: Appointment): AppointmentWithDetails {
 
         return coroutineScope {
             val serviceDeferred = async { getServiceById(appointment.serviceId) }

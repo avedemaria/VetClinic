@@ -37,8 +37,10 @@
             android:layout_height="wrap_content"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             android:layout_gravity="bottom"
-            android:background="#F5F5F5"
+            android:background="@color/cream_white"
             app:itemIconTint="@color/dark_grey"
+            app:itemActiveIndicatorStyle="@drawable/item_background"
+            app:itemRippleColor="#93BAB3"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu"/>
 

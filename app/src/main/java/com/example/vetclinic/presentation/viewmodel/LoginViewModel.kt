@@ -77,7 +77,6 @@ class LoginViewModel @Inject constructor(
                                 getAppointmentUseCase.getAppointmentsByDate(
                                     LocalDate.now().toString()
                                 )
-                                getAppointmentUseCase.getAppointmentsByDateFromRoom
                             }
 
                             else -> {

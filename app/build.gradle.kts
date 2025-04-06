@@ -93,7 +93,9 @@ dependencies {
     implementation(libs.realtime.kt)
     implementation(libs.storage.kt)
     implementation(libs.functions.kt)
+
     implementation ("androidx.paging:paging-runtime:3.1.1")
+    implementation ("androidx.room:room-paging:2.5.0")
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)

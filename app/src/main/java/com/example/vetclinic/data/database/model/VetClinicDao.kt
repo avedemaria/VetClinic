@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.database.model
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -56,7 +57,14 @@ interface VetClinicDao {
     suspend fun clearAllAppointments()
 
     @Query("SELECT * FROM appointments WHERE user_id=:userId")
-    suspend fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
+    fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
+
+    // Это метод будет возвращать PagingSource для данных
+    @Query("SELECT * FROM appointments WHERE  date_time = :selectedDate ORDER BY date_time ASC")
+    fun observeAppointmentsPaging(
+        selectedDate: String,
+    ): PagingSource<Int, AppointmentWithDetailsDbModel>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAppointments(appointments: List<AppointmentWithDetailsDbModel>)

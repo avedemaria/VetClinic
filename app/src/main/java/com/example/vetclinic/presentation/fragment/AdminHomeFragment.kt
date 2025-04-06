@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,8 @@ import com.example.vetclinic.presentation.viewmodel.AdminHomeState
 import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class AdminHomeFragment : Fragment() {
@@ -68,13 +71,13 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun observeViewModel() {
-        viewModel.adminState.observe(viewLifecycleOwner) { state ->
+        viewModel.adminState.onEach { state ->
             when (state) {
                 is AdminHomeState.Empty -> handleEmptyState()
 
                 is AdminHomeState.Error -> {
                     handeErrorState(state)
-                    return@observe
+                    return@onEach
                 }
 
                 is AdminHomeState.Loading -> handleLoadingState()
@@ -83,7 +86,7 @@ class AdminHomeFragment : Fragment() {
 
                 is AdminHomeState.LoggedOut -> launchLoginFragment()
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
 
@@ -113,14 +116,14 @@ class AdminHomeFragment : Fragment() {
         )
     }
 
-    private fun handleSuccessState(state:AdminHomeState.Success) {
+    private fun handleSuccessState(state: AdminHomeState.Success) {
         setVisibility(
             progressBarVisible = false,
             rvAppointmentsVisible = true,
             appointmentContentEnabled = true,
             emptyAppointmentsVisible = false
         )
-        appointmentsAdapter.submitList(state.appointments)
+        appointmentsAdapter.submitData(lifecycle, state.appointments)
     }
 
     private fun handeErrorState(state: AdminHomeState.Error) {

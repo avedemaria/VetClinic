@@ -1,5 +1,6 @@
 package com.example.vetclinic.di
 
+import com.example.vetclinic.data.DetailedInfo
 import com.example.vetclinic.data.repositoryImpl.AppointmentRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.RepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.TimeSlotsRepositoryImpl
@@ -25,4 +26,5 @@ interface DomainModule {
 
     @Binds
     fun bindUserDataStore(impl: UserDataStoreImpl): UserDataStore
+
 }

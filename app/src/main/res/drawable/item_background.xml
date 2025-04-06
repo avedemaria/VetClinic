@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Oval background for the icon -->
+    <solid android:color="#9A7DC8BD" />
+    <corners android:radius="150dp" /> <!-- To create an oval shape -->
+</shape>

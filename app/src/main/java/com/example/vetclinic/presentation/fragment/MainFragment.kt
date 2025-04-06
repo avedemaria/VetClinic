@@ -1,6 +1,7 @@
 package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -58,7 +59,7 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -69,7 +70,7 @@ class MainFragment : Fragment() {
 
         component.inject(this)
 
-        
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -88,7 +89,7 @@ class MainFragment : Fragment() {
 
         setUpListeners(navController)
         observeViewModel()
-        
+
         viewmodel.getUserIdAndFetchData()
     }
 
@@ -103,11 +104,14 @@ class MainFragment : Fragment() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.miHome -> {
+
                     navController.navigate(R.id.homeFragment)
                     true
                 }
 
                 R.id.miAddAppointment -> {
+//                    binding.bottomNavigationView.itemRippleColor =
+//                        ColorStateList.valueOf(Color.TRANSPARENT)
                     navController.navigate(R.id.doctorsFragment)
                     true
                 }

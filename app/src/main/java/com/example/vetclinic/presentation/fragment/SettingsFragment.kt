@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentSettingsBinding
 import com.example.vetclinic.databinding.FragmentUserBinding
+import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.SettingsState
