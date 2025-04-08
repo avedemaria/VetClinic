@@ -2,31 +2,18 @@ package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
 import androidx.paging.map
-import com.example.vetclinic.data.AppointmentRemoteMediatorFactory
-import com.example.vetclinic.data.DetailedInfo
-import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.AppointmentMapper
-import com.example.vetclinic.data.mapper.DoctorMapper
-import com.example.vetclinic.data.mapper.PetMapper
-import com.example.vetclinic.data.mapper.ServiceMapper
-import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
+import com.example.vetclinic.data.network.model.QueryBody
 import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.entities.Doctor
-import com.example.vetclinic.domain.entities.Pet
-import com.example.vetclinic.domain.entities.Service
-import com.example.vetclinic.domain.entities.User
 import com.squareup.moshi.Moshi
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.realtime.PostgresAction
@@ -35,16 +22,8 @@ import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 
@@ -53,14 +32,9 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val vetClinicDao: VetClinicDao,
     private val appointmentMapper: AppointmentMapper,
-    private val doctorMapper: DoctorMapper,
-    private val serviceMapper: ServiceMapper,
-    private val userMapper: UserMapper,
-    private val petMapper: PetMapper,
     private val moshi: Moshi,
-    private val appointmentRemoteMediatorFactory: AppointmentRemoteMediatorFactory
-) : AppointmentRepository, DetailedInfo {
-
+//    private val appointmentRemoteMediatorFactory: AppointmentRemoteMediatorFactory,
+) : AppointmentRepository {
 
 
     private var subscription: RealtimeChannel? = null
@@ -82,7 +56,7 @@ class AppointmentRepositoryImpl @Inject constructor(
         Log.d(TAG, "Starting to collect changes from Supabase")
         changeFlow.collect { updatedValue ->
             val updatedRecord = updatedValue.record.toString()
-
+            Log.d(TAG, "updated value^ $updatedRecord")
             try {
                 val appointmentDto = jsonAdapter.fromJson(updatedRecord)
                 appointmentDto?.let { dto ->
@@ -96,31 +70,6 @@ class AppointmentRepositoryImpl @Inject constructor(
         }
     }
 
-
-//    override suspend fun subscribeToAppointmentChanges(): Flow<Appointment> {
-//        val channel = supabaseClient.channel("appointments")
-//        val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-//            table = "appointments"
-//        }
-//        channel.subscribe()
-//        Log.d(TAG, "Supabase channel subscribed successfully")
-//
-//        return flow {
-//            changeFlow.collect { updatedValue ->
-//                val updatedRecord = updatedValue.record.toString()
-//
-//                try {
-//                    val appointmentDto = jsonAdapter.fromJson(updatedRecord)
-//                    appointmentDto?.let { dto ->
-//                        emit(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
-//                        // Emit изменения через Flow
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
-//                }
-//            }
-//        }
-//    }
 
     override suspend fun unsubscribeFromAppointmentChanges() {
         subscription?.unsubscribe()
@@ -155,32 +104,22 @@ class AppointmentRepositoryImpl @Inject constructor(
     ): Result<List<AppointmentWithDetails>> =
         kotlin.runCatching {
 
-            val userIdWithParam = "eq.$userId"
-//            val isArchivedWithParam = "eq.$isArchived"
-
-            val response = supabaseApiService.getAppointmentsByUserId(
-                userIdWithParam
-            )
+            val query = QueryBody(userId)
+            val response = supabaseApiService.getAppointmentWithDetailsByUserId(query)
 
             if (response.isSuccessful) {
                 val appointmentDtos = response.body() ?: throw Exception("Empty response body")
 
-                val appointments =
-                    appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
-                val appointmentsWithDetails = appointments.map { appointmentEntity ->
-                    getAppointmentWithDetailsForUser(appointmentEntity)
+                val appointmentsWithDetails = appointmentDtos.map {
+                    appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(it)
                 }
 
                 val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
                     appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
                 }
-
                 withContext(Dispatchers.IO) {
                     vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
-//                    val appointmentsInDb = vetClinicDao.getAppointmentsByUserId(userId)
-//                    Log.d(TAG, "Appointments in Room after insert: $appointmentsInDb")
                 }
-
                 appointmentsWithDetails
             } else {
                 throw Exception(
@@ -193,25 +132,25 @@ class AppointmentRepositoryImpl @Inject constructor(
             emptyList<AppointmentWithDetails>()
         }
 
-    @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
-        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
-
-        // Получаем RemoteMediator через фабрику
-        val remoteMediator = appointmentRemoteMediatorFactory.create(date)
-
-        val pager = Pager(
-            config = PagingConfig(pageSize = 6),
-            remoteMediator = remoteMediator,
-            pagingSourceFactory = pagingSourceFactory
-        )
-
-        return pager.flow.map { pagingData ->
-            pagingData.map { dbModel ->
-                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
-            }
-        }
-    }
+//    @OptIn(ExperimentalPagingApi::class)
+//    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
+//        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
+//
+//        // Получаем RemoteMediator через фабрику
+//        val remoteMediator = appointmentRemoteMediatorFactory.create(date)
+//
+//        val pager = Pager(
+//            config = PagingConfig(pageSize = 6),
+//            remoteMediator = remoteMediator,
+//            pagingSourceFactory = pagingSourceFactory
+//        )
+//
+//        return pager.flow.map { pagingData ->
+//            pagingData.map { dbModel ->
+//                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
+//            }
+//        }
+//    }
 
 //
 //    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =
@@ -283,10 +222,9 @@ class AppointmentRepositoryImpl @Inject constructor(
         kotlin.runCatching {
 
             val appointmentIdWithParam = "eq.{${updatedAppointment.id}}"
-            val appointment =
-                appointmentMapper.appointmentWithDetailsToAppointment(updatedAppointment)
+
             val appointmentDto =
-                appointmentMapper.appointmentEntityToAppointmentDto(appointment)
+                appointmentMapper.appointmentWithDetailsEntityToAppointmentDto(updatedAppointment)
             val response =
                 supabaseApiService.updateAppointmentStatus(appointmentIdWithParam, appointmentDto)
 
@@ -294,169 +232,127 @@ class AppointmentRepositoryImpl @Inject constructor(
                 throw Exception("Error while updating appointment status in Supabase")
             }
 
-            vetClinicDao.updateAppointment(
-                appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(
-                    updatedAppointment
-                )
-            )
+            updateAppointmentStatusInRoom(updatedAppointment).getOrThrow()
 
         }.onFailure { e ->
             Log.e(TAG, e.message.toString())
         }
 
-    private suspend fun getAppointmentWithDetailsForUser(appointment: Appointment): AppointmentWithDetails {
 
-        return coroutineScope {
-            val serviceDeferred = async { getServiceById(appointment.serviceId) }
-            val doctorDeferred = async { getDoctorById(appointment.doctorId) }
-            val petDeferred = async { getPetFromRoomById(appointment.petId) }
-            val userDeferred = async { getUserFromRoomById(appointment.userId) }
-
-
-            val service = serviceDeferred.await()
-            val doctor = doctorDeferred.await()
-            val pet = petDeferred.await()
-            val user = userDeferred.await()
-
-            appointmentMapper.appointmentToAppointmentWithDetails(
-                appointment = appointment,
-                serviceName = service.serviceName,
-                doctorName = doctor.doctorName,
-                doctorRole = doctor.role,
-                userName = "${user.userName} ${user.userLastName}",
-                petName = pet.petName,
-                petAge = pet.petAge.toString()
+    override suspend fun updateAppointmentStatusInRoom(updatedAppointment: AppointmentWithDetails): Result<Unit> =
+        kotlin.runCatching {
+            vetClinicDao.updateAppointment(
+                appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(
+                    updatedAppointment
+                )
             )
         }
-
-    }
-
-    suspend fun getAppointmentWithDetailsForAdmin(appointment: Appointment): AppointmentWithDetails {
-
-        return coroutineScope {
-            val serviceDeferred = async { getServiceById(appointment.serviceId) }
-            val doctorDeferred = async { getDoctorById(appointment.doctorId) }
-            val petDeferred = async { getPetFromSupabaseById(appointment.petId) }
-            val userDeferred = async { getUserFromSupabaseById(appointment.userId) }
-
-            val service = serviceDeferred.await()
-            val doctor = doctorDeferred.await()
-            val pet = petDeferred.await()
-            val user = userDeferred.await()
-
-            appointmentMapper.appointmentToAppointmentWithDetails(
-                appointment = appointment,
-                serviceName = service.serviceName,
-                doctorName = doctor.doctorName,
-                doctorRole = doctor.role,
-                userName = "${user.userName} ${user.userLastName}",
-                petName = pet.petName,
-                petAge = pet.petAge.toString()
-            )
-        }
-
-    }
-
-    override suspend fun getPetFromSupabaseById(petId: String): Pet {
-        return try {
-            val petIdWithParam = "eq.$petId"
-            val response = supabaseApiService.getPetFromSupabaseDbById(petIdWithParam)
-
-            if (response.isSuccessful) {
-                val petDtos = response.body() ?: throw Exception("Empty response body")
-                val pet = petDtos.map { petMapper.petDtoToPetEntity(it) }.firstOrNull()
-                pet ?: throw Exception("Pet not found in supabase")
-            } else {
-                throw Exception("Supabase request failed with code ${response.code()}")
+            .onFailure { e ->
+                Log.d(TAG, e.message.toString())
             }
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get pet from supabase: ${e.message}")
-            throw Exception("Failed to get pet from supabase")
-        }
-    }
 
-    override suspend fun getUserFromSupabaseById(userId: String): User {
-        return try {
-            val userIdWithParam = "eq.$userId"
-            val response = supabaseApiService.getUserFromSupabaseDbById(userIdWithParam)
-            if (response.isSuccessful) {
-                val userDtos = response.body() ?: throw Exception("Empty response body")
-                val user = userDtos.map { userMapper.userDtoToUserEntity(it) }.firstOrNull()
-                user ?: throw Exception("Pet not found in supabase")
-            } else {
-                throw Exception("Supabase request failed with code ${response.code()}")
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get user from supabase: ${e.message}")
-            throw Exception("Failed to get user from supabase")
-        }
-    }
-
-    override suspend fun getDoctorById(doctorId: String): Doctor {
-        val doctorIdWithParam = "eq.$doctorId"
-
-        try {
-            val response = supabaseApiService.getDoctorFromSupabaseDbById(doctorIdWithParam)
-            if (response.isSuccessful) {
-                val doctorDtos = response.body() ?: throw Exception("Empty response body")
-                val doctor = doctorMapper.doctorDtoListToDoctorEntityList(doctorDtos).firstOrNull()
-                return doctor ?: throw Exception("Doctor not found")
-            } else {
-                throw Exception("Error while fetching doctors from Supabase ${response.code()}")
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get doctor from supabase: ${e.message}")
-            throw Exception("Failed to get doctor from supabase: ${e.message}")
-        }
-    }
-
-    override suspend fun getServiceById(serviceId: String): Service {
-
-        val serviceIdWithParam = "eq.$serviceId"
-
-        try {
-            val response = supabaseApiService.getServiceFromSupabaseDbById(serviceIdWithParam)
-            if (response.isSuccessful) {
-                val serviceDtos = response.body() ?: throw Exception("Empty response body")
-                val service =
-                    serviceMapper.serviceDtoListToServiceEntityList(serviceDtos).firstOrNull()
-                return service ?: throw Exception("Service not found")
-            } else {
-                throw Exception("Error while fetching services from Supabase ${response.code()}")
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get service by ID: ${e.message}")
-            throw Exception("Failed to get service by ID: ${e.message}")
-        }
-
-    }
-
-
-    override suspend fun getPetFromRoomById(petId: String): Pet = withContext(Dispatchers.IO) {
-        try {
-            val petDbModel = vetClinicDao.getPetById(petId)
-            Log.d(TAG, "Fetching pet with ID: ${petDbModel.petId}")
-            petMapper.petDbModelToPetEntity(petDbModel)
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get pet by ID: ${e.message}")
-            throw Exception("Failed to get pet by ID: ${e.message}")
-        }
-    }
-
-    override suspend fun getUserFromRoomById(userId: String): User = withContext(Dispatchers.IO) {
-        try {
-            val userDbModel = vetClinicDao.getUserById(userId)
-            userMapper.userDbModelToUserEntity(
-                userDbModel ?: throw Exception("User not found in room")
-            )
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to get user by ID: ${e.message}")
-            throw Exception("Failed to get user by ID: ${e.message}")
-        }
-    }
+//
+//    override suspend fun getPetFromSupabaseById(petId: String): Pet {
+//        return try {
+//            val petIdWithParam = "eq.$petId"
+//            val response = supabaseApiService.getPetFromSupabaseDbById(petIdWithParam)
+//
+//            if (response.isSuccessful) {
+//                val petDtos = response.body() ?: throw Exception("Empty response body")
+//                val pet = petDtos.map { petMapper.petDtoToPetEntity(it) }.firstOrNull()
+//                pet ?: throw Exception("Pet not found in supabase")
+//            } else {
+//                throw Exception("Supabase request failed with code ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get pet from supabase: ${e.message}")
+//            throw Exception("Failed to get pet from supabase")
+//        }
+//    }
+//
+//    override suspend fun getUserFromSupabaseById(userId: String): User {
+//        return try {
+//            val userIdWithParam = "eq.$userId"
+//            val response = supabaseApiService.getUserFromSupabaseDbById(userIdWithParam)
+//            if (response.isSuccessful) {
+//                val userDtos = response.body() ?: throw Exception("Empty response body")
+//                val user = userDtos.map { userMapper.userDtoToUserEntity(it) }.firstOrNull()
+//                user ?: throw Exception("Pet not found in supabase")
+//            } else {
+//                throw Exception("Supabase request failed with code ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get user from supabase: ${e.message}")
+//            throw Exception("Failed to get user from supabase")
+//        }
+//    }
+//
+//    override suspend fun getDoctorById(doctorId: String): Doctor {
+//        val doctorIdWithParam = "eq.$doctorId"
+//
+//        try {
+//            val response = supabaseApiService.getDoctorFromSupabaseDbById(doctorIdWithParam)
+//            if (response.isSuccessful) {
+//                val doctorDtos = response.body() ?: throw Exception("Empty response body")
+//                val doctor = doctorMapper.doctorDtoListToDoctorEntityList(doctorDtos).firstOrNull()
+//                return doctor ?: throw Exception("Doctor not found")
+//            } else {
+//                throw Exception("Error while fetching doctors from Supabase ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get doctor from supabase: ${e.message}")
+//            throw Exception("Failed to get doctor from supabase: ${e.message}")
+//        }
+//    }
+//
+//    override suspend fun getServiceById(serviceId: String): Service {
+//
+//        val serviceIdWithParam = "eq.$serviceId"
+//
+//        try {
+//            val response = supabaseApiService.getServiceFromSupabaseDbById(serviceIdWithParam)
+//            if (response.isSuccessful) {
+//                val serviceDtos = response.body() ?: throw Exception("Empty response body")
+//                val service =
+//                    serviceMapper.serviceDtoListToServiceEntityList(serviceDtos).firstOrNull()
+//                return service ?: throw Exception("Service not found")
+//            } else {
+//                throw Exception("Error while fetching services from Supabase ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get service by ID: ${e.message}")
+//            throw Exception("Failed to get service by ID: ${e.message}")
+//        }
+//
+//    }
+//
+//
+//    override suspend fun getPetFromRoomById(petId: String): Pet = withContext(Dispatchers.IO) {
+//        try {
+//            val petDbModel = vetClinicDao.getPetById(petId)
+//            Log.d(TAG, "Fetching pet with ID: ${petDbModel.petId}")
+//            petMapper.petDbModelToPetEntity(petDbModel)
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get pet by ID: ${e.message}")
+//            throw Exception("Failed to get pet by ID: ${e.message}")
+//        }
+//    }
+//
+//    override suspend fun getUserFromRoomById(userId: String): User = withContext(Dispatchers.IO) {
+//        try {
+//            val userDbModel = vetClinicDao.getUserById(userId)
+//            userMapper.userDbModelToUserEntity(
+//                userDbModel ?: throw Exception("User not found in room")
+//            )
+//        } catch (e: Exception) {
+//            Log.d(TAG, "Failed to get user by ID: ${e.message}")
+//            throw Exception("Failed to get user by ID: ${e.message}")
+//        }
+//    }
 
 
     companion object {
         private const val TAG = "AppointmentRepositoryImpl"
+
     }
 }

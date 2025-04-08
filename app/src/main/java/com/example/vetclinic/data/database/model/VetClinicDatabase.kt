@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [UserDbModel::class, PetDbModel::class, AppointmentWithDetailsDbModel::class],
-    version = 8,
+    version = 10,
     exportSchema = false
 )
 abstract class VetClinicDatabase : RoomDatabase() {

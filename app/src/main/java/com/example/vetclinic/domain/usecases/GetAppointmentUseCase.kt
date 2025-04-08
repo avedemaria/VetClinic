@@ -27,9 +27,9 @@ class GetAppointmentUseCase @Inject constructor(private val repository: Appointm
 //        return repository.getAppointmentsByDate(date)
 //    }
 
-    suspend fun getAppointmentsByDate(selectedDate: String): Flow<PagingData<AppointmentWithDetails>> {
-        return repository.getAppointmentsByDate(selectedDate)
-    }
+//    suspend fun getAppointmentsByDate(selectedDate: String): Flow<PagingData<AppointmentWithDetails>> {
+//        return repository.getAppointmentsByDate(selectedDate)
+//    }
 
    fun observeAppointmentsInRoomByUserId(userId: String): Flow<List<AppointmentWithDetails>> {
         return repository.observeAppointmentsFromRoom(userId)

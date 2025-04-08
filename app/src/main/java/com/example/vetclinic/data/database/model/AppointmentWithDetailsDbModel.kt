@@ -22,11 +22,13 @@ data class AppointmentWithDetailsDbModel(
     @ColumnInfo(name = "status") val status: String,
     @ColumnInfo(name = "is_archived") val isArchived: Boolean,
     @ColumnInfo(name = "is_confirmed") val isConfirmed: Boolean,
-    @ColumnInfo(name = "serviceName") val serviceName: String,
-    @ColumnInfo(name = "doctorName") val doctorName: String,
-    @ColumnInfo(name = "doctorRole") val doctorRole: String,
-    @ColumnInfo(name = "petName") val petName: String,
-    @ColumnInfo(name = "userName") val userName: String,
+    @ColumnInfo(name = "service_name") val serviceName: String,
+    @ColumnInfo(name = "doctor_name") val doctorName: String,
+    @ColumnInfo(name = "doctor_role") val doctorRole: String,
+    @ColumnInfo(name = "pet_name") val petName: String,
+    @ColumnInfo(name = "user_name") val userName: String,
+    @ColumnInfo(name = "user_last_name") val userLastName: String,
+    @ColumnInfo(name = "pet_age") val petAge: String,
 ) {
 
 

@@ -91,11 +91,11 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun setUpAdapter() {
-        appointmentsAdapter = AdminAppointmentsAdapter(object : OnBellClickListener {
-            override fun onBellClicked(appointment: AppointmentWithDetails) {
-                viewModel.updateAppointmentStatus(appointment.copy(isConfirmed = true))
-            }
-        })
+//        appointmentsAdapter = AdminAppointmentsAdapter(object : OnBellClickListener {
+//            override fun onBellClicked(appointment: AppointmentWithDetails) {
+//                viewModel.updateAppointmentStatus(appointment.copy(isConfirmed = true))
+//            }
+//        })
 
         binding.rvAppointments.apply {
             layoutManager = LinearLayoutManager(

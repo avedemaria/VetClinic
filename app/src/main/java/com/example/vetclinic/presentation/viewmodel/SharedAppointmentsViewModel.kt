@@ -126,6 +126,7 @@ class SharedAppointmentsViewModel @Inject constructor(
                             val updatedAppointmentWithDetails =
                                 updatedList.first { it.id == updatedAppointment.id }
 
+                            Log.d(TAG, "updated app with details $updatedAppointmentWithDetails")
                             viewModelScope.launch {
                                 updateAppointmentUseCase.updateAppointmentInRoom(
                                     updatedAppointmentWithDetails
@@ -151,13 +152,13 @@ class SharedAppointmentsViewModel @Inject constructor(
     fun addMockAppointmentToSupabase() {
         viewModelScope.launch {
             val currentDateTime = java.time.LocalDateTime.now() // текущее время
-            val isoTime = currentDateTime.minusMinutes(16).toString() // Пример: "2025-04-04T16:37"
+            val isoTime = currentDateTime.minusMinutes(14).toString() // Пример: "2025-04-04T16:37"
 
             supabaseApiService.addMockAppointment(
                 AppointmentDto(
                     UUID.randomUUID().toString(),
                     userDataStore.getUserId().toString(),
-                    "047b4d44-948b-45fc-9a60-91ba92b84361",
+                    "1ed4a58c-1269-47ec-a5c3-c56332924952",
                     "90c2725d-7897-49d5-a12e-f69fbaeec517",
                     "b535a27a-7597-4f75-ac95-0ae208f559df",
                     isoTime,

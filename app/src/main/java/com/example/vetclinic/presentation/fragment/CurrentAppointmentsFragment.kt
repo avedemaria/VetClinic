@@ -76,9 +76,9 @@ class CurrentAppointmentsFragment : Fragment() {
 
         setUpAdapter()
 
-        binding.buttonMockApp.setOnClickListener {
-            viewModel.addMockAppointmentToSupabase()
-        }
+//            binding.buttonMockApp.setOnClickListener {
+//            viewModel.addMockAppointmentToSupabase()
+//        }
 
         observeViewModel()
         Log.d(TAG, "$viewModel")

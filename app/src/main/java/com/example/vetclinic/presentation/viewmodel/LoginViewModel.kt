@@ -73,11 +73,11 @@ class LoginViewModel @Inject constructor(
                                 getPetsUseCase.getPetsFromSupabaseDb(userId)
                             }
 
-                            ADMIN -> {
-                                getAppointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString()
-                                )
-                            }
+//                            ADMIN -> {
+//                                getAppointmentUseCase.getAppointmentsByDate(
+//                                    LocalDate.now().toString()
+//                                )
+//                            }
 
                             else -> {
                                 _loginState.value = LoginState.Error("Неизвестная роль")

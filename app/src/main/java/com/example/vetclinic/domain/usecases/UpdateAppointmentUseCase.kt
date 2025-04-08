@@ -18,7 +18,7 @@ class UpdateAppointmentUseCase @Inject constructor(
 
 
     suspend fun updateAppointmentInRoom(appointment: AppointmentWithDetails) {
-        repository.updateAppointmentStatus(appointment)
+        repository.updateAppointmentStatusInRoom(appointment)
     }
 
     suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit) {

@@ -29,11 +29,11 @@ class AdminHomeViewModel @Inject constructor(
     val adminState: MutableStateFlow<AdminHomeState> get() = _adminState
 
 
-    init {
-        val date = LocalDate.now().toString()
-
-        getAppointmentsByDate(date)
-    }
+//    init {
+//        val date = LocalDate.now().toString()
+//
+//        getAppointmentsByDate(date)
+//    }
 
 
 //    private fun getAppointmentsByDate(date: String) {
@@ -48,36 +48,36 @@ class AdminHomeViewModel @Inject constructor(
 //        }
 //    }
 
-    fun getAppointmentsByDate(selectedDate: String) {
-        _adminState.value = AdminHomeState.Loading
+//    fun getAppointmentsByDate(selectedDate: String) {
+//        _adminState.value = AdminHomeState.Loading
+//
+//        viewModelScope.launch {
+//            try {
+//                getAppointmentUseCase.getAppointmentsByDate(selectedDate).collect { pagingData ->
+//                    _adminState.value = AdminHomeState.Success(pagingData, selectedDate)
+//                }
+//            } catch (e:Exception) {
+//                _adminState.value = AdminHomeState.Error("Ошибка загрузки: ${e.message}")
+//            }
+//        }
+//    }
 
-        viewModelScope.launch {
-            try {
-                getAppointmentUseCase.getAppointmentsByDate(selectedDate).collect { pagingData ->
-                    _adminState.value = AdminHomeState.Success(pagingData, selectedDate)
-                }
-            } catch (e:Exception) {
-                _adminState.value = AdminHomeState.Error("Ошибка загрузки: ${e.message}")
-            }
-        }
-    }
 
-
-    fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
-        _adminState.value = AdminHomeState.Loading
-
-        viewModelScope.launch {
-            val date = LocalDate.now().toString()
-            val result = updateAppointmentUseCase.updateAppointmentStatus(updatedAppointment)
-            if (result.isSuccess) {
-                getAppointmentsByDate(date)
-            } else {
-                _adminState.value =
-                    AdminHomeState.Error(result.exceptionOrNull()?.message.toString())
-            }
-        }
-
-    }
+//    fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
+//        _adminState.value = AdminHomeState.Loading
+//
+//        viewModelScope.launch {
+//            val date = LocalDate.now().toString()
+//            val result = updateAppointmentUseCase.updateAppointmentStatus(updatedAppointment)
+//            if (result.isSuccess) {
+//                getAppointmentsByDate(date)
+//            } else {
+//                _adminState.value =
+//                    AdminHomeState.Error(result.exceptionOrNull()?.message.toString())
+//            }
+//        }
+//
+//    }
 
     fun logOut() {
         _adminState.value = AdminHomeState.Loading

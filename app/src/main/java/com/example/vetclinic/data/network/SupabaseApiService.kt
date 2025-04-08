@@ -2,14 +2,17 @@ package com.example.vetclinic.data.network
 
 
 import com.example.vetclinic.data.network.model.AppointmentDto
+import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
 import com.example.vetclinic.data.network.model.DayDto
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.DepartmentDto
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
+import com.example.vetclinic.data.network.model.QueryBody
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.data.network.model.UserDTO
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -148,6 +151,12 @@ interface SupabaseApiService {
     @POST("rest/v1/appointments")
     suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
+    @POST("rest/v1/rpc/get_full_appointments")
+    suspend fun getAppointmentWithDetailsByUserId(@Body queryBody: QueryBody):
+            Response<List<AppointmentWithDetailsDto>>
 }
+
+
+
 
 
