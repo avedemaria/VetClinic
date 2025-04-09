@@ -66,10 +66,7 @@ class UpdatePasswordFragment : Fragment() {
             Log.d("UpdatePasswordFragment", "onCreate received token: $token")
             val newPassword = binding.etConfirmNewPassword.text.toString()
 
-            val email = getEmailFromPreferences()
-            if (email != null)
-
-                viewModel.updatePassword(newPassword, token, email)
+                viewModel.updatePassword(newPassword, token)
 
         }
 
@@ -77,11 +74,11 @@ class UpdatePasswordFragment : Fragment() {
     }
 
 
-    private fun getEmailFromPreferences(): String? {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("user_email", null)
-    }
+//    private fun getEmailFromPreferences(): String? {
+//        val sharedPreferences =
+//            requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+//        return sharedPreferences.getString("user_email", null)
+//    }
 
 
     private fun observeViewModel() {

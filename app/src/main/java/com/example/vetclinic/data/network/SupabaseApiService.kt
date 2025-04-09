@@ -152,7 +152,7 @@ interface SupabaseApiService {
     suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
     @POST("rest/v1/rpc/get_full_appointments")
-    suspend fun getAppointmentWithDetailsByUserId(@Body queryBody: QueryBody):
+    suspend fun getAppointmentWithDetails(@Body queryData:AppointmentQuery):
             Response<List<AppointmentWithDetailsDto>>
 }
 

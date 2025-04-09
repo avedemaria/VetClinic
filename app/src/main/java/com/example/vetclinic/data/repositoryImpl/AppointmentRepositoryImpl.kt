@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.mapper.AppointmentMapper
+import com.example.vetclinic.data.network.AppointmentQuery
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.data.network.model.QueryBody
@@ -104,11 +105,11 @@ class AppointmentRepositoryImpl @Inject constructor(
     ): Result<List<AppointmentWithDetails>> =
         kotlin.runCatching {
 
-            val query = QueryBody(userId)
-            val response = supabaseApiService.getAppointmentWithDetailsByUserId(query)
+            val query = AppointmentQuery(userId= userId)
+            val response = supabaseApiService.getAppointmentWithDetails(query)
 
             if (response.isSuccessful) {
-                val appointmentDtos = response.body() ?: throw Exception("Empty response body")
+                val appointmentDtos = response.body() ?: emptyList()
 
                 val appointmentsWithDetails = appointmentDtos.map {
                     appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(it)

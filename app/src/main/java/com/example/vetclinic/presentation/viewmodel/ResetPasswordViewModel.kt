@@ -29,7 +29,7 @@ class ResetPasswordViewModel @Inject constructor(
         }
     }
 
-    fun updatePassword(newPassword: String, token:String, email:String) {
+    fun updatePassword(newPassword: String, token:String) {
         _resetPasswordState.value = ResetPasswordState.Loading
 
         viewModelScope.launch {
@@ -46,7 +46,7 @@ class ResetPasswordViewModel @Inject constructor(
                 return@launch
             }
 
-            val result = resetPasswordUseCase.updatePassword(newPassword, token, email)
+            val result = resetPasswordUseCase.updatePassword(newPassword, token)
             if (result.isSuccess) {
                 _resetPasswordState.value = ResetPasswordState.Success
             } else {

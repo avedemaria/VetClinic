@@ -107,7 +107,7 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-    override suspend fun updatePassword(newPassword: String, token: String, email: String)
+    override suspend fun updatePassword(newPassword: String, token: String)
             : Result<Unit> =
         kotlin.runCatching {
 
@@ -115,6 +115,8 @@ class RepositoryImpl @Inject constructor(
                 throw IllegalArgumentException("Token is empty")
             }
 
+
+            val email = decodeJwtAndGetEmail(token)?:""
 
             supabaseClient.auth.verifyEmailOtp(
                 email = email,
@@ -135,6 +137,22 @@ class RepositoryImpl @Inject constructor(
             .onFailure { e ->
                 Log.d(TAG, "Error while updating password $e")
             }
+
+
+    private fun decodeJwtAndGetEmail(token: String): String? {
+        try {
+            val payload = token.split(".")[1]
+            val decodedBytes = android.util.Base64.decode(payload, android.util.Base64.URL_SAFE)
+            val decodedPayload = String(decodedBytes)
+
+            // Use a JSON parser to extract the email
+            val jsonObject = org.json.JSONObject(decodedPayload)
+            return jsonObject.optString("email")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error decoding JWT", e)
+            return null
+        }
+    }
 
 
     override suspend fun checkUserSession(): Boolean {

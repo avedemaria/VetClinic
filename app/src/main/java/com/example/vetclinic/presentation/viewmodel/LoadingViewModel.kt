@@ -28,6 +28,7 @@ class LoadingViewModel @Inject constructor(
             val userRole = userDataStore.getUserRole() ?: ""
             Log.d("LoadingFragment", "userRole: $userRole")
             _loadingState.value = LoadingState.Result(userId, userRole)
+
         }
 
     }

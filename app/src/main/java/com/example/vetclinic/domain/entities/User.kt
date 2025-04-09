@@ -9,7 +9,7 @@ data class User(
     val userLastName: String,
     val phoneNumber: String,
     val email: String,
-    val role:String = "default"
+    val role:String = "user"
 
     ) : Parcelable {
     constructor(parcel: Parcel) : this(
