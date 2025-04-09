@@ -160,7 +160,10 @@ class ArchivedAppointmentsFragment : Fragment() {
                                         // If date parsing fails or no date selected, show everything
                                         true
                                     }
+                                }.sortedByDescending {
+                                    it.dateTime
                                 }
+
                             if (filteredAppointments.isEmpty()) {
                                 binding.rvArchivedAppointments.visibility = View.GONE
                                 binding.tvEmptyAppointments.visibility = View.VISIBLE
