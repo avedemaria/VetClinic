@@ -6,13 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase, private val userDataStore: UserDataStore
+    private val getUserUseCase: GetUserUseCase, private val userDataStore: UserDataStore,
+    private val getAppointmentUseCase: GetAppointmentUseCase
 ) : ViewModel() {
 
     private val _homeState = MutableLiveData<HomeState>()
@@ -31,6 +33,9 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+
+
 
     private fun loadUserName(userId: String) {
         _homeState.value = HomeState.Loading

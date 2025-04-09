@@ -127,7 +127,7 @@ class LoginFragment : Fragment() {
 
 
     private fun launchAdminFragment() {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAdminHomeFragment2())
+        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAdminHomeFragment())
     }
 
     private fun launchMainFragment() {

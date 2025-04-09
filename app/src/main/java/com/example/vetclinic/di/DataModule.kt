@@ -1,10 +1,12 @@
 package com.example.vetclinic.di
 
 import android.app.Application
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
 import com.example.vetclinic.BuildConfig
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
@@ -54,8 +56,29 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideVetClinicDao(application: Application): VetClinicDao {
-        return VetClinicDatabase.getInstance(application).vetClinicDao()
+    fun provideVetClinicDatabase(context: Context): VetClinicDatabase {
+        return Room.databaseBuilder(
+            context,
+            VetClinicDatabase::class.java,
+            "VetClinicDb"
+        )
+            .fallbackToDestructiveMigration()  // Обрабатываем миграции, если что-то не так
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+
+
+    @Provides
+    @Singleton
+    fun provideVetClinicDao(db: VetClinicDatabase): VetClinicDao {
+        return db.vetClinicDao()
     }
 
     @Provides
@@ -65,6 +88,7 @@ class DataModule {
             produceFile = { application.preferencesDataStoreFile("user_prefs") }
         )
     }
+
 
 //
 //    @Provides

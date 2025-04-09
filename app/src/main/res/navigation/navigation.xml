@@ -20,7 +20,7 @@
             android:id="@+id/action_loginFragment_to_resetPasswordWithEmailFragment"
             app:destination="@id/resetPasswordWithEmailFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_adminHomeFragment2"
+            android:id="@+id/action_loginFragment_to_adminHomeFragment"
             app:destination="@id/adminHomeFragment2" />
     </fragment>
 

@@ -1,5 +1,6 @@
 package com.example.vetclinic.presentation.fragment
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +22,14 @@ import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBel
 import com.example.vetclinic.presentation.viewmodel.AdminHomeState
 import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Calendar
 
 
 class AdminHomeFragment : Fragment() {
@@ -49,6 +56,7 @@ class AdminHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        Log.d(TAG, "onCreateView")
         _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -67,41 +75,52 @@ class AdminHomeFragment : Fragment() {
             viewModel.logOut()
         }
 
+
+        binding.btnCalendar.setOnClickListener {
+            showDatePickerDialog()
+        }
+
     }
 
 
     private fun observeViewModel() {
         viewModel.adminState.onEach { state ->
+            Log.d(TAG, "Received state: $state")
             when (state) {
                 is AdminHomeState.Empty -> handleEmptyState()
 
                 is AdminHomeState.Error -> {
                     handeErrorState(state)
-                    return@onEach
                 }
 
                 is AdminHomeState.Loading -> handleLoadingState()
 
-                is AdminHomeState.Success -> handleSuccessState(state)
+                is AdminHomeState.Success -> {
+                    Log.d(TAG, "State Success, appointments: ${state.appointments}")
+                    handleSuccessState(state)
+                }
+
 
                 is AdminHomeState.LoggedOut -> launchLoginFragment()
             }
-        }.launchIn(lifecycleScope)
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
 
     private fun setUpAdapter() {
-//        appointmentsAdapter = AdminAppointmentsAdapter(object : OnBellClickListener {
-//            override fun onBellClicked(appointment: AppointmentWithDetails) {
+        appointmentsAdapter = AdminAppointmentsAdapter(object : OnBellClickListener {
+            override fun onBellClicked(appointment: AppointmentWithDetails) {
 //                viewModel.updateAppointmentStatus(appointment.copy(isConfirmed = true))
-//            }
-//        })
+                Log.d(TAG, "заглушка")
+            }
+        })
 
         binding.rvAppointments.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(), RecyclerView.VERTICAL,
                 false
             )
+            Log.d(TAG, "Setting up adapter")
             adapter = appointmentsAdapter
         }
     }
@@ -123,7 +142,7 @@ class AdminHomeFragment : Fragment() {
             appointmentContentEnabled = true,
             emptyAppointmentsVisible = false
         )
-        appointmentsAdapter.submitData(lifecycle, state.appointments)
+        appointmentsAdapter.submitData(viewLifecycleOwner.lifecycle, state.appointments)
     }
 
     private fun handeErrorState(state: AdminHomeState.Error) {
@@ -165,8 +184,53 @@ class AdminHomeFragment : Fragment() {
     }
 
 
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+
+        val currentDate = viewModel.getCurrentDate()
+
+        if (currentDate == null) {
+//            Snackbar.make(binding.root, "Нет доступных приемов", Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), "No appointments found",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        calendar.set(
+            currentDate.year,
+            currentDate.monthValue - 1,
+            currentDate.dayOfMonth
+        )
+
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                val selectedDate = LocalDate.of(year, month, day)
+                viewModel.setUpSelectedDate(selectedDate)
+            },
+
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).apply {
+            val calendarLimit =
+                currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            datePicker.maxDate = calendarLimit
+        }.show()
+
+    }
+
     private fun launchLoginFragment() {
         findNavController().navigate(AdminHomeFragmentDirections.actionAdminHomeFragment2ToLoginFragment())
+    }
+
+
+    override fun onDestroyView() {
+        Log.d("AdminHomeFragment", "onDestroyView")
+        super.onDestroyView()
+        _binding = null
     }
 
 

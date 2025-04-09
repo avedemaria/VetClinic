@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.repositoryImpl
 
+import AppointmentRemoteMediator
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -7,11 +8,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.network.AppointmentQuery
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
-import com.example.vetclinic.data.network.model.QueryBody
 import com.example.vetclinic.domain.AppointmentRepository
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
@@ -32,9 +33,9 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val supabaseApiService: SupabaseApiService,
     private val supabaseClient: SupabaseClient,
     private val vetClinicDao: VetClinicDao,
+    private val db: VetClinicDatabase,
     private val appointmentMapper: AppointmentMapper,
     private val moshi: Moshi,
-//    private val appointmentRemoteMediatorFactory: AppointmentRemoteMediatorFactory,
 ) : AppointmentRepository {
 
 
@@ -105,7 +106,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     ): Result<List<AppointmentWithDetails>> =
         kotlin.runCatching {
 
-            val query = AppointmentQuery(userId= userId)
+            val query = AppointmentQuery(userId = userId)
             val response = supabaseApiService.getAppointmentWithDetails(query)
 
             if (response.isSuccessful) {
@@ -133,25 +134,45 @@ class AppointmentRepositoryImpl @Inject constructor(
             emptyList<AppointmentWithDetails>()
         }
 
-//    @OptIn(ExperimentalPagingApi::class)
-//    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
-//        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
+
+//    override suspend fun getAppointmentsByDate(date: String, offset: Int, limit: Int) {
 //
-//        // Получаем RemoteMediator через фабрику
-//        val remoteMediator = appointmentRemoteMediatorFactory.create(date)
-//
-//        val pager = Pager(
-//            config = PagingConfig(pageSize = 6),
-//            remoteMediator = remoteMediator,
-//            pagingSourceFactory = pagingSourceFactory
-//        )
-//
-//        return pager.flow.map { pagingData ->
-//            pagingData.map { dbModel ->
-//                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
+//        val response =
+//            supabaseApiService.getAppointmentsWithDetailsByDate(date, offset, limit)
+//        if (response.isSuccessful) {
+//            val appointmentDtos = response.body() ?: emptyList()
+//            val appointments = appointmentDtos.map {
+//                appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(it)
 //            }
+//            Log.d(TAG, "appointments:  $appointments")
 //        }
 //    }
+
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
+        Log.d(TAG, "Getting appointments for date: $date")
+        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
+
+        val pager = Pager(
+            config = PagingConfig(pageSize = 6),
+            remoteMediator = AppointmentRemoteMediator(
+                selectedDate = date,
+                db = db,
+                vetClinicDao = vetClinicDao,
+                supabaseApiService = supabaseApiService,
+                appointmentMapper = appointmentMapper
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        )
+        Log.d(TAG, "Created pager for date: $date")
+        return pager.flow.map { pagingData ->
+            Log.d(TAG, "Mapping paging data")
+            pagingData.map { dbModel ->
+                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
+            }
+        }
+    }
 
 //
 //    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =

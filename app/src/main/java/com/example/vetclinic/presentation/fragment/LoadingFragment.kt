@@ -84,7 +84,6 @@ class LoadingFragment : Fragment() {
                     } else {
                         when (userRole) {
                             ADMIN -> if (userId.isNotEmpty()) {
-                                viewModel.addPetAndUserToRoomForAdmin(userId)
                                 findNavController().navigate(
                                     LoadingFragmentDirections
                                         .actionLoadingFragmentToAdminHomeFragment2()

@@ -11,8 +11,9 @@ sealed class AdminHomeState {
     data class Error(val message: String) : AdminHomeState()
     data class Success(
         val appointments: PagingData<AppointmentWithDetails>,
-        val selectedDate: String
+        val selectedDate: String,
     ) : AdminHomeState()
-    object LoggedOut: AdminHomeState()
+
+    object LoggedOut : AdminHomeState()
 
 }

@@ -74,10 +74,10 @@ class HomeFragment : Fragment() {
 
         viewModel.getUserIdAndLoadUserName()
 
-
-        binding.btnAdmin.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAdminHomeFragment())
-        }
+//
+//        binding.btnAdmin.setOnClickListener {
+//           viewModel.getAppointmentsByDate(0)
+//        }
 
     }
 

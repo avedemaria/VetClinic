@@ -140,13 +140,12 @@ interface SupabaseApiService {
         @Body appointmentDto: AppointmentDto,
     ): Response<Unit>
 
-    @GET("rest/v1/appointments")
-    suspend fun getAppointmentsByDate(
-        @Query("date_time") dateTime: String,
-        @Query("order") order: String = "asc.date_time",
-        @Query("offset") page: Int,
-        @Query("limit") pageCount: Int,
-    ): Response<List<AppointmentDto>>
+    @GET("rest/v1/rpc/get_full_appointments_for_admin")
+    suspend fun getAppointmentsWithDetailsByDate(
+        @Query("selected_date") dateTime: String,
+        @Query("offsetx") offset: Int,
+        @Query("limitx") limit: Int,
+    ): Response<List<AppointmentWithDetailsDto>>
 
     @POST("rest/v1/appointments")
     suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>

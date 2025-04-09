@@ -34,15 +34,6 @@ class LoadingViewModel @Inject constructor(
     }
 
 
-    fun addPetAndUserToRoomForAdmin(userId: String) {
-        _loadingState.value = LoadingState.Loading
-        viewModelScope.launch {
-            getUserUseCase.getUserFromSupabaseDb(userId)
-
-            getPetsUseCase.getPetsFromSupabaseDb(userId)
-        }
-    }
-
 
     fun clearUserSession() {
         _loadingState.value = LoadingState.Loading

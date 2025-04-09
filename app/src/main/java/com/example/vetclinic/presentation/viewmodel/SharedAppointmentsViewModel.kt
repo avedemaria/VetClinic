@@ -102,7 +102,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
-    fun subscribeToAppointmentChanges() {
+   private fun subscribeToAppointmentChanges() {
 
         viewModelScope.launch {
 

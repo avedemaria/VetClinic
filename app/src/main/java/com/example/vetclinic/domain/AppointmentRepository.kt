@@ -1,5 +1,6 @@
 package com.example.vetclinic.domain
 
+import androidx.paging.PagingData
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -13,9 +14,9 @@ interface AppointmentRepository {
         userId: String,
     ): Result<List<AppointmentWithDetails>>
 
-//    suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>>
+//    suspend fun getAppointmentsByDate(date: String, offset:Int, limit:Int)
 
-//    suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>>
+    suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>>
 
     suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails,
