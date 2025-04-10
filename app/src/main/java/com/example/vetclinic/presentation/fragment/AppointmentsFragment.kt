@@ -1,15 +1,18 @@
 package com.example.vetclinic.presentation.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAppointmentsBinding
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -61,6 +64,16 @@ class AppointmentsFragment : Fragment() {
             }
         }
 
+
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object: OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().popBackStack(R.id.homeFragment, false)
+                }
+            }
+        )
+
         observeViewModel()
     }
 
@@ -105,4 +118,19 @@ class AppointmentsFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "OnDestroyView")
+        _binding = null
+    }
+
+//    override fun onPause() {
+//        super.onPause()
+//        Log.d(TAG, "unsubscribed")
+//        viewModel.unsubscribeFromChanges()
+//    }
+
+    companion object {
+        private const val TAG = "AppointmentsFragment"
+    }
 }

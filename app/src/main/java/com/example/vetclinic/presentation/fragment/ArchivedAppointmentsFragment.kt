@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentArchiveAppointmentsBinding
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -68,7 +69,7 @@ class ArchivedAppointmentsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
-
+        Log.d(TAG, "OnCreateView")
         setUpListeners()
         setUpAdapter()
         observeViewModel()
@@ -79,12 +80,12 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     private fun setUpListeners() {
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
-                }
-            })
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    findNavController().popBackStack(R.id.homeFragment, false)
+//                }
+//            })
 
 
         binding.btnCalendar.setOnClickListener {
@@ -92,6 +93,7 @@ class ArchivedAppointmentsFragment : Fragment() {
             showDatePickerDialog()
         }
     }
+
 
     private fun setUpAdapter() {
 
@@ -149,6 +151,7 @@ class ArchivedAppointmentsFragment : Fragment() {
                             val selectedDate = state.selectedDate
                             val appointments = state.appointments
 
+
                             val filteredAppointments =
                                 appointments.filter { it.isArchived }.filter { appointment ->
                                     val appointmentDate =
@@ -171,9 +174,9 @@ class ArchivedAppointmentsFragment : Fragment() {
                                 binding.rvArchivedAppointments.visibility = View.VISIBLE
                                 binding.tvEmptyAppointments.visibility = View.GONE
                             }
+                            Log.d(TAG, "filtered archived appointments: $filteredAppointments")
 
                             appointmentsAdapter.submitList(filteredAppointments)
-
 
                         }
                     }
@@ -181,6 +184,8 @@ class ArchivedAppointmentsFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
@@ -225,6 +230,7 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "OnDestroyView")
         _binding = null
     }
 

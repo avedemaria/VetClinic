@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".presentation.VetClinicApplication"
         android:allowBackup="true"
@@ -31,8 +35,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="vetclinic" android:host="reset-password" />
             </intent-filter>
-
         </activity>
+<!--        <provider-->
+<!--            android:authorities="androidx.work.WorkManagerInitializer"-->
+<!--            android:name="androidx.startup.InitializationProvider"-->
+<!--            tools:replace="android:authorities"-->
+<!--            tools:node="remove"-->
+<!--            />-->
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@ sealed class SharedAppointmentsState {
     object Loading : SharedAppointmentsState()
     data class Success(
         val appointments: List<AppointmentWithDetails>,
-        val selectedDate: LocalDate? = null,
+        val selectedDate: LocalDate? = null
     ) : SharedAppointmentsState()
 
     data class Error(val message: String) : SharedAppointmentsState()

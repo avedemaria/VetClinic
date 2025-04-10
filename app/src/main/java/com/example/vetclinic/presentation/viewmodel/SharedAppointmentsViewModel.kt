@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.usecases.AppointmentReminderUseCase
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import com.example.vetclinic.toLocalDateOrNull
@@ -29,8 +31,6 @@ class SharedAppointmentsViewModel @Inject constructor(
     private val _appointmentsState =
         MutableStateFlow<SharedAppointmentsState>(SharedAppointmentsState.Loading)
     val appointmentsState: MutableStateFlow<SharedAppointmentsState> get() = _appointmentsState
-
-//    private var storedItems = listOf<AppointmentWithDetails>()
 
 
     init {
@@ -83,6 +83,7 @@ class SharedAppointmentsViewModel @Inject constructor(
                     _appointmentsState.value = SharedAppointmentsState.Success(appointments)
                     setLastCompletedAppointmentDate(appointments)
                     selectedDate = lastCompletedAppointmentDate
+
                 }
             }.catch { e ->
                 _appointmentsState.value =
@@ -102,8 +103,8 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
-   private fun subscribeToAppointmentChanges() {
-
+    fun subscribeToAppointmentChanges() {
+        Log.d(TAG, "subscribed to changes in viewmodel")
         viewModelScope.launch {
 
             updateAppointmentUseCase.subscribeToAppointmentChanges() { updatedAppointment ->
@@ -111,9 +112,7 @@ class SharedAppointmentsViewModel @Inject constructor(
                     when (currentState) {
                         is SharedAppointmentsState.Success -> {
 
-                            val appointmentsWithDetails = currentState.appointments
-
-                            val updatedList = appointmentsWithDetails.map { appointment ->
+                            val updatedList = currentState.appointments.map { appointment ->
                                 if (appointment.id == updatedAppointment.id) {
                                     appointment.copy(
                                         status = updatedAppointment.status,
@@ -123,16 +122,15 @@ class SharedAppointmentsViewModel @Inject constructor(
                                     appointment
                                 }
                             }
-                            val updatedAppointmentWithDetails =
-                                updatedList.first { it.id == updatedAppointment.id }
 
-                            Log.d(TAG, "updated app with details $updatedAppointmentWithDetails")
-                            viewModelScope.launch {
-                                updateAppointmentUseCase.updateAppointmentInRoom(
-                                    updatedAppointmentWithDetails
-                                )
-                            }
-                            SharedAppointmentsState.Success(updatedList, selectedDate)
+                            updateAppointmentInRoom(updatedList, updatedAppointment)
+
+
+                            Log.d(TAG, "state success $updatedList")
+                            SharedAppointmentsState.Success(
+                                updatedList,
+                                selectedDate
+                            )
                         }
 
                         else -> currentState
@@ -142,6 +140,19 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
+
+    private fun updateAppointmentInRoom(
+        updatedList: List<AppointmentWithDetails>,
+        updatedAppointment: Appointment,
+    ) {
+        val updatedAppointmentWithDetails = updatedList.first { it.id == updatedAppointment.id }
+        Log.d(TAG, "updated app with details $updatedAppointmentWithDetails")
+        viewModelScope.launch {
+            updateAppointmentUseCase.updateAppointmentInRoom(
+                updatedAppointmentWithDetails
+            )
+        }
+    }
 
     fun unsubscribeFromChanges() {
         viewModelScope.launch {
@@ -172,13 +183,15 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
+
     override fun onCleared() {
         super.onCleared()
+        Log.d(TAG, "unsubscribed from changes")
         unsubscribeFromChanges()
     }
 
     companion object {
-        private const val TAG = "DetailedAppointmentsViewModel"
+        private const val TAG = "SharedAppointmentsViewModel"
     }
 
 

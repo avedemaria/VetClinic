@@ -97,6 +97,11 @@ dependencies {
     implementation ("androidx.paging:paging-runtime:3.1.1")
     implementation ("androidx.room:room-paging:2.5.0")
 
+
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+
+
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.moshi)

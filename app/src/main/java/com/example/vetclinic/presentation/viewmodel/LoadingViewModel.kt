@@ -13,8 +13,6 @@ import kotlinx.coroutines.launch
 
 class LoadingViewModel @Inject constructor(
     private val userDataStore: UserDataStore,
-    private val getUserUseCase: GetUserUseCase,
-    private val getPetsUseCase: GetPetsUseCase,
 ) : ViewModel() {
 
 

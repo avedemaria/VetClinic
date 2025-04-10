@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
+import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 class AppointmentsViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val userDataStore: UserDataStore,
+    private val updateAppointmentUseCase: UpdateAppointmentUseCase
 ) : ViewModel() {
 
 
@@ -39,6 +41,17 @@ class AppointmentsViewModel @Inject constructor(
                     AppointmentsState.Error(e.message ?: "Неизвестная ошибка")
             })
     }
+
+//   fun unsubscribeFromChanges() {
+//        viewModelScope.launch {
+//            updateAppointmentUseCase.unsubscribeFromAppointmentChanges()
+////        }
+////    }
+//
+//    override fun onCleared() {
+//        super.onCleared()
+//        Log.d(TAG, "unsubscribed")
+//    }
 
     companion object {
         private const val TAG = "AppointmentsViewModel"

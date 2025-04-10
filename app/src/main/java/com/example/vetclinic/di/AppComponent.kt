@@ -2,6 +2,7 @@ package com.example.vetclinic.di
 
 import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
+import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.fragment.AddPetFragment
 import com.example.vetclinic.presentation.fragment.AdminHomeFragment
 import com.example.vetclinic.presentation.fragment.AppointmentsFragment
@@ -28,9 +29,12 @@ import dagger.Component
 import jakarta.inject.Singleton
 
 @Singleton
-@Component(modules = [DataModule::class, DomainModule::class, ViewModelModule::class])
+@Component(modules = [DataModule::class, DomainModule::class, ViewModelModule::class,
+     WorkerBindsModule::class])
 interface AppComponent {
 
+
+    fun inject(application: VetClinicApplication)
 
     fun inject(activity: MainActivity)
 
@@ -80,7 +84,7 @@ interface AppComponent {
     @Component.Factory
     interface AppComponentFactory {
         fun create(
-            @BindsInstance application: Application
+            @BindsInstance application: Application,
         ): AppComponent
     }
 }
