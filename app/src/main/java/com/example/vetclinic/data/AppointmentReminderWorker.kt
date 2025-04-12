@@ -12,7 +12,7 @@ import androidx.work.WorkerParameters
 import com.example.vetclinic.R
 import jakarta.inject.Inject
 
-class AppointmentReminderWorker (
+class AppointmentReminderWorker(
     private val appContext: Context, workerParams: WorkerParameters,
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -40,14 +40,19 @@ class AppointmentReminderWorker (
     ) {
         val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.modern_pet_veterinary_clinic).setContentTitle(TITLE)
-            .setContentText(
-                "Прием состоится через час!\nВрач: $doctorName\nУслуга: $serviceName\nПитомец: $petName"
-            ).setPriority(NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true).build()
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText("Прием состоится через час!\nВрач: $doctorName\nУслуга:" +
+                            " $serviceName\nПитомец: $petName")
+            ).setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
 
 
         val notificationManager =
             appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(appointmentId.hashCode(), notification)
+        Log.d("AppointmentReminderWorker", "notification was sent for ${appointmentId.hashCode()}")
     }
 
 

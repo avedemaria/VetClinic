@@ -34,6 +34,7 @@ import com.example.vetclinic.presentation.adapter.petAdapter.PetAdapter
 import com.example.vetclinic.presentation.viewmodel.PetUiState
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -187,7 +188,18 @@ class PetFragment : Fragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val position = viewHolder.adapterPosition
                     val pet: Pet = petsAdapter.currentList[position]
-                    showDeleteConfirmationDialog(pet, position)
+
+                    if (petsAdapter.currentList.size > 1) {
+                        showDeleteConfirmationDialog(pet, position)
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            "Невозможно удалить последнего питомца",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                        petsAdapter.notifyItemChanged(position)
+                    }
+
                 }
             })
 
@@ -200,7 +212,7 @@ class PetFragment : Fragment() {
             .setTitle("Удалить питомца")
             .setMessage(
                 "Вы уверены, что хотите удалить данные о питомце?" +
-                        " Все записи о приёмах питомца так же будут удалены"
+                        " Все записи о приёмах питомца также будут удалены"
             )
             .setPositiveButton("Да") { _, _ ->
                 viewModel.deletePet(pet)

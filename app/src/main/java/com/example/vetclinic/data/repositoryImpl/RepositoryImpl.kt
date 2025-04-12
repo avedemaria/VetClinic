@@ -452,7 +452,7 @@ class RepositoryImpl @Inject constructor(
                 val petDbModelList = vetClinicDao.getPetsByUserId(userId)
 
                 if (petDbModelList.isEmpty()) {
-                    throw NoSuchElementException("Pets with userID $userId not found in Room")
+                    emptyList<Pet>()
                 }
 
                 petMapper.petDbModelListToPetEntityList(petDbModelList)

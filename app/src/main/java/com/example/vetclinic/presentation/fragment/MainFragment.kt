@@ -154,7 +154,7 @@ class MainFragment : Fragment() {
     private fun observeViewModel() {
         viewmodel.mainState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is MainState.Error -> Log.d(TAG, "Заглушка для HomeState.Error")
+                is MainState.Error -> Log.d(TAG, "Заглушка для MainState.Error")
                 MainState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.coordinatorLayout.visibility = View.GONE

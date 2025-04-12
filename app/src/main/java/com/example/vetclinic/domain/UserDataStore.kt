@@ -1,7 +1,5 @@
 package com.example.vetclinic.domain
 
-import kotlinx.coroutines.flow.Flow
-
 interface UserDataStore {
 
 

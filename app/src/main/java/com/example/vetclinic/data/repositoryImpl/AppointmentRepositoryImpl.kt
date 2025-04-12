@@ -25,7 +25,9 @@ import io.github.jan.supabase.realtime.postgresChangeFlow
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.withContext
 
 
@@ -56,20 +58,25 @@ class AppointmentRepositoryImpl @Inject constructor(
         Log.d(TAG, "Supabase channel subscribed successfully")
 
         Log.d(TAG, "Starting to collect changes from Supabase")
-        changeFlow.collect { updatedValue ->
-            val updatedRecord = updatedValue.record.toString()
-            Log.d(TAG, "updated value^ $updatedRecord")
-            try {
-                val appointmentDto = jsonAdapter.fromJson(updatedRecord)
-                appointmentDto?.let { dto ->
-                    callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
+        changeFlow
+            .retry { e ->
+            e is java.net.SocketException || e is java.io.IOException }
+            .catch { e ->
+            Log.e(TAG, "Error in WebSocket flow after retry: ${e.message}") }
+            .collect { updatedValue ->
+                val updatedRecord = updatedValue.record.toString()
+                Log.d(TAG, "updated value^ $updatedRecord")
+                try {
+                    val appointmentDto = jsonAdapter.fromJson(updatedRecord)
+                    appointmentDto?.let { dto ->
+                        callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
+
+
             }
-
-
-        }
     }
 
 

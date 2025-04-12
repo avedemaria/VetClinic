@@ -1,6 +1,7 @@
 package com.example.vetclinic.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import androidx.work.WorkerFactory
@@ -18,7 +19,8 @@ class VetClinicApplication : Application(), Configuration.Provider {
 
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(Log.DEBUG).setWorkerFactory(workerFactory).build()
 
 
     override fun onCreate() {

@@ -1,12 +1,17 @@
 package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -43,7 +48,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -56,6 +61,9 @@ class HomeFragment : Fragment() {
         component.inject(this)
 
         observeViewModel()
+
+
+        viewModel.checkShouldShowDialog(requireContext())
 
 
         binding.profileButton.setOnClickListener {
@@ -81,6 +89,29 @@ class HomeFragment : Fragment() {
 
     }
 
+
+    private fun showBatteryOptimizationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Показ уведомлений за час до приёма")
+            .setMessage(
+                "Для того, чтобы получать уведомления за час до приёма, " +
+                        "отключите оптимизацию батареи в разделе \"Аккумулятор\""
+            )
+            .setPositiveButton("Перейти в настройки") { dialog, _ ->
+                    val intent =
+                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                    requireContext().startActivity(intent)
+            }
+            .setNeutralButton("Больше не показывать") { _, _ ->
+                viewModel.disableDialogForever()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+
+    }
+
     private fun observeViewModel() {
         viewModel.homeState.observe(viewLifecycleOwner) { state ->
             Log.d("HomeFragment", "State changed to: $state")
@@ -99,6 +130,10 @@ class HomeFragment : Fragment() {
                 is HomeState.Result -> {
                     binding.welcomeText.text =
                         String.format("Добро пожаловать,\n%s", state.userName)
+
+                    if (state.shouldShowDialog) {
+                        showBatteryOptimizationDialog()
+                    }
                 }
 
             }
