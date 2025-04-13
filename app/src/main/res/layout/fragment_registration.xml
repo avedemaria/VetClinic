@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
@@ -9,14 +10,13 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="26dp">
+        android:padding="20dp">
 
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="50dp"
-            android:contentDescription="@string/company_logo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:contentDescription="Логотип компании"
             android:src="@drawable/modern_pet_veterinary_clinic" />
 
         <TextView
@@ -24,101 +24,82 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/account_registration"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_name"
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name"
-                android:inputType="textCapWords"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_last_name"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-           >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_last_name"
-                android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:id ="@+id/llPreviousForm"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/last_name"
-                android:inputType="textCapWords"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_gravity="start"
+                android:layout_marginTop="4dp"
+                android:padding="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_petName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_petName"
-                android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="1dp"
+                    android:src = "@drawable/baseline_arrow_left_24"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Назад"
+                    android:textSize="14sp"
+                    android:layout_gravity="center"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id ="@+id/llNextForm"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/pets_name"
-                android:inputType="textCapWords"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:padding="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Далее"
+                    android:textSize="14sp"
+                    android:layout_gravity="center"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="1dp"
+                    android:src = "@drawable/baseline_arrow_right_24"
+                    />
+
+            </LinearLayout>
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_last_phoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_phoneNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone_number_title"
-                android:inputType="numberDecimal"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@android:color/darker_gray"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
+        
         <Button
             android:id="@+id/btn_create_account"
             android:layout_width="wrap_content"

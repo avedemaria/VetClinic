@@ -119,7 +119,7 @@ class AddPetViewModel @Inject constructor(
         }
     }
 
-    private fun getMonthSuffix(months: Int): String {
+    private fun getMonthSuffix(month: Int): String {
         return "мес."
     }
 

@@ -1,0 +1,77 @@
+package com.example.vetclinic.presentation.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.vetclinic.databinding.FragmentUserRegistrationFormBinding
+import com.example.vetclinic.domain.entities.UserInputData
+import com.example.vetclinic.presentation.VetClinicApplication
+import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.textfield.TextInputEditText
+import jakarta.inject.Inject
+
+
+class UserRegistrationForm : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    val viewModel: RegistrationViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
+
+    private var _binding: FragmentUserRegistrationFormBinding? = null
+    private val binding
+        get() = _binding ?: throw RuntimeException(
+            "FragmentUserRegistrationFormBinding is null"
+        )
+
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentUserRegistrationFormBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
+
+        val userInput = UserInputData(
+            name = setUpInput(binding.etName).replaceFirstChar { it.uppercase() },
+            lastName = setUpInput(binding.etLastName).replaceFirstChar { it.uppercase() },
+            phone = setUpInput(binding.etPhoneNumber),
+            email = setUpInput(binding.etEmail),
+            password = setUpInput(binding.etPassword)
+        )
+
+        viewModel.updateUserInputInState(userInput)
+
+
+    }
+
+
+    private fun setUpInput(input: TextInputEditText): String {
+        return input.text?.trim().toString()
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+

@@ -10,11 +10,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.databinding.FragmentHomeBinding
@@ -24,6 +27,8 @@ import com.example.vetclinic.presentation.viewmodel.HomeState
 import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class HomeFragment : Fragment() {
@@ -63,9 +68,6 @@ class HomeFragment : Fragment() {
         observeViewModel()
 
 
-        viewModel.checkShouldShowDialog(requireContext())
-
-
         binding.profileButton.setOnClickListener {
             launchProfileFragment()
         }
@@ -87,30 +89,27 @@ class HomeFragment : Fragment() {
 //           viewModel.getAppointmentsByDate(0)
 //        }
 
-    }
-
-
-    private fun showBatteryOptimizationDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Показ уведомлений за час до приёма")
-            .setMessage(
-                "Для того, чтобы получать уведомления за час до приёма, " +
-                        "отключите оптимизацию батареи в разделе \"Аккумулятор\""
-            )
-            .setPositiveButton("Перейти в настройки") { dialog, _ ->
-                    val intent =
-                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                    requireContext().startActivity(intent)
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                if (isAdded) {
+                    setupDialogFlow()
+                    viewModel.checkShouldShowDialog(requireContext())
+                }
             }
-            .setNeutralButton("Больше не показывать") { _, _ ->
-                viewModel.disableDialogForever()
-            }
-            .setNegativeButton("Отмена") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        })
 
     }
+
+
+    private fun setupDialogFlow() {
+        viewModel.showDialogEvent.onEach {
+            Log.d(TAG, "received event: $it")
+            showBatteryOptimizationDialog()
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
 
     private fun observeViewModel() {
         viewModel.homeState.observe(viewLifecycleOwner) { state ->
@@ -130,10 +129,6 @@ class HomeFragment : Fragment() {
                 is HomeState.Result -> {
                     binding.welcomeText.text =
                         String.format("Добро пожаловать,\n%s", state.userName)
-
-                    if (state.shouldShowDialog) {
-                        showBatteryOptimizationDialog()
-                    }
                 }
 
             }
@@ -161,11 +156,64 @@ class HomeFragment : Fragment() {
         )
     }
 
+
+    private fun showBatteryOptimizationDialog() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Показ уведомлений за час до приёма")
+            .setMessage(
+                "Чтобы получать напоминания за час до приёма, отключите оптимизацию батареи для приложения.\n\n" +
+                        "Нажмите \"Перейти в настройки\", затем найдите пункт \"Аккумулятор\" и отключите ограничение."
+            )
+            .setPositiveButton("Перейти в настройки", null)
+            .setNegativeButton("Отмена", null)
+            .setNeutralButton("Больше не показывать", null)
+            .create()
+
+        dialog.setOnShowListener {
+            val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val negative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            val neutral = dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+
+            positive.setOnClickListener {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:" + requireContext().packageName)
+                }
+                if (intent.resolveActivity(requireContext().packageManager) != null) {
+                    requireActivity().startActivity(intent)
+                }
+                dialog.dismiss()
+            }
+
+            neutral.setOnClickListener {
+                viewModel.disableDialogForever()
+                dialog.dismiss()
+            }
+
+            negative.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            // Выравниваем кнопки по центру, если хочешь
+            val layoutParams = positive.layoutParams as LinearLayout.LayoutParams
+            layoutParams.weight = 1f
+            positive.layoutParams = layoutParams
+            negative.layoutParams = layoutParams
+            neutral.layoutParams = layoutParams
+        }
+
+        dialog.show()
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+
+    companion object {
+        private const val TAG = "HomeFragment"
+    }
 
 }
 

@@ -13,6 +13,8 @@ import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
@@ -24,8 +26,11 @@ class HomeViewModel @Inject constructor(
     private val _homeState = MutableLiveData<HomeState>()
     val homeState: LiveData<HomeState> get() = _homeState
 
+    private val _showDialogEvent = MutableSharedFlow<Unit>()
+    val showDialogEvent = _showDialogEvent.asSharedFlow()
+
     private var storedUserName: String = ""
-    private var storedShouldShowDialog: Boolean = false
+//    private var storedShouldShowDialog: Boolean = false
 
     fun getUserIdAndLoadUserName() {
         viewModelScope.launch {
@@ -61,28 +66,31 @@ class HomeViewModel @Inject constructor(
             val currentTime = System.currentTimeMillis()
             val oneDayMillis = 24 * 60 * 60 * 1000
             val isDisabled = dialogDataStore.getDisableDialogForeverFlag()
+
             val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             val isBatteryOptimized =
                 !powerManager.isIgnoringBatteryOptimizations(context.packageName)
 
             when {
                 isDisabled -> return@launch
+
                 !isBatteryOptimized -> return@launch
+
                 lastShown == null || currentTime - lastShown >= oneDayMillis -> {
-                    storedShouldShowDialog = true
+//                    storedShouldShowDialog = true
                     dialogDataStore.putLastShowDialog(currentTime)
-                    updateResultState()
-
+                    _showDialogEvent.emit(Unit)
                 }
 
-                else -> {
-                    storedShouldShowDialog = false
-                    updateResultState()
-                }
+//                else -> {
+//                    storedShouldShowDialog = false
+//                }
 
             }
         }
     }
+
+
 
 
     fun disableDialogForever() {
@@ -93,7 +101,7 @@ class HomeViewModel @Inject constructor(
 
 
     private fun updateResultState() {
-        _homeState.value = HomeState.Result(storedUserName, storedShouldShowDialog)
+        _homeState.value = HomeState.Result(storedUserName)
     }
 
 

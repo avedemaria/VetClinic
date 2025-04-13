@@ -67,7 +67,6 @@ class AddPetFragment : Fragment() {
         }
 
 
-
         binding.llBDay.setOnClickListener{
             showDatePickerDialog()
         }

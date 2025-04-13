@@ -83,7 +83,8 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
+    implementation ("com.tbuonomo:dotsindicator:4.3")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("com.google.android.material:material:1.3.0-alpha03")
     implementation ("com.wdullaer:materialdatetimepicker:4.2.3")

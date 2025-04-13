@@ -12,7 +12,7 @@ import com.example.vetclinic.presentation.viewmodel.LoginViewModel
 import com.example.vetclinic.presentation.viewmodel.MainViewModel
 import com.example.vetclinic.presentation.viewmodel.PetViewModel
 import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
-import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
+import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
 import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.viewmodel.SettingsViewModel

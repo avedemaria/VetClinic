@@ -2,24 +2,31 @@ package com.example.vetclinic.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptionsBuilder
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.HomeViewModel
-import com.example.vetclinic.presentation.viewmodel.RegistrationState
-import com.example.vetclinic.presentation.viewmodel.RegistrationViewModel
+import com.example.vetclinic.presentation.adapter.RegistrationAdapter
+import com.example.vetclinic.presentation.viewmodel.registration.RegistrationState
+import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.google.android.material.textfield.TextInputEditText
+import com.example.vetclinic.presentation.viewmodel.registration.RegistrationEvent
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
-import java.util.UUID
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
 class RegistrationFragment : Fragment() {
@@ -31,6 +38,9 @@ class RegistrationFragment : Fragment() {
     private val viewModel: RegistrationViewModel by viewModels {
         viewModelFactory
     }
+
+
+    private lateinit var registrationPagerAdapter: RegistrationAdapter
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
@@ -59,30 +69,30 @@ class RegistrationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        binding.viewPager.isUserInputEnabled = false
+
+        registrationPagerAdapter = RegistrationAdapter(childFragmentManager, lifecycle)
+        binding.viewPager.adapter = registrationPagerAdapter
+
+
+        setUpSmoothPaging()
 
         binding.btnCreateAccount.setOnClickListener {
-
-            val name = setUpInput(binding.etName).replaceFirstChar { it.uppercase() }
-            val lastName = setUpInput(binding.etLastName).replaceFirstChar { it.uppercase() }
-            val petName = setUpInput(binding.etPetName).replaceFirstChar { it.uppercase() }
-
-            val phoneNumber = setUpInput(binding.etPhoneNumber)
-            val email = setUpInput(binding.etEmail)
-            val password = setUpInput(binding.etPassword)
-
-            viewModel.registerUser(name, lastName, petName, phoneNumber, email, password)
-
+            viewModel.registerUser()
         }
 
-        binding.btnCreateAccount.setOnLongClickListener{
-            generateMockForm()
+
+
+        binding.btnCreateAccount.setOnLongClickListener {
+//            generateMockForm()
             true
         }
 
 
 
-        binding.tvBackToLogin.setOnClickListener{
+        binding.tvBackToLogin.setOnClickListener {
             launchLoginFragment()
         }
 
@@ -92,7 +102,9 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+
         viewModel.registrationState.observe(viewLifecycleOwner) { state ->
+            Log.d(TAG, "Received registration state: $state")
             when (state) {
                 is RegistrationState.Error -> Toast.makeText(
                     requireContext(),
@@ -100,15 +112,53 @@ class RegistrationFragment : Fragment() {
                 ).show()
 
                 is RegistrationState.Result -> {
-                    launchMainFragment()
+                    Log.d(TAG, "Form data updated: user=${state.userdata}, pet=${state.petData}")
                 }
 
+                RegistrationState.Loading -> Log.d(TAG, "Заглушка loading")
+                RegistrationState.Success -> launchMainFragment()
             }
         }
+
     }
 
-    private fun setUpInput(input: TextInputEditText): String {
-        return input.text?.trim().toString()
+
+    private fun setUpSmoothPaging() {
+        val totalPages = 2
+
+        // Set up ViewPager2 page change callback
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                updateButtons(position)
+            }
+        })
+
+        binding.llNextForm.setOnClickListener {
+            val currentPosition = binding.viewPager.currentItem
+            if (currentPosition < totalPages - 1) {
+                binding.viewPager.setCurrentItem(currentPosition + 1, true)
+            }
+        }
+
+        binding.llPreviousForm.setOnClickListener {
+            val currentPosition = binding.viewPager.currentItem
+            if (currentPosition > 0) {
+                binding.viewPager.setCurrentItem(currentPosition - 1, true)
+            }
+        }
+
+
+        updateButtons(binding.viewPager.currentItem)
+    }
+
+
+    private fun updateButtons(position: Int) {
+        val totalPages = 2
+        binding.llNextForm.isVisible =
+            position < totalPages - 1  // Show next button if not on last page
+        binding.llPreviousForm.isVisible =
+            position > 0  // Show previous button if not on first page
     }
 
 
@@ -131,15 +181,19 @@ class RegistrationFragment : Fragment() {
     }
 
 
-    private fun generateMockForm() {
-        binding.etName.setText("John")
-        binding.etLastName.setText("Doe")
-        binding.etPetName.setText("Rex")
-        binding.etPhoneNumber.setText("123456789")
-        binding.etEmail.setText("test${UUID.randomUUID()}@test.com")
-        binding.etPassword.setText("password")
-    }
+//    private fun generateMockForm() {
+//        binding.etName.setText("John")
+//        binding.etLastName.setText("Doe")
+//        binding.etPetName.setText("Rex")
+//        binding.etPhoneNumber.setText("123456789")
+//        binding.etEmail.setText("test${UUID.randomUUID()}@test.com")
+//        binding.etPassword.setText("password")
+//    }
 
+
+    companion object {
+        private const val TAG = "RegistrationFragment"
+    }
 
 }
 

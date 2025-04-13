@@ -16,6 +16,7 @@ import com.example.vetclinic.presentation.fragment.LoadingFragment
 import com.example.vetclinic.presentation.fragment.LoginFragment
 import com.example.vetclinic.presentation.fragment.MainFragment
 import com.example.vetclinic.presentation.fragment.PetFragment
+import com.example.vetclinic.presentation.fragment.PetRegistrationForm
 import com.example.vetclinic.presentation.fragment.PlainServicesFragment
 import com.example.vetclinic.presentation.fragment.ProfileFragment
 import com.example.vetclinic.presentation.fragment.RegistrationFragment
@@ -24,13 +25,16 @@ import com.example.vetclinic.presentation.fragment.ServicesWithDepFragment
 import com.example.vetclinic.presentation.fragment.SettingsFragment
 import com.example.vetclinic.presentation.fragment.UpdatePasswordFragment
 import com.example.vetclinic.presentation.fragment.UserFragment
+import com.example.vetclinic.presentation.fragment.UserRegistrationForm
 import dagger.BindsInstance
 import dagger.Component
 import jakarta.inject.Singleton
 
 @Singleton
-@Component(modules = [DataModule::class, DomainModule::class, ViewModelModule::class,
-     WorkerBindsModule::class])
+@Component(
+    modules = [DataModule::class, DomainModule::class, ViewModelModule::class,
+        WorkerBindsModule::class]
+)
 interface AppComponent {
 
 
@@ -45,6 +49,10 @@ interface AppComponent {
     fun inject(homeFragment: HomeFragment)
 
     fun inject(registrationFragment: RegistrationFragment)
+
+    fun inject(userRegistrationForm: UserRegistrationForm)
+
+    fun inject(petRegistrationForm: PetRegistrationForm)
 
     fun inject(loginFragment: LoginFragment)
 
