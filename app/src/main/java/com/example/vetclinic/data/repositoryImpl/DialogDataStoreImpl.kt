@@ -5,11 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
-import com.example.vetclinic.domain.DialogDataStore
+import com.example.vetclinic.di.qualifiers.DialogPrefs
+import com.example.vetclinic.domain.interfaces.DialogDataStore
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.first
 
-class DialogDataStoreImpl @Inject constructor(private val dataStore: DataStore<Preferences>) :
+class DialogDataStoreImpl @Inject constructor(@DialogPrefs private val dataStore: DataStore<Preferences>) :
     DialogDataStore {
 
     override suspend fun getLastShownDialog(): Long? {

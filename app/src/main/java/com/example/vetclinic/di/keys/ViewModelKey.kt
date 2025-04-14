@@ -1,4 +1,4 @@
-package com.example.vetclinic.di
+package com.example.vetclinic.di.keys
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

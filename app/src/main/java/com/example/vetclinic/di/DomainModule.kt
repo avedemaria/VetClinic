@@ -6,15 +6,14 @@ import com.example.vetclinic.data.repositoryImpl.ReminderRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.RepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.TimeSlotsRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.UserDataStoreImpl
-import com.example.vetclinic.domain.AppointmentRepository
-import com.example.vetclinic.domain.DialogDataStore
-import com.example.vetclinic.domain.ReminderRepository
-import com.example.vetclinic.domain.Repository
-import com.example.vetclinic.domain.TimeSlotsRepository
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.AppointmentRepository
+import com.example.vetclinic.domain.interfaces.DialogDataStore
+import com.example.vetclinic.domain.interfaces.ReminderRepository
+import com.example.vetclinic.domain.interfaces.Repository
+import com.example.vetclinic.domain.interfaces.TimeSlotsRepository
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import dagger.Binds
 import dagger.Module
-import jakarta.inject.Singleton
 
 @Module
 interface DomainModule {

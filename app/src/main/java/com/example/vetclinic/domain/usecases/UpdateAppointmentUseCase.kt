@@ -1,11 +1,10 @@
 package com.example.vetclinic.domain.usecases
 
 import android.util.Log
-import com.example.vetclinic.domain.AppointmentRepository
+import com.example.vetclinic.domain.interfaces.AppointmentRepository
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.Flow
 
 class UpdateAppointmentUseCase @Inject constructor(
     private val repository: AppointmentRepository,

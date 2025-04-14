@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.usecases.AppointmentReminderUseCase
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import com.example.vetclinic.toLocalDateOrNull

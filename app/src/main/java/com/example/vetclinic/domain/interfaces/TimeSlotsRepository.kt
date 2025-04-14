@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain
+package com.example.vetclinic.domain.interfaces
 
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 

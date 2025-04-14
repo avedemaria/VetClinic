@@ -6,8 +6,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.example.vetclinic.data.AppointmentReminderWorker
-import com.example.vetclinic.domain.ReminderRepository
+import com.example.vetclinic.data.workers.AppointmentReminderWorker
+import com.example.vetclinic.domain.interfaces.ReminderRepository
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import jakarta.inject.Inject
 import java.time.Duration

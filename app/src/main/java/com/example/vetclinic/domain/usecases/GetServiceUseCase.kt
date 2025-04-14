@@ -1,7 +1,7 @@
 package com.example.vetclinic.domain.usecases
 
 import android.util.Log
-import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.interfaces.Repository
 import com.example.vetclinic.domain.entities.Service
 import jakarta.inject.Inject
 

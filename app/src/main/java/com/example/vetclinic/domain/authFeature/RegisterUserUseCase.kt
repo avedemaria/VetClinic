@@ -1,6 +1,6 @@
 package com.example.vetclinic.domain.authFeature
 
-import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.interfaces.Repository
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 

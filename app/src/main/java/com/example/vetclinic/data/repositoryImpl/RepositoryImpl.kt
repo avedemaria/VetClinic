@@ -8,7 +8,7 @@ import com.example.vetclinic.data.mapper.PetMapper
 import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.domain.Repository
+import com.example.vetclinic.domain.interfaces.Repository
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.domain.entities.Pet
@@ -116,7 +116,7 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-            val email = decodeJwtAndGetEmail(token)?:""
+            val email = decodeJwtAndGetEmail(token) ?: ""
 
             supabaseClient.auth.verifyEmailOtp(
                 email = email,
@@ -162,6 +162,18 @@ class RepositoryImpl @Inject constructor(
             false
         }
     }
+
+    override suspend fun deleteUserAccount(): Result<Unit> = kotlin.runCatching {
+        val response = supabaseApiService.deleteUser()
+        if (response.isSuccessful) {
+            logOut().getOrThrow()
+        } else {
+            throw Exception("Failed to delete user: ${response.code()} ${response.errorBody()?.string()}")
+        }
+    }.onFailure { e ->
+        Log.d(TAG, "Error while deleting user account $e")
+    }
+
 
 //SupabaseDB
 
@@ -212,7 +224,6 @@ class RepositoryImpl @Inject constructor(
         }.onFailure { e ->
             Log.e(TAG, "Error fetching Pet: ${e.message}", e)
         }
-
 
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> = addDataToSupabaseDb(

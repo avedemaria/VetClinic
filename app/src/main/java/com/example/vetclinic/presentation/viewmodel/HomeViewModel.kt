@@ -7,12 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.DialogDataStore
-import com.example.vetclinic.domain.UserDataStore
-import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
+import com.example.vetclinic.domain.interfaces.DialogDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch

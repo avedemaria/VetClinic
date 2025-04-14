@@ -1,9 +1,5 @@
-import com.example.vetclinic.domain.UserDataStore
-import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.Day
 import com.example.vetclinic.domain.entities.TimeSlot
-import jakarta.inject.Inject
-import kotlinx.coroutines.runBlocking
 
 import java.time.LocalTime
 import java.util.UUID

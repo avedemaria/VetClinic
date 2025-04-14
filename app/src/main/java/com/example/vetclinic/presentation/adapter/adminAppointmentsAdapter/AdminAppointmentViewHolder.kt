@@ -79,9 +79,9 @@ class AdminAppointmentViewHolder(
 
 
             if (appointment.isArchived) {
-                root.alpha = CURRENT_ALPHA
-            } else {
                 root.alpha = ARCHIVED_ALPHA
+            } else {
+               root.alpha = CURRENT_ALPHA
             }
 
         }

@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain
+package com.example.vetclinic.domain.interfaces
 
 import androidx.paging.PagingData
 import com.example.vetclinic.domain.entities.Appointment
@@ -16,7 +16,10 @@ interface AppointmentRepository {
 
 //    suspend fun getAppointmentsByDate(date: String, offset:Int, limit:Int)
 
-    suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>>
+    suspend fun getAppointmentsByDate(
+        date: String,
+        nowIso: String,
+    ): Flow<PagingData<AppointmentWithDetails>>
 
     suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails,

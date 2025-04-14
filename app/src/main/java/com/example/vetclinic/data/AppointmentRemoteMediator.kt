@@ -11,7 +11,15 @@ import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.io.IOException
+import retrofit2.HttpException
+import retrofit2.Response
+import java.time.format.DateTimeFormatter
+
 //
 //@OptIn(ExperimentalPagingApi::class)
 //class AppointmentRemoteMediator @Inject constructor(
@@ -90,94 +98,83 @@ import jakarta.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 class AppointmentRemoteMediator @Inject constructor(
     private val selectedDate: String,
-    private val db: VetClinicDatabase,
-    private val vetClinicDao: VetClinicDao,
     private val supabaseApiService: SupabaseApiService,
-    private val appointmentMapper: AppointmentMapper
+    private val appointmentMapper: AppointmentMapper,
+    private val vetClinicDao: VetClinicDao,
 ) : RemoteMediator<Int, AppointmentWithDetailsDbModel>() {
 
-    private var nextPageKey = 0
+    private var pageIndex = 0
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, AppointmentWithDetailsDbModel>
+        state: PagingState<Int, AppointmentWithDetailsDbModel>,
     ): MediatorResult {
-        Log.d(TAG, "Load called with type: $loadType")
-
         return try {
+            Log.d(
+                TAG,
+                ">>> Load triggered: loadType = $loadType, state = ${state.anchorPosition}"
+            )
+            val pageIndex = getPageIndex(loadType) ?: return MediatorResult.Success(
+                endOfPaginationReached = true
+            )
             val limit = state.config.pageSize
-            Log.d(TAG, "Page size: $limit")
+            val offset = pageIndex * limit
 
-            // Reset or advance the page based on the load type
-            when (loadType) {
-                LoadType.REFRESH -> {
-                    Log.d(TAG, "REFRESH: Resetting nextPageKey to 0")
-                    nextPageKey = 0
-                }
-                LoadType.PREPEND -> {
-                    Log.d(TAG, "PREPEND: Returning success with endOfPaginationReached=true")
-                    return MediatorResult.Success(endOfPaginationReached = true)
-                }
-                LoadType.APPEND -> {
-                    Log.d(TAG, "APPEND: Last item = ${state.lastItemOrNull()?.id}")
-                    if (state.lastItemOrNull() == null) {
-                        Log.d(TAG, "APPEND: No last item, returning end of pagination")
-                        return MediatorResult.Success(endOfPaginationReached = true)
-                    }
-                    Log.d(TAG, "APPEND: Using nextPageKey = $nextPageKey")
-                }
+            Log.d(
+                TAG,
+                "Requesting page with offset = $offset, limit = $limit, date = $selectedDate"
+            )
+
+            val response = fetchAppointments(offset, limit, selectedDate)
+
+            val appointmentsDto = response.body().orEmpty()
+            Log.d(TAG, "Fetched ${appointmentsDto.size} appointments from API")
+            val appointmentsDb = appointmentsDto.map {
+                appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(it)
             }
-
-            val offset = nextPageKey * limit
-            Log.d(TAG, "Calculated offset: $offset, limit: $limit for date: $selectedDate")
-
-            Log.d(TAG, "Making API call with date: $selectedDate, offset: $offset, limit: $limit")
-            val response = supabaseApiService.getAppointmentsWithDetailsByDate(selectedDate, offset, limit)
-            Log.d(TAG, "API response code: ${response.code()}")
-
-            if (response.isSuccessful) {
-                val dtos = response.body().orEmpty()
-                Log.d(TAG, "Received ${dtos.size} appointments from API")
-
-                val dbModels = dtos.map {
-                    appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(it)
-                }
-
-                db.withTransaction {
-                    if (loadType == LoadType.REFRESH) {
-                        Log.d(TAG, "Clearing all appointments from DB")
-                        vetClinicDao.clearAllAppointments()
-                    }
-                    Log.d(TAG, "Inserting ${dbModels.size} appointments into DB")
-                    vetClinicDao.insertAppointments(dbModels)
-                }
-
-                // Advance the page key only if we got data
-                if (dtos.isNotEmpty()) {
-                    nextPageKey++
-                    Log.d(TAG, "Advanced nextPageKey to $nextPageKey")
-                } else {
-                    Log.d(TAG, "No data received, not advancing nextPageKey")
-                }
-
-                Log.d(TAG, "Returning success with endOfPaginationReached=${dtos.isEmpty()}")
-                MediatorResult.Success(endOfPaginationReached = dtos.isEmpty())
-            } else {
-                Log.d(TAG, "API error: ${response.code()} - ${response.message()}")
-                MediatorResult.Error(
-                    Exception(
-                        "Server's error: ${response.code()} - ${response.message()}"
-                    )
+            if (loadType == LoadType.REFRESH) {
+                vetClinicDao.refresh(appointmentsDb)
+                Log.d(
+                    TAG, "clearing and " +
+                            "Inserting ${appointmentsDb.size} appointments into DB"
                 )
+            } else {
+                vetClinicDao.insertAppointments(appointmentsDb)
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception during load", e)
+
+            MediatorResult.Success(endOfPaginationReached = appointmentsDto.size < limit)
+        } catch (e: IOException) {
+            MediatorResult.Error(e)
+        } catch (e: HttpException) {
             MediatorResult.Error(e)
         }
     }
 
+
+    private fun getPageIndex(loadType: LoadType): Int? {
+        pageIndex = when (loadType) {
+            LoadType.REFRESH -> 0
+            LoadType.PREPEND -> return null
+            LoadType.APPEND -> ++pageIndex
+        }
+        return pageIndex
+    }
+
+    private suspend fun fetchAppointments(
+        offset: Int,
+        limit: Int,
+        date: String,
+    ): Response<List<AppointmentWithDetailsDto>> {
+        return supabaseApiService.getAppointmentsWithDetailsByDate(date, offset, limit)
+    }
+
+
     companion object {
         private const val TAG = "AppointmentRemoteMediator"
     }
+
+
+
 }
+
 

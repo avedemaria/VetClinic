@@ -60,9 +60,19 @@ interface VetClinicDao {
     fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
 
     // Это метод будет возвращать PagingSource для данных
-    @Query("SELECT * FROM appointments WHERE  date_time = :selectedDate ORDER BY date_time ASC")
+    @Query("""
+   SELECT * FROM appointments
+WHERE date(date_time) = :selectedDate
+ORDER BY 
+    CASE 
+        WHEN datetime(date_time) >= datetime(:nowIso) THEN 0 -- Сначала будущие события
+        ELSE 1 -- Потом прошлые события
+    END,
+    datetime(date_time) ASC
+""")
     fun observeAppointmentsPaging(
         selectedDate: String,
+        nowIso: String
     ): PagingSource<Int, AppointmentWithDetailsDbModel>
 
 
@@ -72,5 +82,10 @@ interface VetClinicDao {
     @Update
     suspend fun updateAppointment(appointment: AppointmentWithDetailsDbModel)
 
+    @Transaction
+    suspend fun refresh(appointments:List<AppointmentWithDetailsDbModel>) {
+        clearAllAppointments()
+        insertAppointments(appointments)
+    }
 
 }

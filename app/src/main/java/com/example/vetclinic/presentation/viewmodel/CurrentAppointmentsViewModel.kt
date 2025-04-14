@@ -1,26 +1,5 @@
 package com.example.vetclinic.presentation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
-import com.example.vetclinic.domain.entities.Appointment
-import com.example.vetclinic.domain.entities.AppointmentStatus
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
-import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
 //
 //class CurrentAppointmentsViewModel @Inject constructor(
 //    private val getAppointmentUseCase: GetAppointmentUseCase,

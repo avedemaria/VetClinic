@@ -4,25 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentSettingsBinding
-import com.example.vetclinic.databinding.FragmentUserBinding
-import com.example.vetclinic.domain.entities.User
+import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.SettingsState
 import com.example.vetclinic.presentation.viewmodel.SettingsViewModel
-import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.google.android.material.button.MaterialButtonToggleGroup
 import jakarta.inject.Inject
 
 class SettingsFragment : Fragment() {
@@ -52,7 +48,7 @@ class SettingsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
@@ -66,11 +62,7 @@ class SettingsFragment : Fragment() {
         hideToggleGroup()
 
         binding.llDeleteAccount.setOnClickListener {
-            Toast.makeText(
-                requireContext(), "раздел находится в разработке",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+           showDeleteConfirmationDialog()
         }
 
         binding.btnBack.setOnClickListener {
@@ -113,6 +105,24 @@ class SettingsFragment : Fragment() {
         }
     }
 
+
+    private fun showDeleteConfirmationDialog() {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setTitle("Удаление аккаунта")
+            .setMessage(
+                "Вы уверены, что хотите удалить этот аккаунт?" +
+                        " Все данные будут удалены "
+            )
+            .setPositiveButton("Да") { _, _ ->
+                viewModel.deleteAccount()
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        dialogBuilder.create().show()
+
+    }
 
     private fun launchLoginFragment() {
         // TODO: переделать на NavHostFragment.findNavController(this).navigate(R.id.action_settingsFragment_to_loginFragment)

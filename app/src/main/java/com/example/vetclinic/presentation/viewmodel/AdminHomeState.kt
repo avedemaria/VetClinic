@@ -6,14 +6,14 @@ import java.time.LocalDate
 
 sealed class AdminHomeState {
 
-    object Empty : AdminHomeState()
-    object Loading : AdminHomeState()
+    data object Empty : AdminHomeState()
+    data object Loading : AdminHomeState()
     data class Error(val message: String) : AdminHomeState()
     data class Success(
         val appointments: PagingData<AppointmentWithDetails>,
         val selectedDate: String,
     ) : AdminHomeState()
 
-    object LoggedOut : AdminHomeState()
+    data object LoggedOut : AdminHomeState()
 
 }

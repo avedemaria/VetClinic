@@ -3,7 +3,7 @@ package com.example.vetclinic.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
 import jakarta.inject.Inject

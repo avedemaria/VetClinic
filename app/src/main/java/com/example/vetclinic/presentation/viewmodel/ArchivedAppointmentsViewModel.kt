@@ -1,19 +1,5 @@
 package com.example.vetclinic.presentation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
-import com.example.vetclinic.domain.entities.Appointment
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
-import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
-import com.example.vetclinic.toLocalDateOrNull
-import jakarta.inject.Inject
-import kotlinx.coroutines.launch
-import java.time.LocalDate
 //
 //class ArchivedAppointmentsViewModel @Inject constructor(
 //    private val getAppointmentUseCase: GetAppointmentUseCase,

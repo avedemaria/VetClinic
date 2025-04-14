@@ -13,7 +13,7 @@ import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.network.AppointmentQuery
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
-import com.example.vetclinic.domain.AppointmentRepository
+import com.example.vetclinic.domain.interfaces.AppointmentRepository
 import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.squareup.moshi.Moshi
@@ -60,9 +60,11 @@ class AppointmentRepositoryImpl @Inject constructor(
         Log.d(TAG, "Starting to collect changes from Supabase")
         changeFlow
             .retry { e ->
-            e is java.net.SocketException || e is java.io.IOException }
+                e is java.net.SocketException || e is java.io.IOException
+            }
             .catch { e ->
-            Log.e(TAG, "Error in WebSocket flow after retry: ${e.message}") }
+                Log.e(TAG, "Error in WebSocket flow after retry: ${e.message}")
+            }
             .collect { updatedValue ->
                 val updatedRecord = updatedValue.record.toString()
                 Log.d(TAG, "updated value^ $updatedRecord")
@@ -157,18 +159,20 @@ class AppointmentRepositoryImpl @Inject constructor(
 
 
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getAppointmentsByDate(date: String): Flow<PagingData<AppointmentWithDetails>> {
+    override suspend fun getAppointmentsByDate(
+        date: String,
+        nowIso: String,
+    ): Flow<PagingData<AppointmentWithDetails>> {
         Log.d(TAG, "Getting appointments for date: $date")
-        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
+        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date, nowIso) }
 
         val pager = Pager(
             config = PagingConfig(pageSize = 6),
             remoteMediator = AppointmentRemoteMediator(
                 selectedDate = date,
-                db = db,
-                vetClinicDao = vetClinicDao,
                 supabaseApiService = supabaseApiService,
-                appointmentMapper = appointmentMapper
+                appointmentMapper = appointmentMapper,
+                vetClinicDao = vetClinicDao
             ),
             pagingSourceFactory = pagingSourceFactory
         )

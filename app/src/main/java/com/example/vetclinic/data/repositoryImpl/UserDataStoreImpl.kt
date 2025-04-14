@@ -5,16 +5,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.di.qualifiers.UserPrefs
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 
 @Singleton
-class UserDataStoreImpl @Inject constructor(private val dataStore: DataStore<Preferences>) :
+class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: DataStore<Preferences>) :
     UserDataStore {
 
 

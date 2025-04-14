@@ -1,6 +1,6 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.TimeSlotsRepository
+import com.example.vetclinic.domain.interfaces.TimeSlotsRepository
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import jakarta.inject.Inject
 

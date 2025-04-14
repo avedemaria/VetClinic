@@ -153,6 +153,10 @@ interface SupabaseApiService {
     @POST("rest/v1/rpc/get_full_appointments")
     suspend fun getAppointmentWithDetails(@Body queryData:AppointmentQuery):
             Response<List<AppointmentWithDetailsDto>>
+
+    @POST("rest/v1/rpc/delete_user")
+    suspend fun deleteUser(): Response<Unit>
+
 }
 
 

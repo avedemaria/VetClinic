@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.domain.usecases.AddUserUseCase
 import com.example.vetclinic.domain.authFeature.RegisterUserUseCase
@@ -18,12 +18,6 @@ import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 

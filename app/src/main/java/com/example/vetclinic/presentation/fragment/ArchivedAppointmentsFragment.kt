@@ -151,21 +151,8 @@ class ArchivedAppointmentsFragment : Fragment() {
                             val selectedDate = state.selectedDate
                             val appointments = state.appointments
 
-
                             val filteredAppointments =
-                                appointments.filter { it.isArchived }.filter { appointment ->
-                                    val appointmentDate =
-                                        appointment.dateTime.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss")
-                                    if (appointmentDate != null && selectedDate != null) {
-                                        // Show appointments from the selected date
-                                        appointmentDate.isEqual(selectedDate)
-                                    } else {
-                                        // If date parsing fails or no date selected, show everything
-                                        true
-                                    }
-                                }.sortedByDescending {
-                                    it.dateTime
-                                }
+                                filterAppointments(appointments, selectedDate)
 
                             if (filteredAppointments.isEmpty()) {
                                 binding.rvArchivedAppointments.visibility = View.GONE
@@ -185,6 +172,23 @@ class ArchivedAppointmentsFragment : Fragment() {
         }
     }
 
+
+    private fun filterAppointments(
+        appointments: List<AppointmentWithDetails>,
+        selectedDate: LocalDate?,
+    ): List<AppointmentWithDetails> {
+        return appointments.filter { it.isArchived }.filter { appointment ->
+            val appointmentDate =
+                appointment.dateTime.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss")
+            if (appointmentDate != null && selectedDate != null) {
+                appointmentDate.isEqual(selectedDate)
+            } else {
+                true
+            }
+        }.sortedByDescending {
+            it.dateTime
+        }
+    }
 
 
     private fun showDatePickerDialog() {

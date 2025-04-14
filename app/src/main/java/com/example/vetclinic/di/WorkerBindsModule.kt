@@ -1,9 +1,10 @@
 package com.example.vetclinic.di
 
 import androidx.work.WorkerFactory
-import com.example.vetclinic.data.AppointmentReminderWorker
-import com.example.vetclinic.data.AppointmentReminderWorkerFactory
-import com.example.vetclinic.data.ChildWorkerFactory
+import com.example.vetclinic.data.workers.AppointmentReminderWorker
+import com.example.vetclinic.data.workers.AppointmentReminderWorkerFactory
+import com.example.vetclinic.data.workers.ChildWorkerFactory
+import com.example.vetclinic.di.keys.WorkerKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

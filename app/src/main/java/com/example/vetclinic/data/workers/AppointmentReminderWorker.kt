@@ -1,4 +1,4 @@
-package com.example.vetclinic.data
+package com.example.vetclinic.data.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

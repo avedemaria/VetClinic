@@ -1,6 +1,5 @@
 package com.example.vetclinic.data.network
 
-import android.util.Log
 import com.example.vetclinic.BuildConfig
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -15,6 +14,13 @@ object SupabaseApiFactory {
     private const val BASE_URL = BuildConfig.SUPABASE_URL
     private const val API_KEY = BuildConfig.SUPABASE_KEY
 
+//    private var userDataStore: UserDataStore? = null
+//
+//
+//    fun init(userDataStore: UserDataStore) {
+//        SupabaseApiFactory.userDataStore = userDataStore
+//    }
+
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level =
@@ -23,6 +29,7 @@ object SupabaseApiFactory {
     }
 
     private val authInterceptor = Interceptor { chain ->
+//        val token = runBlocking { userDataStore?.getAccessToken() }
         val original = chain.request()
         val request = original.newBuilder()
             .addHeader("apikey", API_KEY)
@@ -55,6 +62,7 @@ object SupabaseApiFactory {
             .build()
     }
 
-    val apiService = retrofit.create(SupabaseApiService::class.java)
+    val apiService: SupabaseApiService = retrofit.create(SupabaseApiService::class.java)
+
 
 }

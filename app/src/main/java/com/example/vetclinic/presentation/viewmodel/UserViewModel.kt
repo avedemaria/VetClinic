@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import com.example.vetclinic.domain.usecases.UpdateUserUseCase

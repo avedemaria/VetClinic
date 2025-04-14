@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain
+package com.example.vetclinic.domain.interfaces
 
 import com.example.vetclinic.domain.entities.Department
 import com.example.vetclinic.domain.entities.Doctor
@@ -21,6 +21,8 @@ interface Repository {
     suspend fun resetPasswordWithEmail(email: String): Result<Unit>
 
     suspend fun updatePassword(newPassword: String, token: String): Result<Unit>
+
+    suspend fun deleteUserAccount (): Result<Unit>
 
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 

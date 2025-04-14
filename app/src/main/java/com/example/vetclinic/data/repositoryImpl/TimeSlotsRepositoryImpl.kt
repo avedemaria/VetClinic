@@ -5,7 +5,7 @@ import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.domain.TimeSlotsRepository
+import com.example.vetclinic.domain.interfaces.TimeSlotsRepository
 import com.example.vetclinic.domain.entities.DayWithTimeSlots
 import jakarta.inject.Inject
 import java.time.LocalDate

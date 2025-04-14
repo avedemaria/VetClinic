@@ -1,8 +1,5 @@
 package com.example.vetclinic.presentation.fragment
 
-import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,32 +9,17 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
-import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.databinding.FragmentMainBinding
-import com.example.vetclinic.domain.UserDataStore
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.HomeState
-import com.example.vetclinic.presentation.viewmodel.HomeViewModel
 import com.example.vetclinic.presentation.viewmodel.MainState
 import com.example.vetclinic.presentation.viewmodel.MainViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import jakarta.inject.Inject
-import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {

@@ -1,14 +1,10 @@
 package com.example.vetclinic.domain.usecases
 
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
-import androidx.paging.cachedIn
-import com.example.vetclinic.domain.AppointmentRepository
+import com.example.vetclinic.domain.interfaces.AppointmentRepository
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.stateIn
-import java.time.LocalDate
 
 class GetAppointmentUseCase @Inject constructor(private val repository: AppointmentRepository) {
 
@@ -27,11 +23,14 @@ class GetAppointmentUseCase @Inject constructor(private val repository: Appointm
 //        return repository.getAppointmentsByDate(date, offset, limit)
 //    }
 
-    suspend fun getAppointmentsByDate(selectedDate: String): Flow<PagingData<AppointmentWithDetails>> {
-        return repository.getAppointmentsByDate(selectedDate)
+    suspend fun getAppointmentsByDate(
+        selectedDate: String,
+        nowIso: String,
+    ): Flow<PagingData<AppointmentWithDetails>> {
+        return repository.getAppointmentsByDate(selectedDate, nowIso)
     }
 
-   fun observeAppointmentsInRoomByUserId(userId: String): Flow<List<AppointmentWithDetails>> {
+    fun observeAppointmentsInRoomByUserId(userId: String): Flow<List<AppointmentWithDetails>> {
         return repository.observeAppointmentsFromRoom(userId)
     }
 }

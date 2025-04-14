@@ -12,6 +12,8 @@ import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.network.SupabaseApiFactory
 import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.di.qualifiers.DialogPrefs
+import com.example.vetclinic.di.qualifiers.UserPrefs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -83,12 +85,21 @@ class DataModule {
 
     @Provides
     @Singleton
+    @UserPrefs
     fun provideUserDataStore(application: Application): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
             produceFile = { application.preferencesDataStoreFile("user_prefs") }
         )
     }
 
+    @Provides
+    @Singleton
+    @DialogPrefs
+    fun provideDialogDataStore(application: Application): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = {application.preferencesDataStoreFile("dialog_prefs")}
+        )
+    }
 
 //
 //    @Provides

@@ -1,13 +1,11 @@
 package com.example.vetclinic.presentation.viewmodel
 
 import android.util.Log
-import androidx.datastore.dataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.DialogDataStore
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.entities.Pet
 import com.example.vetclinic.domain.entities.User
 import com.example.vetclinic.domain.usecases.AppointmentReminderUseCase
@@ -27,7 +25,7 @@ class MainViewModel @Inject constructor(
     private val appointmentReminderUseCase: AppointmentReminderUseCase,
     private val userDataStore: UserDataStore,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
 
     private val _mainState = MutableLiveData<MainState>()

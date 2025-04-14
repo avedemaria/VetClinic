@@ -5,16 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.UserDataStore
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.GetPetsUseCase
 import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LogInUserUseCase,
@@ -58,7 +58,9 @@ class LoginViewModel @Inject constructor(
 
                 userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken)
 
-                Log.d(TAG, "Saving userId: ${it.user?.id}")
+                Log.d(TAG, "Saving userId: ${it.user?.id}, token: ${it.accessToken}")
+
+
                 it.user?.id?.let { userId ->
                     val userResult = getUserUseCase.getUserFromSupabaseDb(userId)
 
@@ -74,7 +76,8 @@ class LoginViewModel @Inject constructor(
 
                             ADMIN -> {
                                 getAppointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString()
+                                    LocalDate.now().toString(),
+                                    LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                                 )
                             }
 
