@@ -3,7 +3,7 @@ package com.example.vetclinic.di
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.di.keys.ViewModelKey
 import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
-import com.example.vetclinic.presentation.viewmodel.AdminHomeViewModel
+import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeViewModel
 import com.example.vetclinic.presentation.viewmodel.AppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
 import com.example.vetclinic.presentation.viewmodel.DoctorViewModel

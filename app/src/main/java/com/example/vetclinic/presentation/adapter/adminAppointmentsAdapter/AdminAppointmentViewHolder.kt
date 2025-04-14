@@ -73,7 +73,7 @@ class AdminAppointmentViewHolder(
                 }
             }
 
-
+            ivBell.isSelected = appointment.isConfirmed
 
             ivBell.tag = appointment
 

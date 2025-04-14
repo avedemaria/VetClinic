@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragment.CurrentAppointmentsFragment">
 
+
     <LinearLayout
         android:id="@+id/appointmentContent"
         android:layout_width="match_parent"
@@ -16,31 +17,31 @@
             android:id="@+id/llButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="5"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="5">
+
             <ImageButton
                 android:id="@+id/btnCalendar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/button_calendar"
                 android:padding="8dp"
                 android:src="@drawable/baseline_calendar_month_24" />
 
 
-
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="false"
+                android:layout_margin="12dp"
                 android:layout_weight="4"
-                android:contentDescription="@string/disabled_empty_button"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:backgroundTint="@color/dark_grey"
-                android:padding="8dp"
-                android:layout_margin="12dp"/>
+                android:clickable="false"
+                android:contentDescription="@string/disabled_empty_button"
+                android:padding="8dp" />
 
 
             <ImageButton
@@ -48,28 +49,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:src="@drawable/baseline_exit_to_app_24"
+                android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/button_admin_exit"
-                android:layout_weight="1"
-                android:padding="8dp"/>
+                android:padding="8dp"
+                android:src="@drawable/baseline_exit_to_app_24" />
 
         </LinearLayout>
 
 
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_appointments"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/btnCalendar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_appointment_admin" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_appointments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnCalendar"
+                tools:listitem="@layout/item_appointment_admin" />
+
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     </LinearLayout>
 
@@ -78,17 +86,17 @@
         android:id="@+id/tvEmptyAppointments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
         android:padding="8dp"
         android:text="@string/appointments_are_not_available"
-        android:layout_gravity="center"
         android:textAlignment="center"
         android:textSize="16sp"
-        android:layout_marginBottom="60dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/btnCalendar"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/btnCalendar" />
 
     <ProgressBar
         android:id="@+id/progressBar"

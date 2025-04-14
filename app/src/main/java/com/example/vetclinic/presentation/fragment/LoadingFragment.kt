@@ -86,7 +86,7 @@ class LoadingFragment : Fragment() {
                             ADMIN -> if (userId.isNotEmpty()) {
                                 findNavController().navigate(
                                     LoadingFragmentDirections
-                                        .actionLoadingFragmentToAdminHomeFragment2()
+                                        .actionLoadingFragmentToAdminHomeFragment()
                                 )
                             } else {
                                 findNavController().navigate(

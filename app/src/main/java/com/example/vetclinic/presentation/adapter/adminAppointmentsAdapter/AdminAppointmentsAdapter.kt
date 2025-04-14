@@ -26,6 +26,15 @@ class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
     }
 
 
+    fun updateAppointment(updatedAppointment: AppointmentWithDetails) {
+        val position = snapshot().items.indexOfFirst {
+            it.id == updatedAppointment.id
+        }
+        if (position != -1) {
+            notifyItemChanged(position)
+        }
+    }
+
 
     override fun onBindViewHolder(holder: AdminAppointmentViewHolder, position: Int) {
         val appointment = getItem(position)

@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.di.AppComponent
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -75,6 +77,13 @@ class LoginFragment : Fragment() {
             true
 
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            })
 
 
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,

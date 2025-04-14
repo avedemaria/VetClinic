@@ -76,8 +76,7 @@ class LoginViewModel @Inject constructor(
 
                             ADMIN -> {
                                 getAppointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString(),
-                                    LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                                    LocalDate.now().toString()
                                 )
                             }
 

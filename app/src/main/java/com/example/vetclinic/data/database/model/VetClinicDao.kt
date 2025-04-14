@@ -60,21 +60,10 @@ interface VetClinicDao {
     fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
 
     // Это метод будет возвращать PagingSource для данных
-    @Query("""
-   SELECT * FROM appointments
-WHERE date(date_time) = :selectedDate
-ORDER BY 
-    CASE 
-        WHEN datetime(date_time) >= datetime(:nowIso) THEN 0 -- Сначала будущие события
-        ELSE 1 -- Потом прошлые события
-    END,
-    datetime(date_time) ASC
-""")
+    @Query("SELECT * FROM appointments WHERE  date(date_time) = :selectedDate")
     fun observeAppointmentsPaging(
         selectedDate: String,
-        nowIso: String
     ): PagingSource<Int, AppointmentWithDetailsDbModel>
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAppointments(appointments: List<AppointmentWithDetailsDbModel>)

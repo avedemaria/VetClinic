@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.mapper
 
+import android.util.Log
 import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
@@ -81,12 +82,13 @@ class AppointmentMapper @Inject constructor() {
             petName = dto.petName,
             userName = dto.userName,
             userLastName = dto.userLastName,
-            petAge = "0"
+            petAge = dto.petAge
 
         )
     }
 
-    fun appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(dto: AppointmentWithDetailsDto): AppointmentWithDetailsDbModel {
+    fun appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(dto: AppointmentWithDetailsDto):
+            AppointmentWithDetailsDbModel {
         return AppointmentWithDetailsDbModel(
             id = dto.id,
             userId = dto.userId,
@@ -103,7 +105,7 @@ class AppointmentMapper @Inject constructor() {
             petName = dto.petName,
             userName = dto.userName,
             userLastName = dto.userLastName,
-            petAge = "0"
+            petAge = dto.petAge
         )
     }
 
@@ -141,7 +143,7 @@ class AppointmentMapper @Inject constructor() {
             petName = dbModel.petName,
             userName = dbModel.userName,
             userLastName = dbModel.userLastName,
-            petAge = "0"
+            petAge = dbModel.petAge
         )
     }
 

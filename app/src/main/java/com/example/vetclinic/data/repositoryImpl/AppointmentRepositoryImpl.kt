@@ -160,14 +160,13 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getAppointmentsByDate(
-        date: String,
-        nowIso: String,
+        date: String
     ): Flow<PagingData<AppointmentWithDetails>> {
         Log.d(TAG, "Getting appointments for date: $date")
-        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date, nowIso) }
+        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
 
         val pager = Pager(
-            config = PagingConfig(pageSize = 6),
+            config = PagingConfig(pageSize = 15),
             remoteMediator = AppointmentRemoteMediator(
                 selectedDate = date,
                 supabaseApiService = supabaseApiService,

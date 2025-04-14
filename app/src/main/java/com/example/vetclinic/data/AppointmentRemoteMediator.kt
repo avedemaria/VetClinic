@@ -129,10 +129,11 @@ class AppointmentRemoteMediator @Inject constructor(
 
             val appointmentsDto = response.body().orEmpty()
             Log.d(TAG, "Fetched ${appointmentsDto.size} appointments from API")
-            val appointmentsDb = appointmentsDto.map {
+            val appointmentsDb = appointmentsDto.map { // 👈 лог 2
                 appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(it)
             }
             if (loadType == LoadType.REFRESH) {
+
                 vetClinicDao.refresh(appointmentsDb)
                 Log.d(
                     TAG, "clearing and " +

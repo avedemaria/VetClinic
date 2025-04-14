@@ -1,20 +1,25 @@
-package com.example.vetclinic.presentation.viewmodel
+package com.example.vetclinic.presentation.viewmodel.admin
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
+import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
+import com.example.vetclinic.presentation.viewmodel.PetUiState
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 class AdminHomeViewModel @Inject constructor(
@@ -27,15 +32,20 @@ class AdminHomeViewModel @Inject constructor(
     ) : ViewModel() {
 
     private val _adminState = MutableStateFlow<AdminHomeState>(AdminHomeState.Empty)
-    val adminState: MutableStateFlow<AdminHomeState> get() = _adminState
+    val adminState: StateFlow<AdminHomeState> get() = _adminState.asStateFlow()
+
+    private val _adminEvents = MutableSharedFlow<AdminHomeEvent>()
+    val adminEvents: SharedFlow<AdminHomeEvent> get() = _adminEvents.asSharedFlow()
 
     private var selectedDate: LocalDate? = null
     private var currentDate: LocalDate? = null
 
+    private var count = 0
 
     init {
         val today = LocalDate.now()
         currentDate = today
+        Log.d(TAG, "init ${++count}")
         getAppointmentsByDate(today)
     }
 
@@ -47,22 +57,22 @@ class AdminHomeViewModel @Inject constructor(
 
     fun setUpSelectedDate(date: LocalDate) {
         selectedDate = date
-//        getAppointmentsByDate(date)
+        getAppointmentsByDate(date)//status
     }
 
 
     private fun getAppointmentsByDate(date: LocalDate) {
-        _adminState.value = AdminHomeState.Loading
+        _adminState.value = AdminHomeState.Loading //reset(pagingdata) ->loading
         selectedDate = date
 
         val formattedDate = date.format(DateTimeFormatter.ISO_DATE)
-        val nowIso = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        Log.d(TAG, "Fetching appointments for date: $formattedDate")
         viewModelScope.launch {
             try {
-                getAppointmentUseCase.getAppointmentsByDate(formattedDate, nowIso)
+                getAppointmentUseCase.getAppointmentsByDate(formattedDate)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
-                        Log.d("getAppointmentsByDate", "Paging collected again!")
+                        Log.d("getAppointmentsByDate", "Paging collected again! $pagingData")
                         currentDate = date
                         _adminState.value = AdminHomeState.Success(pagingData, formattedDate)
                     }
@@ -74,50 +84,32 @@ class AdminHomeViewModel @Inject constructor(
     }
 
 
-//    fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
-//        _adminState.value = AdminHomeState.Loading
-//
-//        viewModelScope.launch {
-//            val date = LocalDate.now().toString()
-//            val result = updateAppointmentUseCase.updateAppointmentStatus(updatedAppointment)
-//            if (result.isSuccess) {
-//                getAppointmentsByDate(date)
-//            } else {
-//                _adminState.value =
-//                    AdminHomeState.Error(result.exceptionOrNull()?.message.toString())
-//            }
-//        }
-//
-//    }
+    fun refreshAppointments() {
+        currentDate?.let { getAppointmentsByDate(it) }
+    }
 
 
-    //    private fun getAppointmentsByDate(date: String) {
-//        _adminState.value = AdminHomeState.Loading
-//
-//        viewModelScope.launch {
-//            val result = getAppointmentUseCase.getAppointmentsByDate(date)
-//            if (result.isSuccess) {
-//                val appointments = result.getOrNull() ?: emptyList()
-//                _adminState.value = AdminHomeState.Success(appointments, null)
-//            }
-//        }
-//    }
-//
-//    fun getAppointmentsByDate(pageIndex: Int) {
-//        _adminState.value = AdminHomeState.Loading
-//
-//        val selectedDate = "2025-04-09 10:00:00"
-//        viewModelScope.launch {
-//            try {
-//                getAppointmentUseCase.getAppointmentsByDate(selectedDate)
-//
-//              _adminState.value = AdminHomeState.Success(pagingData, selectedDate)
-//
-//            } catch (e: Exception) {
-//                _adminState.value = AdminHomeState.Error("Ошибка загрузки: ${e.message}")
-//            }
-//        }
-//    }
+    fun toggleAppointmentStatus(appointmentWithDetails: AppointmentWithDetails) {
+        viewModelScope.launch {
+            try {
+                val newStatus = !appointmentWithDetails.isConfirmed  // Переключаем статус
+
+                val result = updateAppointmentUseCase.updateAppointmentStatus(
+                    appointmentWithDetails.copy(isConfirmed = newStatus)
+                )
+                if (result.isSuccess) {
+                    _adminEvents.emit(
+                        AdminHomeEvent.OnBellClicked(appointmentWithDetails.copy(isConfirmed = newStatus))
+                    )
+                } else {
+                    Log.d(TAG, "failed to update appointment status")
+                }
+            } catch (e: Exception) {
+                _adminState.value = AdminHomeState.Error("Возникла ошибка: ${e.message}")
+            }
+        }
+    }
+
 
     fun logOut() {
         _adminState.value = AdminHomeState.Loading
@@ -132,5 +124,10 @@ class AdminHomeViewModel @Inject constructor(
                 _adminState.value = AdminHomeState.Error(errorMessage)
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "AdminHomeViewModel"
     }
 }
