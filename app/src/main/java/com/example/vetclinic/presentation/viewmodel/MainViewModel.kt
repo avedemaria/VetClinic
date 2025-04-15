@@ -51,16 +51,17 @@ class MainViewModel @Inject constructor(
     private fun observeAppointmentsByUserId(userId: String) {
         getAppointmentUseCase.observeAppointmentsInRoomByUserId(userId)
             .onEach { appointments ->
-                if (appointments.isEmpty()) {
-                    Log.d(TAG, "No appointments found, skipping WorkManager")
+                val activeAppointments = appointments.filter { !it.isArchived }
+
+                if (activeAppointments.isEmpty()) {
+                    Log.d(TAG, "No active appointments, skipping WorkManager")
                     return@onEach
-                } else {
-                    // Если есть данные, вызываем метод для планирования напоминаний
-                    appointmentReminderUseCase.invoke(appointments)
                 }
+
+                Log.d(TAG, "Sending reminders for ${activeAppointments.size} active appointments")
+                appointmentReminderUseCase.invoke(activeAppointments)
             }
             .catch { e ->
-                // обработка ошибок
                 Log.e(TAG, "Error loading appointments: ${e.message}")
             }
             .launchIn(viewModelScope)
@@ -145,8 +146,6 @@ class MainViewModel @Inject constructor(
     private fun updateResultState() {
         _mainState.value = MainState.Result(storedUser, storedPets)
     }
-
-
 
 
     companion object {

@@ -219,12 +219,6 @@
                 android:text="@string/moscow_address_here" />
 
 
-            <Button
-                android:id="@+id/btnAdmin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Admin"
-                android:layout_gravity="center"/>
         </LinearLayout>
 
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vetclinic.data.SessionManager
 import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
@@ -19,10 +20,10 @@ import java.time.format.DateTimeFormatter
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LogInUserUseCase,
     private val userDataStore: UserDataStore,
-
     private val getUserUseCase: GetUserUseCase,
     private val getPetsUseCase: GetPetsUseCase,
     private val getAppointmentUseCase: GetAppointmentUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _loginState = MutableLiveData<LoginState>()
@@ -68,6 +69,9 @@ class LoginViewModel @Inject constructor(
                         userRole = userResult.getOrNull()?.role
                         Log.d(TAG, "saved user role: $userRole")
                         userDataStore.saveUserRole(userRole ?: "")
+
+
+                        sessionManager.onLogin(userRole ?: "")
 
                         when (userRole) {
                             USER -> {

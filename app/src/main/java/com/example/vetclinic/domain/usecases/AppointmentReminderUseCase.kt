@@ -8,7 +8,7 @@ class AppointmentReminderUseCase @Inject constructor(
     private val repository: ReminderRepository,
 ) {
 
-    operator fun invoke(appointments: List<AppointmentWithDetails>) {
+    suspend operator fun invoke(appointments: List<AppointmentWithDetails>) {
         repository.scheduleReminder(appointments)
     }
 }

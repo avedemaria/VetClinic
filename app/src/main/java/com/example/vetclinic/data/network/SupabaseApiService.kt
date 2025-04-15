@@ -31,18 +31,6 @@ interface SupabaseApiService {
             Response<List<UserDTO>>
 
     @GET("rest/v1/pets")
-    suspend fun getPetFromSupabaseDbById(@Query("pet_id") petId: String): Response<List<PetDto>>
-
-    @GET("rest/v1/services")
-    suspend fun getServiceFromSupabaseDbById(@Query("id") serviceId: String):
-            Response<List<ServiceDto>>
-
-    @GET("rest/v1/doctors")
-    suspend fun getDoctorFromSupabaseDbById(@Query("uid") doctorId: String):
-            Response<List<DoctorDto>>
-
-
-    @GET("rest/v1/pets")
     suspend fun getPetsFromSupabaseDb(@Query("user_id") userId: String):
             Response<List<PetDto>>
 
@@ -128,11 +116,6 @@ interface SupabaseApiService {
     @GET("rest/v1/time_slots")
     suspend fun getTimeSlotById(@Query("id") timeSlotId: String): List<TimeSlotDto>
 
-    @GET("rest/v1/appointments")
-    suspend fun getAppointmentsByUserId(
-        @Query("user_id") userId: String,
-        @Query("order") order: String = "date_time.asc",
-    ): Response<List<AppointmentDto>>
 
     @PATCH("rest/v1/appointments")
     suspend fun updateAppointmentStatus(
@@ -147,8 +130,6 @@ interface SupabaseApiService {
         @Query("limitx") limit: Int,
     ): Response<List<AppointmentWithDetailsDto>>
 
-    @POST("rest/v1/appointments")
-    suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
     @POST("rest/v1/rpc/get_full_appointments")
     suspend fun getAppointmentWithDetails(@Body queryData:AppointmentQuery):
@@ -156,6 +137,10 @@ interface SupabaseApiService {
 
     @POST("rest/v1/rpc/delete_user")
     suspend fun deleteUser(): Response<Unit>
+
+
+    @POST("rest/v1/appointments")
+    suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
 }
 

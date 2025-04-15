@@ -8,22 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.example.vetclinic.CustomDatePicker
 import com.example.vetclinic.databinding.FragmentPetRegistrationFormBinding
 import com.example.vetclinic.domain.entities.PetInputData
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.example.vetclinic.presentation.viewmodel.registration.RegistrationState
-import jakarta.inject.Inject
 
 
 class PetRegistrationForm : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    val viewModel: RegistrationViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
+
 
     private var _binding: FragmentPetRegistrationFormBinding? = null
     private val binding
@@ -68,21 +61,34 @@ class PetRegistrationForm : Fragment() {
             }
 
 
-        val petName = binding.etPetName.text.toString()
-        val petBirthday = binding.etBday.text.toString()
-        val petType = binding.autoPetType.text.toString()
-        val petGender = binding.autoPetGender.text.toString()
-        viewModel.updatePetInputInState(
-            PetInputData(
-                name = petName,
-                type = petType,
-                bDay = petBirthday,
-                gender = petGender
-            )
-        )
+//        val petName = binding.etPetName.text.toString()
+//        val petBirthday = binding.etBday.text.toString()
+//        val petType = binding.autoPetType.text.toString()
+//        val petGender = binding.autoPetGender.text.toString()
+//        viewModel.updatePetInputInState(
+//            PetInputData(
+//                name = petName,
+//                type = petType,
+//                bDay = petBirthday,
+//                gender = petGender
+//            )
+//        )
 
     }
 
+
+  fun collectPetInput(): PetInputData {
+      val petName = binding.etPetName.text.toString()
+      val petBirthday = binding.etBday.text.toString()
+      val petType = binding.autoPetType.text.toString()
+      val petGender = binding.autoPetGender.text.toString()
+         return PetInputData(
+              name = petName,
+              type = petType,
+              bDay = petBirthday,
+              gender = petGender
+          )
+  }
 
     private fun showDatePickerDialog() {
         CustomDatePicker(requireContext()) { selectedDate ->

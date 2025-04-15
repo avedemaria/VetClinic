@@ -17,9 +17,7 @@ import jakarta.inject.Inject
 
 class UserRegistrationForm : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    val viewModel: RegistrationViewModel by viewModels({ requireParentFragment() }) { viewModelFactory }
+
 
     private var _binding: FragmentUserRegistrationFormBinding? = null
     private val binding
@@ -49,18 +47,16 @@ class UserRegistrationForm : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
+    }
 
-        val userInput = UserInputData(
+    fun collectUserInput(): UserInputData {
+       return UserInputData(
             name = setUpInput(binding.etName).replaceFirstChar { it.uppercase() },
             lastName = setUpInput(binding.etLastName).replaceFirstChar { it.uppercase() },
             phone = setUpInput(binding.etPhoneNumber),
             email = setUpInput(binding.etEmail),
             password = setUpInput(binding.etPassword)
         )
-
-        viewModel.updateUserInputInState(userInput)
-
-
     }
 
 

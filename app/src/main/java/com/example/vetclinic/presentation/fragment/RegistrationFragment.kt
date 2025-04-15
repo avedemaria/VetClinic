@@ -10,23 +10,15 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.RegistrationAdapter
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.example.vetclinic.presentation.viewmodel.registration.RegistrationState
 import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
-import com.example.vetclinic.presentation.viewmodel.registration.RegistrationEvent
-import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 
 class RegistrationFragment : Fragment() {
@@ -80,14 +72,17 @@ class RegistrationFragment : Fragment() {
         setUpSmoothPaging()
 
         binding.btnCreateAccount.setOnClickListener {
+            val userFragment = childFragmentManager.findFragmentByTag("f0") as? UserRegistrationForm
+            val petFragment = childFragmentManager.findFragmentByTag("f1") as? PetRegistrationForm
+
+            val userData = userFragment?.collectUserInput()
+            val petData = petFragment?.collectPetInput()
+
+            if (userData != null && petData != null) {
+                viewModel.updateFormState(userData, petData)
+            }
+
             viewModel.registerUser()
-        }
-
-
-
-        binding.btnCreateAccount.setOnLongClickListener {
-//            generateMockForm()
-            true
         }
 
 
@@ -156,9 +151,9 @@ class RegistrationFragment : Fragment() {
     private fun updateButtons(position: Int) {
         val totalPages = 2
         binding.llNextForm.isVisible =
-            position < totalPages - 1  // Show next button if not on last page
+            position < totalPages - 1
         binding.llPreviousForm.isVisible =
-            position > 0  // Show previous button if not on first page
+            position > 0
     }
 
 

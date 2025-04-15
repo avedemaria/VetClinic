@@ -9,6 +9,7 @@ import androidx.work.workDataOf
 import com.example.vetclinic.data.workers.AppointmentReminderWorker
 import com.example.vetclinic.domain.interfaces.ReminderRepository
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.interfaces.UserDataStore
 import jakarta.inject.Inject
 import java.time.Duration
 import java.time.LocalDateTime
@@ -17,12 +18,20 @@ import java.util.concurrent.TimeUnit
 
 class ReminderRepositoryImpl @Inject constructor(
     private val context: Context,
+    private val userDataStore:UserDataStore
 ) : ReminderRepository {
 
-    override fun scheduleReminder(appointments: List<AppointmentWithDetails>) {
+    override suspend fun scheduleReminder(appointments: List<AppointmentWithDetails>) {
 
         val now = LocalDateTime.now()
 
+
+        val userRole = userDataStore.getUserRole()
+
+        if (userRole == ADMIN) {
+            Log.d("ReminderRepository", "User is admin — skipping scheduling reminders")
+            return
+        }
 
         appointments.forEach { appointment ->
 
@@ -41,6 +50,7 @@ class ReminderRepositoryImpl @Inject constructor(
                             APPOINTMENT_ID to appointment.id
                         )
                     )
+                    .addTag("reminders")
                     .build()
 
                 WorkManager.getInstance(context).enqueueUniqueWork(
@@ -64,6 +74,7 @@ class ReminderRepositoryImpl @Inject constructor(
         private const val SERVICE_NAME = "serviceName"
         private const val PET_NANE = "petName"
         private const val APPOINTMENT_ID = "appointmentId"
+        private const val ADMIN = "admin"
 
     }
 }

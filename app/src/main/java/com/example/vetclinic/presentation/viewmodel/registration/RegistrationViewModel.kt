@@ -19,6 +19,9 @@ import com.example.vetclinic.domain.usecases.GetUserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class RegistrationViewModel @Inject constructor(
@@ -39,7 +42,6 @@ class RegistrationViewModel @Inject constructor(
 //
 //    private val _registrationEvent = MutableSharedFlow<RegistrationEvent>()
 //    val registrationEvent: SharedFlow<RegistrationEvent> = _registrationEvent.asSharedFlow()
-
 
 
     fun registerUser() {
@@ -83,7 +85,8 @@ class RegistrationViewModel @Inject constructor(
                         petData!!.name,
                         petData.bDay,
                         petData.type,
-                        petData.gender
+                        petData.gender,
+                        petAge = calculatePetAge(petData.bDay)
                     )
 
                     userDataStore.saveUserSession(userId, supabaseUser.accessToken)
@@ -121,31 +124,24 @@ class RegistrationViewModel @Inject constructor(
 
     }
 
+    fun updateFormState(userData: UserInputData?, petData: PetInputData?) {
+        val currentState = _registrationState.value as? RegistrationState.Result
 
-    fun updateUserInputInState(userInput: UserInputData) {
-        val currentState = _registrationState.value
-        if (currentState is RegistrationState.Result) {
-            _registrationState.value = currentState.copy(userdata = userInput)
-        } else {
-            _registrationState.value = RegistrationState.Result(userdata = userInput)
-        }
+        val updatedUser = userData ?: currentState?.userdata
+        val updatedPet = petData ?: currentState?.petData
+
+        _registrationState.value = RegistrationState.Result(
+            userdata = updatedUser,
+            petData = updatedPet
+        )
     }
-
-    fun updatePetInputInState(petInput: PetInputData) {
-        val currentState = _registrationState.value
-        if (currentState is RegistrationState.Result) {
-            _registrationState.value = currentState.copy(petData = petInput)
-        } else {
-            _registrationState.value = RegistrationState.Result(petData = petInput)
-        }
-        }
-
 
     private fun validateInputs(user: UserInputData?, pet: PetInputData?): String? {
         Log.d(TAG, "User data: $user, Pet data: $pet")
         if (user == null || pet == null || user.name.isBlank() || user.lastName.isBlank() ||
             user.phone.isBlank() || user.email.isBlank() || user.password.isBlank() ||
-            pet.name.isBlank() || pet.type.isBlank() || pet.gender.isBlank() || pet.bDay.isBlank()) {
+            pet.name.isBlank() || pet.type.isBlank() || pet.gender.isBlank() || pet.bDay.isBlank()
+        ) {
             return "Все поля должны быть заполнены"
         }
 
@@ -153,17 +149,60 @@ class RegistrationViewModel @Inject constructor(
         val phonePattern = "^(?:\\+7|7|8)(\\d{10})$".toRegex()
 
         return when {
-
             !phonePattern.matches(user.phone) -> "Введите корректный номер телефона"
-
 
             !Patterns.EMAIL_ADDRESS.matcher(user.email).matches() -> "Введите корректный email"
 
-
             user.password.length < 6 -> "Пароль должен быть не менее 6 символов"
-
             else -> null
         }
+    }
+
+
+    private fun calculatePetAge(petBday: String): String {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val birthDate = LocalDate.parse(petBday, formatter)
+            val currentDate = LocalDate.now()
+            val period = Period.between(birthDate, currentDate)
+
+            val year = period.years
+            val month = period.months
+
+
+            val yearText = if (year > 0) {
+                "$year ${getYearSuffix(year)}"
+            } else {
+                ""
+            }
+
+            val monthText = if (month > 0 || year == 0) {
+                "$month ${getMonthSuffix(month)}"
+            } else {
+                ""
+            }
+
+            listOf(yearText, monthText).filter {
+                it.isNotEmpty()
+            }.joinToString(" ")
+
+        } catch (e: Exception) {
+            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
+            "0 мес."
+        }
+    }
+
+
+    private fun getYearSuffix(years: Int): String {
+        return when {
+            years % 10 == 1 && years % 100 != 11 -> "год"
+            years % 10 in 2..4 && (years % 100 !in 12..14) -> "года"
+            else -> "лет"
+        }
+    }
+
+    private fun getMonthSuffix(month: Int): String {
+        return "мес."
     }
 
 

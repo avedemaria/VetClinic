@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.vetclinic.data.SessionManager
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.interfaces.UserDataStore
@@ -26,7 +27,7 @@ class AdminHomeViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val loginUseCase: LogInUserUseCase,
-    private val userDataStore: UserDataStore,
+    private val userDataStore: UserDataStore
 
 
     ) : ViewModel() {
@@ -40,12 +41,11 @@ class AdminHomeViewModel @Inject constructor(
     private var selectedDate: LocalDate? = null
     private var currentDate: LocalDate? = null
 
-    private var count = 0
+
 
     init {
         val today = LocalDate.now()
         currentDate = today
-        Log.d(TAG, "init ${++count}")
         getAppointmentsByDate(today)
     }
 
@@ -72,7 +72,7 @@ class AdminHomeViewModel @Inject constructor(
                 getAppointmentUseCase.getAppointmentsByDate(formattedDate)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
-                        Log.d("getAppointmentsByDate", "Paging collected again! $pagingData")
+                        Log.d(TAG, "Paging collected again! $pagingData")
                         currentDate = date
                         _adminState.value = AdminHomeState.Success(pagingData, formattedDate)
                     }

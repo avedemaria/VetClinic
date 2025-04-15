@@ -25,6 +25,7 @@ import com.example.vetclinic.presentation.viewmodel.UserField
 import com.example.vetclinic.presentation.viewmodel.UserUiState
 import com.example.vetclinic.presentation.viewmodel.UserViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -49,7 +50,7 @@ class UserFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentUserBinding.inflate(inflater, container, false)
         return binding.root
@@ -135,6 +136,10 @@ class UserFragment : Fragment() {
                 replace(R.id.fragmentContainer, SettingsFragment())
                 addToBackStack(null)
                 commit()
+            }
+
+            binding.llSettings.setOnClickListener {
+                Snackbar.make(binding.root, "В разработке", Snackbar.LENGTH_SHORT).show()
             }
 
         }

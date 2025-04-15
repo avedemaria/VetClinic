@@ -4,5 +4,5 @@ import com.example.vetclinic.domain.entities.AppointmentWithDetails
 
 interface ReminderRepository {
 
-    fun scheduleReminder(appointments: List<AppointmentWithDetails>)
+   suspend fun scheduleReminder(appointments: List<AppointmentWithDetails>)
 }

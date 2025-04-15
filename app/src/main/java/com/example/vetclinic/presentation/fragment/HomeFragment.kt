@@ -84,11 +84,6 @@ class HomeFragment : Fragment() {
 
         viewModel.getUserIdAndLoadUserName()
 
-//
-//        binding.btnAdmin.setOnClickListener {
-//           viewModel.getAppointmentsByDate(0)
-//        }
-
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
