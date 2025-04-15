@@ -75,6 +75,7 @@ class AdminAppointmentViewHolder(
 
 
             binding.root.alpha = if (appointment.isArchived) ARCHIVED_ALPHA else CURRENT_ALPHA
+            Log.d("BindDebug", "${binding.root.alpha}")
 
             binding.ivBell.isSelected = appointment.isConfirmed
             ivBell.tag = appointment
