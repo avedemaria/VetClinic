@@ -35,7 +35,6 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val supabaseApiService: SupabaseApiService,
     private val supabaseClient: SupabaseClient,
     private val vetClinicDao: VetClinicDao,
-    private val db: VetClinicDatabase,
     private val appointmentMapper: AppointmentMapper,
     private val moshi: Moshi,
 ) : AppointmentRepository {

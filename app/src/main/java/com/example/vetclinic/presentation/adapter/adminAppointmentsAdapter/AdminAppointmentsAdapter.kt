@@ -13,28 +13,15 @@ class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
     ) {
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdminAppointmentViewHolder {
-        Log.d(TAG, "Creating viewholder")
-        return AdminAppointmentViewHolder(
-            ItemAppointmentAdminBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ), listener
-        )
-    }
-
-
-    fun updateAppointment(updatedAppointment: AppointmentWithDetails) {
-        val position = snapshot().items.indexOfFirst {
-            it.id == updatedAppointment.id
-        }
-        if (position != -1) {
-            notifyItemChanged(position)
-        }
-    }
-
+              return  AdminAppointmentViewHolder(
+                    ItemAppointmentAdminBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ), listener
+                )
+            }
 
     override fun onBindViewHolder(holder: AdminAppointmentViewHolder, position: Int) {
         val appointment = getItem(position)
@@ -47,7 +34,7 @@ class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
     }
 
 
-  companion object {
-      private const val TAG = "AdminAppointmentsAdapter"
-  }
+    companion object {
+        private const val TAG = "AdminAppointmentsAdapter"
+    }
 }

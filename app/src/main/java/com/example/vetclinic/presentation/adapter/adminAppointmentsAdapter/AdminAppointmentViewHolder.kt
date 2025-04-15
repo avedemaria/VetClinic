@@ -1,15 +1,14 @@
 package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.ItemAppointmentAdminBinding
 import com.example.vetclinic.domain.entities.AppointmentStatus
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.entities.Doctor
 import com.example.vetclinic.extractTime
-import kotlinx.serialization.StringFormat
 
 class AdminAppointmentViewHolder(
     private val binding: ItemAppointmentAdminBinding,
@@ -21,9 +20,7 @@ class AdminAppointmentViewHolder(
 
     init {
         binding.ivBell.setOnLongClickListener { bellView ->
-//            val newState = binding.ivBell.isSelected == !binding.ivBell.isSelected
             val appointment = bellView.tag as? AppointmentWithDetails
-            
             appointment?.let {listener.onBellClicked(it) }
             true
         }
@@ -33,6 +30,9 @@ class AdminAppointmentViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun bind(appointment: AppointmentWithDetails) {
+
+        Log.d("BindDebug", "Item ${appointment.id}, archived: ${appointment.isArchived}")
+
         with(binding) {
             tvPetName.text = appointment.petName
             tvOwnerName.text = appointment.userName
@@ -73,16 +73,11 @@ class AdminAppointmentViewHolder(
                 }
             }
 
-            ivBell.isSelected = appointment.isConfirmed
 
+            binding.root.alpha = if (appointment.isArchived) ARCHIVED_ALPHA else CURRENT_ALPHA
+
+            binding.ivBell.isSelected = appointment.isConfirmed
             ivBell.tag = appointment
-
-
-            if (appointment.isArchived) {
-                root.alpha = ARCHIVED_ALPHA
-            } else {
-               root.alpha = CURRENT_ALPHA
-            }
 
         }
     }

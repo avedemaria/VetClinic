@@ -99,7 +99,7 @@ class AdminHomeFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.adminState.collect { state ->
                     Log.d(TAG, "Received state: $state")
                     when (state) {
@@ -131,14 +131,6 @@ class AdminHomeFragment : Fragment() {
                 }
             }
         }
-
-        viewModel.adminEvents.flowWithLifecycle(lifecycle).onEach { event ->
-            when (event) {
-                is AdminHomeEvent.OnBellClicked -> {
-                    appointmentsAdapter.updateAppointment(event.appointment)
-                }
-            }
-        }.launchIn(lifecycleScope)
 
     }
 
@@ -248,7 +240,7 @@ class AdminHomeFragment : Fragment() {
         DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
-                val selectedDate = LocalDate.of(year, month+1, day)
+                val selectedDate = LocalDate.of(year, month + 1, day)
                 viewModel.setUpSelectedDate(selectedDate)
                 Log.d(TAG, "selectedDate: $selectedDate")
             },
