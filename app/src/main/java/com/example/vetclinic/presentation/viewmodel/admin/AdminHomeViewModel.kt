@@ -69,6 +69,7 @@ class AdminHomeViewModel @Inject constructor(
     fun setUpSelectedDate(date: LocalDate) {
         selectedDate = date
         getAppointmentsByDate(date)//status
+        Log.d(TAG, "setUpselecetedDate")
     }
 
 
@@ -100,6 +101,7 @@ class AdminHomeViewModel @Inject constructor(
 
     fun refreshAppointments() {
         currentDate?.let { getAppointmentsByDate(it) }
+        Log.d(TAG, "refresh appointments")
     }
 
 

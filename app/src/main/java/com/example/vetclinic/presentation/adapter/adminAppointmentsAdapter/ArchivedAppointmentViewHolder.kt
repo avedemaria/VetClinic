@@ -1,31 +1,21 @@
 package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
-import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.databinding.ItemAppointmentAdminBinding
+import com.example.vetclinic.databinding.ItemArchivedAppointmentAdminBinding
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 
-class AdminAppointmentViewHolder(
-    private val binding: ItemAppointmentAdminBinding,
-    private val listener: OnBellClickListener,
+class ArchivedAppointmentViewHolder(
+    private val binding: ItemArchivedAppointmentAdminBinding,
+    private val listener: OnBellClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-
     init {
-        val adapter = ActiveAppointmentBindingAdapter(binding)
+        val adapter = ArchivedAppointmentBindingAdapter(binding)
         AdminAppointmentBindingHelper.setupListeners(adapter, listener)
-
     }
 
-    @SuppressLint("SetTextI18n")
     fun bind(appointment: AppointmentWithDetails) {
-
-        val adapter = ActiveAppointmentBindingAdapter(binding)
+        val adapter = ArchivedAppointmentBindingAdapter(binding)
         AdminAppointmentBindingHelper.bind(adapter, appointment)
-
-        }
     }
-
-
-
-
+}

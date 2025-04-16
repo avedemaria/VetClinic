@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 

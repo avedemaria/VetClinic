@@ -8,8 +8,6 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-<!--    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>-->
-
     <application
         android:name=".presentation.VetClinicApplication"
         android:allowBackup="true"
@@ -39,12 +37,6 @@
                 <data android:scheme="vetclinic" android:host="reset-password" />
             </intent-filter>
         </activity>
-<!--        <provider-->
-<!--            android:authorities="androidx.work.WorkManagerInitializer"-->
-<!--            android:name="androidx.startup.InitializationProvider"-->
-<!--            tools:replace="android:authorities"-->
-<!--            tools:node="remove"-->
-<!--            />-->
     </application>
 
 </manifest>

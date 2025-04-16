@@ -11,23 +11,28 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAdminHomeBinding
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeState
 import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeViewModel
+import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeEvent
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
@@ -50,9 +55,9 @@ class AdminHomeFragment : Fragment() {
         get() = _binding ?: throw RuntimeException(
             "FragmentAdminHomeBinding is null"
         )
-
-    private lateinit var appointmentsAdapter: AdminAppointmentsAdapter
     private lateinit var observingJob: Job
+    private lateinit var appointmentsAdapter: AdminAppointmentsAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,7 +75,7 @@ class AdminHomeFragment : Fragment() {
         component.inject(this)
 
         setUpAdapter()
-        observingJob = observeViewModel()
+       observingJob = observeViewModel()
 
         binding.btnAdminLogOut.setOnClickListener {
             viewModel.logOut()
@@ -97,24 +102,19 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun observeViewModel(): Job {
-        return viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+       return viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.adminState.collect { state ->
                     Log.d(TAG, "Received state: $state")
-                    when (state) {
+                   when (state) {
                         is AdminHomeState.Empty -> handleEmptyState()
 
                         is AdminHomeState.Error -> {
                             handeErrorState(state)
                         }
 
-                        is AdminHomeState.Loading -> {
+                        is AdminHomeState.Loading ->
                             handleLoadingState()
-                        }
-
-                        is AdminHomeState.LoggedOut -> {
-                            launchLoginFragment()
-                        }
 
                         is AdminHomeState.Success -> {
 
@@ -127,13 +127,14 @@ class AdminHomeFragment : Fragment() {
                             handleSuccessState(state)
                         }
 
-
+                        is AdminHomeState.LoggedOut -> {
+                            launchLoginFragment()
+                        }
 //                        AdminHomeState.Reset ->{} //paging data reseting -->swipe refresh
                     }
                 }
             }
         }
-
 
     }
 
@@ -147,7 +148,8 @@ class AdminHomeFragment : Fragment() {
 
         binding.rvAppointments.apply {
             layoutManager = LinearLayoutManager(
-                requireContext(), RecyclerView.VERTICAL, false
+                requireContext(), RecyclerView.VERTICAL,
+                false
             )
             Log.d(TAG, "Setting up adapter")
             adapter = appointmentsAdapter
@@ -227,15 +229,17 @@ class AdminHomeFragment : Fragment() {
         val currentDate = viewModel.getCurrentDate()
 
         if (currentDate == null) {
-//            Snackbar.make(binding.root, "Нет доступных приемов", Snackbar.LENGTH_SHORT).show()
             Toast.makeText(
-                requireContext(), "No appointments found", Toast.LENGTH_SHORT
+                requireContext(), "No appointments found",
+                Toast.LENGTH_SHORT
             ).show()
             return
         }
 
         calendar.set(
-            currentDate.year, currentDate.monthValue - 1, currentDate.dayOfMonth
+            currentDate.year,
+            currentDate.monthValue - 1,
+            currentDate.dayOfMonth
         )
 
         DatePickerDialog(
