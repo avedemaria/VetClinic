@@ -163,7 +163,8 @@ class CurrentAppointmentsFragment : Fragment() {
                             binding.currentAppointmentContent.isEnabled = true
 
                             val appointments = state.appointments
-                            val filteredAppointments = appointments.filter { !it.isArchived }
+                            val filteredAppointments =
+                                appointments.filter { !it.isArchived }.sortedBy { it.dateTime }
 
                             appointmentsAdapter.submitList(filteredAppointments)
                         }

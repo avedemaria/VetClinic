@@ -2,9 +2,13 @@ package com.example.vetclinic.data.repositoryImpl
 
 import android.content.Context
 import android.util.Log
+import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import com.example.vetclinic.data.workers.AppointmentReminderWorker
 import com.example.vetclinic.domain.interfaces.ReminderRepository
@@ -47,9 +51,11 @@ class ReminderRepositoryImpl @Inject constructor(
                             DOCTOR_NAME to appointment.doctorName,
                             SERVICE_NAME to appointment.serviceName,
                             PET_NANE to appointment.petName,
-                            APPOINTMENT_ID to appointment.id
+                            APPOINTMENT_ID to appointment.id,
+                            DATE_TIME to appointment.dateTime
                         )
                     )
+                    
                     .addTag("reminders")
                     .build()
 
@@ -75,6 +81,7 @@ class ReminderRepositoryImpl @Inject constructor(
         private const val PET_NANE = "petName"
         private const val APPOINTMENT_ID = "appointmentId"
         private const val ADMIN = "admin"
+        private const val DATE_TIME = "appointmentDateTime"
 
     }
 }

@@ -6,6 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
@@ -158,7 +159,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
 
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getAppointmentsByDate(
+    override fun getAppointmentsByDate(
         date: String
     ): Flow<PagingData<AppointmentWithDetails>> {
         Log.d(TAG, "Getting appointments for date: $date")

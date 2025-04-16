@@ -1,9 +1,11 @@
 package com.example.vetclinic.domain.usecases
 
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.vetclinic.domain.interfaces.AppointmentRepository
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 class GetAppointmentUseCase @Inject constructor(private val repository: AppointmentRepository) {
@@ -23,7 +25,7 @@ class GetAppointmentUseCase @Inject constructor(private val repository: Appointm
 //        return repository.getAppointmentsByDate(date, offset, limit)
 //    }
 
-    suspend fun getAppointmentsByDate(
+    fun getAppointmentsByDate(
         selectedDate: String
     ): Flow<PagingData<AppointmentWithDetails>> {
         return repository.getAppointmentsByDate(selectedDate)

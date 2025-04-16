@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.realtime.kt)
     implementation(libs.storage.kt)
     implementation(libs.functions.kt)
+    implementation("io.github.jan-tennert.supabase:auth-kt:2.0.3")
 
     implementation ("androidx.paging:paging-runtime:3.1.1")
     implementation ("androidx.room:room-paging:2.5.0")

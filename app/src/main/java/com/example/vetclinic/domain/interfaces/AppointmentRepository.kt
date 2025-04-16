@@ -16,7 +16,7 @@ interface AppointmentRepository {
 
 //    suspend fun getAppointmentsByDate(date: String, offset:Int, limit:Int)
 
-    suspend fun getAppointmentsByDate(
+     fun getAppointmentsByDate(
         date: String
     ): Flow<PagingData<AppointmentWithDetails>>
 

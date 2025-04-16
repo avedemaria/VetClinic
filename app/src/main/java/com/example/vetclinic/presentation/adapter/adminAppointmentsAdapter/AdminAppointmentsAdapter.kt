@@ -14,14 +14,14 @@ class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdminAppointmentViewHolder {
-              return  AdminAppointmentViewHolder(
-                    ItemAppointmentAdminBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    ), listener
-                )
-            }
+        return AdminAppointmentViewHolder(
+            ItemAppointmentAdminBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), listener
+        )
+    }
 
     override fun onBindViewHolder(holder: AdminAppointmentViewHolder, position: Int) {
         val appointment = getItem(position)
@@ -37,4 +37,7 @@ class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
     companion object {
         private const val TAG = "AdminAppointmentsAdapter"
     }
+
 }
+
+

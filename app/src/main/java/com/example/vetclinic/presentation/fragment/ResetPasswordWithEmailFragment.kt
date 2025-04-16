@@ -18,6 +18,7 @@ import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.ResetPasswordState
 import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -47,7 +48,6 @@ class ResetPasswordWithEmailFragment : Fragment() {
     }
 
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -55,7 +55,7 @@ class ResetPasswordWithEmailFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentResetPasswordWithEmailBinding.inflate(
             inflater, container,
@@ -92,10 +92,9 @@ class ResetPasswordWithEmailFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.resetPasswordState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is ResetPasswordState.Error -> Toast.makeText(
-                    requireContext(),
-                    "Возникла ошибка ${state.message}",
-                    Toast.LENGTH_SHORT
+                is ResetPasswordState.Error -> Snackbar.make(
+                    binding.root, "${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 ResetPasswordState.Loading -> Log.d(TAG, "Заглушка для Loading")

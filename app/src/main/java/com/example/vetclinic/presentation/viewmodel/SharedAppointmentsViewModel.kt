@@ -10,6 +10,7 @@ import com.example.vetclinic.domain.entities.Appointment
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
+import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeState
 import com.example.vetclinic.toLocalDateOrNull
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = userDataStore.getUserId().orEmpty()
             Log.d(TAG, "userId: $userId")
+            getAppointmentsByUserId(userId)
             observeAppointmentsByUserId(userId)
             subscribeToAppointmentChanges()
         }
@@ -139,6 +141,18 @@ class SharedAppointmentsViewModel @Inject constructor(
         }
     }
 
+
+    private suspend fun getAppointmentsByUserId(userId: String) {
+        _appointmentsState.value = SharedAppointmentsState.Loading
+        getAppointmentUseCase.getAppointmentsByUserIdFromSupabase(userId).fold(
+            onSuccess = { appointments ->
+                _appointmentsState.value = SharedAppointmentsState.Success(appointments)
+            },
+            onFailure = { e ->
+                _appointmentsState.value =
+                    SharedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
+            })
+    }
 
     private fun updateAppointmentInRoom(
         updatedList: List<AppointmentWithDetails>,

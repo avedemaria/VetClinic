@@ -1,27 +1,32 @@
 package com.example.vetclinic.presentation.viewmodel.admin
 
+import AppointmentRemoteMediator
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.vetclinic.data.SessionManager
+import androidx.paging.map
+import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.repositoryImpl.AppointmentRepositoryImpl
+import com.example.vetclinic.data.repositoryImpl.AppointmentRepositoryImpl.Companion
 import com.example.vetclinic.domain.authFeature.LogInUserUseCase
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.domain.interfaces.UserDataStore
 import com.example.vetclinic.domain.usecases.GetAppointmentUseCase
 import com.example.vetclinic.domain.usecases.UpdateAppointmentUseCase
-import com.example.vetclinic.presentation.viewmodel.PetUiState
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -32,7 +37,7 @@ class AdminHomeViewModel @Inject constructor(
     private val getAppointmentUseCase: GetAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val loginUseCase: LogInUserUseCase,
-    private val userDataStore: UserDataStore,
+    private val userDataStore: UserDataStore
 
 
     ) : ViewModel() {
@@ -45,6 +50,8 @@ class AdminHomeViewModel @Inject constructor(
     private var currentDate: LocalDate? = null
 
     private var currentLoadJob: Job? = null
+
+    private var cachedAppointmentsFlow: Flow<PagingData<AppointmentWithDetails>>? = null
 
 
     init {

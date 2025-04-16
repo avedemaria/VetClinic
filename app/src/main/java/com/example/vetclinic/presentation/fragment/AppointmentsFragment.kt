@@ -18,6 +18,8 @@ import com.example.vetclinic.databinding.FragmentAppointmentsBinding
 import com.example.vetclinic.presentation.VetClinicApplication
 import com.example.vetclinic.presentation.viewmodel.AppointmentsState
 import com.example.vetclinic.presentation.viewmodel.AppointmentsViewModel
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsState
+import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ class AppointmentsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: AppointmentsViewModel by viewModels { viewModelFactory }
+    private val viewModel: SharedAppointmentsViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentAppointmentsBinding? = null
     private val binding
@@ -67,7 +69,7 @@ class AppointmentsFragment : Fragment() {
 
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
-            object: OnBackPressedCallback(true) {
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController().popBackStack(R.id.homeFragment, false)
                 }
@@ -90,7 +92,7 @@ class AppointmentsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
                     when (state) {
-                        is AppointmentsState.Error -> {
+                        is SharedAppointmentsState.Error -> {
                             binding.fragmentContent.isEnabled = false
                             binding.toggleGroup.isEnabled = false
                             binding.fragmentContent.visibility = View.VISIBLE
@@ -101,17 +103,19 @@ class AppointmentsFragment : Fragment() {
                             ).show()
                         }
 
-                        AppointmentsState.Loading -> {
+                        SharedAppointmentsState.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                             binding.fragmentContent.visibility = View.GONE
                         }
 
-                        is AppointmentsState.Success -> {
+                        is SharedAppointmentsState.Success -> {
                             binding.fragmentContent.isEnabled = true
                             binding.fragmentContent.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
                             loadChildFragment(CurrentAppointmentsFragment())
                         }
+
+                        SharedAppointmentsState.Empty -> Log.d(TAG, "заглушка")
                     }
                 }
             }
@@ -124,11 +128,11 @@ class AppointmentsFragment : Fragment() {
         _binding = null
     }
 
-//    override fun onPause() {
-//        super.onPause()
-//        Log.d(TAG, "unsubscribed")
-//        viewModel.unsubscribeFromChanges()
-//    }
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "unsubscribed")
+        viewModel.unsubscribeFromChanges()
+    }
 
     companion object {
         private const val TAG = "AppointmentsFragment"

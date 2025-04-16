@@ -32,22 +32,6 @@ class LoginViewModel @Inject constructor(
 
     private var userRole: String? = null
 
-//    init {
-//        checkUserSession()
-//    }
-
-
-//    fun checkUserSession() {
-//        viewModelScope.launch {
-//            val isAuthenticated = loginUserUseCase.checkUserSession()
-//            _loginState.value = if (isAuthenticated) {
-////                LoginState.IsAuthenticated
-//            } else {
-//                LoginState.LoggedOut
-//            }
-//        }
-//    }
-
 
     fun loginUser(email: String, password: String) {
 
@@ -80,7 +64,7 @@ class LoginViewModel @Inject constructor(
 
                             ADMIN -> {
                                 getAppointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString()
+                                    LocalDate.now().toString(), viewModelScope
                                 )
                             }
 

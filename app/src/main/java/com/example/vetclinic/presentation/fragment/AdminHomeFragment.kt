@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAdminHomeBinding
 import com.example.vetclinic.domain.entities.AppointmentWithDetails
 import com.example.vetclinic.presentation.VetClinicApplication
@@ -149,6 +150,7 @@ class AdminHomeFragment : Fragment() {
             )
             Log.d(TAG, "Setting up adapter")
             adapter = appointmentsAdapter
+            itemAnimator = null
         }
     }
 
@@ -172,6 +174,7 @@ class AdminHomeFragment : Fragment() {
             emptyAppointmentsVisible = false
         )
 
+        Log.d(TAG, "appointments: ${state.appointments}")
         appointmentsAdapter.submitData(viewLifecycleOwner.lifecycle, state.appointments)
     }
 

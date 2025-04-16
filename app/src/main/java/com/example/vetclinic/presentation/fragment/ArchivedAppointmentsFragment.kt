@@ -239,20 +239,6 @@ class ArchivedAppointmentsFragment : Fragment() {
     }
 
 
-//    override fun onResume() {
-//        super.onResume()
-//        viewModel.subscribeToAppointmentChanges()
-//        Log.d(TAG, "subscribed to websocket")
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        // Отписка от WebSocket
-//        Log.d(TAG, "Unsubscribed from ArchivedAppointmentsFragment")
-//        viewModel.unsubscribeFromChanges()
-//    }
-
-
     companion object {
         private const val TAG = "ArchivedAppointmentsFragment"
     }

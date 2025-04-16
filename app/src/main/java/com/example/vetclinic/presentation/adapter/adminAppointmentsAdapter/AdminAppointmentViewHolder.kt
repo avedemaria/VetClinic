@@ -17,7 +17,6 @@ class AdminAppointmentViewHolder(
 
 
 
-
     init {
         binding.ivBell.setOnLongClickListener { bellView ->
             val appointment = bellView.tag as? AppointmentWithDetails
@@ -35,7 +34,7 @@ class AdminAppointmentViewHolder(
 
         with(binding) {
             tvPetName.text = appointment.petName
-            tvOwnerName.text = appointment.userName
+            tvOwnerName.text = "Владелец: ${appointment.userName} ${appointment.userLastName}"
             tvDoctorName.text = binding.root.context.getString(
                 R.string.doctor_role_and_name,
                 appointment.doctorRole,
@@ -74,8 +73,8 @@ class AdminAppointmentViewHolder(
             }
 
 
-            binding.root.alpha = if (appointment.isArchived) ARCHIVED_ALPHA else CURRENT_ALPHA
-            Log.d("BindDebug", "${binding.root.alpha}")
+           root.alpha = if (appointment.isArchived) ARCHIVED_ALPHA else CURRENT_ALPHA
+            Log.d("BindDebug", "Item ${appointment.id}: alpha = ${binding.root.alpha}")
 
             binding.ivBell.isSelected = appointment.isConfirmed
             ivBell.tag = appointment

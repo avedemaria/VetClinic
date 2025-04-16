@@ -11,6 +11,9 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.example.vetclinic.R
 import jakarta.inject.Inject
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class AppointmentReminderWorker(
     private val appContext: Context, workerParams: WorkerParameters,
@@ -23,6 +26,19 @@ class AppointmentReminderWorker(
         val serviceName = inputData.getString(SERVICE_NAME) ?: return Result.failure()
         val petName = inputData.getString(PET_NANE) ?: return Result.failure()
         val appointmentId = inputData.getString(APPOINTMENT_ID) ?: return Result.failure()
+        val appointmentDateTimeString =
+            inputData.getString("appointmentDateTime") ?: return Result.failure()
+
+        val appointmentDateTime =
+            parseAppointmentDateTime(appointmentDateTimeString) // твоя функция
+        val reminderTime = appointmentDateTime.minusHours(1)
+        val now = LocalDateTime.now()
+
+        if (now.isAfter(reminderTime.plus(Duration.ofMinutes(1)))) {
+            Log.d("ReminderWorker", "It's too late for reminder — $appointmentId")
+            return Result.success()
+        }
+
 
         createNotificationChannel(appContext)
         sendReminderNotification(petName, doctorName, serviceName, appointmentId)
@@ -42,8 +58,10 @@ class AppointmentReminderWorker(
             .setSmallIcon(R.drawable.modern_pet_veterinary_clinic).setContentTitle(TITLE)
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Прием состоится через час!\nВрач: $doctorName\nУслуга:" +
-                            " $serviceName\nПитомец: $petName")
+                    .bigText(
+                        "Прием состоится через час!\nВрач: $doctorName\nУслуга:" +
+                                " $serviceName\nПитомец: $petName"
+                    )
             ).setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
@@ -73,6 +91,10 @@ class AppointmentReminderWorker(
     }
 
 
+    private fun parseAppointmentDateTime(datetimeStr: String): LocalDateTime {
+        return LocalDateTime.parse(datetimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    }
+
     class Factory @Inject constructor() : ChildWorkerFactory {
         override fun create(
             context: Context,
@@ -81,6 +103,7 @@ class AppointmentReminderWorker(
             return AppointmentReminderWorker(context, workerParameters)
         }
     }
+
 
     companion object {
         private const val CHANNEL_ID = "appointment_channel"
