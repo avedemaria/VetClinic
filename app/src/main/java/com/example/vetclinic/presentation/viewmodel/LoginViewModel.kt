@@ -64,7 +64,7 @@ class LoginViewModel @Inject constructor(
 
                             ADMIN -> {
                                 getAppointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString(), viewModelScope
+                                    LocalDate.now().toString()
                                 )
                             }
 

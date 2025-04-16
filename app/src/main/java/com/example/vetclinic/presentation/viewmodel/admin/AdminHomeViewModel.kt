@@ -137,6 +137,13 @@ class AdminHomeViewModel @Inject constructor(
     }
 
 
+    fun afterLogout() {
+        viewModelScope.launch {
+            loginUseCase.clearAllData()
+        }
+    }
+
+
     companion object {
         private const val TAG = "AdminHomeViewModel"
     }

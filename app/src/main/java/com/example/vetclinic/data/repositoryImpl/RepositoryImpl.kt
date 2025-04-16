@@ -87,7 +87,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
 
         supabaseClient.auth.signOut()
-        clearAllData()
+//        clearAllData()
         Log.d(TAG, "User has been signed out successfully")
         Unit
     }
