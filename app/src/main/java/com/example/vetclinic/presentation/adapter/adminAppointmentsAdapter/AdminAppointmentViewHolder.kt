@@ -3,7 +3,7 @@ package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.ItemAppointmentAdminBinding
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 
 class AdminAppointmentViewHolder(
     private val binding: ItemAppointmentAdminBinding,

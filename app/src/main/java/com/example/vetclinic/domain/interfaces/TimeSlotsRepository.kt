@@ -1,6 +1,6 @@
 package com.example.vetclinic.domain.interfaces
 
-import com.example.vetclinic.domain.entities.DayWithTimeSlots
+import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
 
 interface TimeSlotsRepository {
 

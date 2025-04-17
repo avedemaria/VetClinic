@@ -1,0 +1,17 @@
+package com.example.vetclinic.domain.entities.appointment
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Appointment(
+    val id: String,
+    val userId: String,
+    val petId: String,
+    val doctorId: String,
+    val serviceId: String,
+    val dateTime: String,
+    val status: AppointmentStatus,
+    val isArchived: Boolean,
+    val isConfirmed: Boolean = false
+) : Parcelable

@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.vetclinic.databinding.ItemDayBinding
 import com.example.vetclinic.databinding.ItemDayClickedBinding
-import com.example.vetclinic.domain.entities.Day
+import com.example.vetclinic.domain.entities.timeSlot.Day
 
 class DayViewHolder(
     private val binding: ViewBinding,

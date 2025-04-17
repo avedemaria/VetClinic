@@ -1,7 +1,7 @@
 package com.example.vetclinic.presentation.adapter.timeSlotsAdapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.vetclinic.domain.entities.Day
+import com.example.vetclinic.domain.entities.timeSlot.Day
 
 class DayItemDiffCallback : DiffUtil.ItemCallback<Day>() {
 

@@ -2,17 +2,13 @@ package com.example.vetclinic.data.repositoryImpl
 
 import android.content.Context
 import android.util.Log
-import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import com.example.vetclinic.data.workers.AppointmentReminderWorker
 import com.example.vetclinic.domain.interfaces.ReminderRepository
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.interfaces.UserDataStore
 import jakarta.inject.Inject
 import java.time.Duration

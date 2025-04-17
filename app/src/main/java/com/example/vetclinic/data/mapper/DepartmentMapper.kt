@@ -1,7 +1,7 @@
 package com.example.vetclinic.data.mapper
 
 import com.example.vetclinic.data.network.model.DepartmentDto
-import com.example.vetclinic.domain.entities.Department
+import com.example.vetclinic.domain.entities.department.Department
 import jakarta.inject.Inject
 
 class DepartmentMapper @Inject constructor() {

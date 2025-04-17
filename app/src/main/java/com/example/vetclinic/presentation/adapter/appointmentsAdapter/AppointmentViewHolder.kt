@@ -1,18 +1,12 @@
 package com.example.vetclinic.presentation.adapter.appointmentsAdapter
 
-import android.view.MenuItem
-import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.AppointmentItemBinding
-import com.example.vetclinic.databinding.AppointmentItemWithMenuBinding
-import com.example.vetclinic.domain.entities.Appointment
-import com.example.vetclinic.domain.entities.AppointmentStatus
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.formatAppointmentDateTime
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class AppointmentViewHolder(
     private val binding: AppointmentItemBinding,

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vetclinic.databinding.PetItemBinding
-import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.pet.Pet
 
 class PetAdapter(private val listener: OnEditClickListener) :
     ListAdapter<Pet, PetViewHolder>(PetItemDiffCallback()) {

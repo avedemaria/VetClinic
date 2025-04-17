@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.example.vetclinic.databinding.ItemServiceBinding
-import com.example.vetclinic.domain.entities.Service
+import com.example.vetclinic.domain.entities.service.Service
 
 class DoctorServicesAdapter(
     private val container: LinearLayout,

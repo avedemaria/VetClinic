@@ -9,11 +9,11 @@ import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.mapper.UserMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.domain.interfaces.Repository
-import com.example.vetclinic.domain.entities.Department
-import com.example.vetclinic.domain.entities.Doctor
-import com.example.vetclinic.domain.entities.Pet
-import com.example.vetclinic.domain.entities.Service
-import com.example.vetclinic.domain.entities.User
+import com.example.vetclinic.domain.entities.department.Department
+import com.example.vetclinic.domain.entities.doctor.Doctor
+import com.example.vetclinic.domain.entities.pet.Pet
+import com.example.vetclinic.domain.entities.service.Service
+import com.example.vetclinic.domain.entities.user.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth

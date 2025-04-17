@@ -1,7 +1,7 @@
 package com.example.vetclinic.presentation.adapter.petAdapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.pet.Pet
 
 class PetItemDiffCallback: DiffUtil.ItemCallback<Pet>() {
 

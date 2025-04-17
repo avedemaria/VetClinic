@@ -8,8 +8,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
-import com.example.vetclinic.domain.entities.Pet
 import kotlinx.coroutines.flow.Flow
 
 

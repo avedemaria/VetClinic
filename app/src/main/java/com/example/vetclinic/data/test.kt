@@ -1,5 +1,5 @@
-import com.example.vetclinic.domain.entities.Day
-import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.entities.timeSlot.Day
+import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 
 import java.time.LocalTime
 import java.util.UUID

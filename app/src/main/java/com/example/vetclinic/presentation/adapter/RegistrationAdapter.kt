@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.vetclinic.presentation.fragment.PetRegistrationForm
-import com.example.vetclinic.presentation.fragment.UserRegistrationForm
+import com.example.vetclinic.presentation.PetInput
+import com.example.vetclinic.presentation.registrationScreen.UserInput
 
 class RegistrationAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
@@ -15,8 +15,8 @@ class RegistrationAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> UserRegistrationForm()
-            1 -> PetRegistrationForm()
+            0 -> UserInput()
+            1 -> PetInput()
             else -> throw IllegalArgumentException("Invalid step")
         }
     }

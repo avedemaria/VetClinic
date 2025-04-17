@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vetclinic.databinding.ItemTimeBinding
 import com.example.vetclinic.databinding.ItemTimeClickedBinding
-import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 
 class TimeSlotAdapter(private val onTimeSlotClickedListener: OnTimeSlotClickedListener) :
     ListAdapter<TimeSlot, TimeSlotViewHolder>(TimeSlotItemDiffCallback()) {

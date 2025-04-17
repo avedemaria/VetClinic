@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.vetclinic.presentation.fragment.LoginFragment"
+        android:name="com.example.vetclinic.presentation.loginScreen.LoginFragment"
         android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
@@ -18,7 +18,7 @@
             app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_loginFragment_to_resetPasswordWithEmailFragment"
-            app:destination="@id/resetPasswordWithEmailFragment" />
+            app:destination="@id/sendResetLinkFragment" />
         <action
             android:id="@+id/action_loginFragment_to_adminHomeFragment"
             app:destination="@id/adminHomeFragment" />
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.vetclinic.presentation.fragment.RegistrationFragment"
+        android:name="com.example.vetclinic.presentation.registrationScreen.RegistrationFragment"
         android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_mainFragment"
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.vetclinic.presentation.fragment.MainFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.MainFragment"
         android:label="MainFragment" >
         <action
             android:id="@+id/action_mainFragment_to_loginFragment"
@@ -47,8 +47,8 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/resetPasswordWithEmailFragment"
-        android:name="com.example.vetclinic.presentation.fragment.ResetPasswordWithEmailFragment"
+        android:id="@+id/sendResetLinkFragment"
+        android:name="com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkFragment"
         android:label="ResetPasswordWithEmailFragment" >
         <argument
             android:name="email"
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/updatePasswordFragment"
-        android:name="com.example.vetclinic.presentation.fragment.UpdatePasswordFragment"
+        android:name="com.example.vetclinic.presentation.updatePasswordScreen.UpdatePasswordFragment"
         android:label="Update Password"
         tools:layout="@layout/fragment_update_password">
         <argument
@@ -75,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"
-        android:name="com.example.vetclinic.presentation.fragment.LoadingFragment"
+        android:name="com.example.vetclinic.presentation.loginScreen.LoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" >
         <action
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/adminHomeFragment"
-        android:name="com.example.vetclinic.presentation.fragment.AdminHomeFragment"
+        android:name="com.example.vetclinic.presentation.adminScreen.AdminHomeFragment"
         android:label="AdminHomeFragment" >
         <action
             android:id="@+id/action_adminHomeFragment2_to_loginFragment"

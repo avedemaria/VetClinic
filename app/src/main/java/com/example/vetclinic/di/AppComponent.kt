@@ -3,29 +3,29 @@ package com.example.vetclinic.di
 import android.app.Application
 import com.example.vetclinic.presentation.MainActivity
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.fragment.AddPetFragment
-import com.example.vetclinic.presentation.fragment.AdminHomeFragment
-import com.example.vetclinic.presentation.fragment.AppointmentsFragment
-import com.example.vetclinic.presentation.fragment.ArchivedAppointmentsFragment
-import com.example.vetclinic.presentation.fragment.BookAppointmentFragment
-import com.example.vetclinic.presentation.fragment.CurrentAppointmentsFragment
-import com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment
-import com.example.vetclinic.presentation.fragment.DoctorsFragment
-import com.example.vetclinic.presentation.fragment.HomeFragment
-import com.example.vetclinic.presentation.fragment.LoadingFragment
-import com.example.vetclinic.presentation.fragment.LoginFragment
-import com.example.vetclinic.presentation.fragment.MainFragment
-import com.example.vetclinic.presentation.fragment.PetFragment
-import com.example.vetclinic.presentation.fragment.PetRegistrationForm
-import com.example.vetclinic.presentation.fragment.PlainServicesFragment
-import com.example.vetclinic.presentation.fragment.ProfileFragment
-import com.example.vetclinic.presentation.fragment.RegistrationFragment
-import com.example.vetclinic.presentation.fragment.ResetPasswordWithEmailFragment
-import com.example.vetclinic.presentation.fragment.ServicesWithDepFragment
-import com.example.vetclinic.presentation.fragment.SettingsFragment
-import com.example.vetclinic.presentation.fragment.UpdatePasswordFragment
-import com.example.vetclinic.presentation.fragment.UserFragment
-import com.example.vetclinic.presentation.fragment.UserRegistrationForm
+import com.example.vetclinic.presentation.addPetScreen.AddPetFragment
+import com.example.vetclinic.presentation.adminScreen.AdminHomeFragment
+import com.example.vetclinic.presentation.appointmentsScreen.AppointmentsFragment
+import com.example.vetclinic.presentation.appointmentsScreen.archivedAppointmentsScreen.ArchivedAppointmentsFragment
+import com.example.vetclinic.presentation.bookAppointmentScreen.BookAppointmentFragment
+import com.example.vetclinic.presentation.appointmentsScreen.currentAppointmentsScreen.CurrentAppointmentsFragment
+import com.example.vetclinic.presentation.detailedDoctorInfoScreen.DetailedDoctorInfoFragment
+import com.example.vetclinic.presentation.doctorsScreen.DoctorsFragment
+import com.example.vetclinic.presentation.mainScreen.homeScreen.HomeFragment
+import com.example.vetclinic.presentation.loginScreen.LoadingFragment
+import com.example.vetclinic.presentation.loginScreen.LoginFragment
+import com.example.vetclinic.presentation.mainScreen.MainFragment
+import com.example.vetclinic.presentation.profileScreen.petScreen.PetFragment
+import com.example.vetclinic.presentation.PetInput
+import com.example.vetclinic.presentation.servicesScreen.PlainServicesFragment
+import com.example.vetclinic.presentation.profileScreen.ProfileFragment
+import com.example.vetclinic.presentation.registrationScreen.RegistrationFragment
+import com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkFragment
+import com.example.vetclinic.presentation.servicesWithDepScreen.ServicesWithDepFragment
+import com.example.vetclinic.presentation.settingsScreen.SettingsFragment
+import com.example.vetclinic.presentation.updatePasswordScreen.UpdatePasswordFragment
+import com.example.vetclinic.presentation.profileScreen.userScreen.UserFragment
+import com.example.vetclinic.presentation.registrationScreen.UserInput
 import dagger.BindsInstance
 import dagger.Component
 import jakarta.inject.Singleton
@@ -50,9 +50,9 @@ interface AppComponent {
 
     fun inject(registrationFragment: RegistrationFragment)
 
-    fun inject(userRegistrationForm: UserRegistrationForm)
+    fun inject(userInput: UserInput)
 
-    fun inject(petRegistrationForm: PetRegistrationForm)
+    fun inject(petInput: PetInput)
 
     fun inject(loginFragment: LoginFragment)
 
@@ -74,7 +74,7 @@ interface AppComponent {
 
     fun inject(settingsFragment: SettingsFragment)
 
-    fun inject(resetPasswordWithEmailFragment: ResetPasswordWithEmailFragment)
+    fun inject(sendResetLinkFragment: SendResetLinkFragment)
 
     fun inject(updatePasswordFragment: UpdatePasswordFragment)
 

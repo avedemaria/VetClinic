@@ -4,21 +4,12 @@ import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.vetclinic.R
-import com.example.vetclinic.presentation.fragment.LoginFragmentDirections
-import com.example.vetclinic.presentation.fragment.UpdatePasswordFragmentDirections
-import com.example.vetclinic.presentation.viewmodel.LoginState
-import com.example.vetclinic.presentation.viewmodel.LoginViewModel
-import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
-import com.example.vetclinic.presentation.viewmodel.ViewModelFactory
 import jakarta.inject.Inject
 
 

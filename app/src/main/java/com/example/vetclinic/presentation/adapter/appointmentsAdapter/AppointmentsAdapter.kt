@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.AppointmentItemBinding
 import com.example.vetclinic.databinding.AppointmentItemWithMenuBinding
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 
 class AppointmentsAdapter(private val listener: OnAppointmentMenuClickListener) :
     ListAdapter<AppointmentWithDetails, RecyclerView.ViewHolder>(AppointmentItemDiffCallback()) {

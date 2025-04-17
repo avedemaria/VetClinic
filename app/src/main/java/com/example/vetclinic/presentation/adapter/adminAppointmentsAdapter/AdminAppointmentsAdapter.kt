@@ -7,7 +7,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.ItemAppointmentAdminBinding
 import com.example.vetclinic.databinding.ItemArchivedAppointmentAdminBinding
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 
 class AdminAppointmentsAdapter(private val listener: OnBellClickListener) :
     PagingDataAdapter<AppointmentWithDetails, RecyclerView.ViewHolder>(

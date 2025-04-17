@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.vetclinic.presentation.fragment.HomeFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.HomeFragment"
         android:label="Главная"
         app:defaultNavHost="false" >
         <action
@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/doctorsFragment"
-        android:name="com.example.vetclinic.presentation.fragment.DoctorsFragment"
+        android:name="com.example.vetclinic.presentation.doctorsScreen.DoctorsFragment"
         android:label="Записи"
         app:defaultNavHost="false" >
         <action
@@ -33,7 +33,7 @@
 
         <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.vetclinic.presentation.fragment.ProfileFragment"
+        android:name="com.example.vetclinic.presentation.profileScreen.ProfileFragment"
         android:label="Profile" >
             <action
                 android:id="@+id/action_profileFragment_to_homeFragment"
@@ -47,14 +47,14 @@
         </fragment>
     <fragment
         android:id="@+id/detailedDoctorInfoFragment"
-        android:name="com.example.vetclinic.presentation.fragment.DetailedDoctorInfoFragment"
+        android:name="com.example.vetclinic.presentation.detailedDoctorInfoScreen.DetailedDoctorInfoFragment"
         android:label="DetailedDoctorInfoFragment" >
         <action
             android:id="@+id/action_detailedDoctorInfoFragment_to_plainServicesFragment"
             app:destination="@id/plainServicesFragment" />
         <argument
             android:name="doctor"
-            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+            app:argType="com.example.vetclinic.domain.entities.doctor.Doctor" />
         <argument
             android:name="departmentId"
             app:argType="string"
@@ -62,11 +62,11 @@
     </fragment>
     <fragment
         android:id="@+id/plainServicesFragment"
-        android:name="com.example.vetclinic.presentation.fragment.PlainServicesFragment"
+        android:name="com.example.vetclinic.presentation.servicesScreen.PlainServicesFragment"
         android:label="PlainServicesFragment" >
         <argument
             android:name="doctor"
-            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+            app:argType="com.example.vetclinic.domain.entities.doctor.Doctor" />
         <action
             android:id="@+id/action_plainServicesFragment_to_bookAppointmentFragment"
             app:destination="@id/bookAppointmentFragment" />
@@ -77,24 +77,24 @@
     </fragment>
     <fragment
         android:id="@+id/appointmentFragment"
-        android:name="com.example.vetclinic.presentation.fragment.AppointmentsFragment"
+        android:name="com.example.vetclinic.presentation.appointmentsScreen.AppointmentsFragment"
         android:label="fragment_appointment"
         tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/servicesWithDepFragment"
-        android:name="com.example.vetclinic.presentation.fragment.ServicesWithDepFragment"
+        android:name="com.example.vetclinic.presentation.servicesWithDepScreen.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
     <fragment
         android:id="@+id/bookAppointmentFragment"
-        android:name="com.example.vetclinic.presentation.fragment.BookAppointmentFragment"
+        android:name="com.example.vetclinic.presentation.bookAppointmentScreen.BookAppointmentFragment"
         android:label="fragment_book_appointment"
         tools:layout="@layout/fragment_book_appointment" >
         <argument
             android:name="service"
-            app:argType="com.example.vetclinic.domain.entities.Service" />
+            app:argType="com.example.vetclinic.domain.entities.service.Service" />
         <argument
             android:name="doctor"
-            app:argType="com.example.vetclinic.domain.entities.Doctor" />
+            app:argType="com.example.vetclinic.domain.entities.doctor.Doctor" />
         <action
             android:id="@+id/action_bookAppointmentFragment_to_appointmentFragment"
             app:destination="@id/appointmentFragment" />

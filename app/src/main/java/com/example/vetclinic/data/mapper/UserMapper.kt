@@ -2,7 +2,7 @@ package com.example.vetclinic.data.mapper
 
 import com.example.vetclinic.data.database.model.UserDbModel
 import com.example.vetclinic.data.network.model.UserDTO
-import com.example.vetclinic.domain.entities.User
+import com.example.vetclinic.domain.entities.user.User
 import jakarta.inject.Inject
 
 class UserMapper @Inject constructor() {

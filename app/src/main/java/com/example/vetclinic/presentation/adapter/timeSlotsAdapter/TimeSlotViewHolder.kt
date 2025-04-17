@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.vetclinic.databinding.ItemTimeBinding
 import com.example.vetclinic.databinding.ItemTimeClickedBinding
-import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 
 class TimeSlotViewHolder(
     private val binding: ViewBinding,

@@ -3,9 +3,9 @@ package com.example.vetclinic.data.mapper
 import com.example.vetclinic.data.network.model.DayDto
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.domain.entities.Day
-import com.example.vetclinic.domain.entities.DayWithTimeSlots
-import com.example.vetclinic.domain.entities.TimeSlot
+import com.example.vetclinic.domain.entities.timeSlot.Day
+import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
+import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 import com.example.vetclinic.toLocalDateDefault
 import jakarta.inject.Inject
 

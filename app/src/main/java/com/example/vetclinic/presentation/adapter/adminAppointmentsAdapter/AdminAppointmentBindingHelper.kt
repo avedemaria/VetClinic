@@ -2,8 +2,8 @@ package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
 import androidx.core.content.ContextCompat
 import com.example.vetclinic.R
-import com.example.vetclinic.domain.entities.AppointmentStatus
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.extractTime
 
 object AdminAppointmentBindingHelper {

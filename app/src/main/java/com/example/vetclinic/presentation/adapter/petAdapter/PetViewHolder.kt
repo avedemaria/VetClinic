@@ -3,7 +3,7 @@ package com.example.vetclinic.presentation.adapter.petAdapter
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.PetItemBinding
-import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.presentation.PetParameter
 
 class PetViewHolder(

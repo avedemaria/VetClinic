@@ -1,12 +1,11 @@
 package com.example.vetclinic.data.mapper
 
-import android.util.Log
 import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
-import com.example.vetclinic.domain.entities.Appointment
-import com.example.vetclinic.domain.entities.AppointmentStatus
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.Appointment
+import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import jakarta.inject.Inject
 
 class AppointmentMapper @Inject constructor() {

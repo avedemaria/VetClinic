@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vetclinic.databinding.ItemDayBinding
 import com.example.vetclinic.databinding.ItemDayClickedBinding
-import com.example.vetclinic.domain.entities.Day
+import com.example.vetclinic.domain.entities.timeSlot.Day
 
 class DaysAdapter(private val onDayClickedListener: OnDayClickedListener) :
     ListAdapter<Day, DayViewHolder>(DayItemDiffCallback()) {

@@ -2,23 +2,24 @@ package com.example.vetclinic.di
 
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.di.keys.ViewModelKey
-import com.example.vetclinic.presentation.viewmodel.AddPetViewModel
-import com.example.vetclinic.presentation.viewmodel.admin.AdminHomeViewModel
-import com.example.vetclinic.presentation.viewmodel.AppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.BookAppointmentViewModel
-import com.example.vetclinic.presentation.viewmodel.DoctorViewModel
-import com.example.vetclinic.presentation.viewmodel.HomeViewModel
-import com.example.vetclinic.presentation.viewmodel.LoadingViewModel
-import com.example.vetclinic.presentation.viewmodel.LoginViewModel
-import com.example.vetclinic.presentation.viewmodel.MainViewModel
-import com.example.vetclinic.presentation.viewmodel.PetViewModel
-import com.example.vetclinic.presentation.viewmodel.PlainServiceViewModel
-import com.example.vetclinic.presentation.viewmodel.registration.RegistrationViewModel
-import com.example.vetclinic.presentation.viewmodel.ResetPasswordViewModel
-import com.example.vetclinic.presentation.viewmodel.ServiceWithDepViewModel
-import com.example.vetclinic.presentation.viewmodel.SettingsViewModel
-import com.example.vetclinic.presentation.viewmodel.SharedAppointmentsViewModel
-import com.example.vetclinic.presentation.viewmodel.UserViewModel
+import com.example.vetclinic.presentation.addPetScreen.AddPetViewModel
+import com.example.vetclinic.presentation.adminScreen.AdminHomeViewModel
+import com.example.vetclinic.presentation.bookAppointmentScreen.BookAppointmentViewModel
+import com.example.vetclinic.presentation.doctorsScreen.DoctorViewModel
+import com.example.vetclinic.presentation.mainScreen.homeScreen.HomeViewModel
+import com.example.vetclinic.presentation.loginScreen.LoadingViewModel
+import com.example.vetclinic.presentation.loginScreen.LoginViewModel
+import com.example.vetclinic.presentation.mainScreen.MainViewModel
+import com.example.vetclinic.presentation.profileScreen.petScreen.PetViewModel
+import com.example.vetclinic.presentation.servicesScreen.PlainServiceViewModel
+import com.example.vetclinic.presentation.registrationScreen.RegistrationViewModel
+import com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkViewModel
+import com.example.vetclinic.presentation.servicesWithDepScreen.ServiceWithDepViewModel
+import com.example.vetclinic.presentation.settingsScreen.SettingsViewModel
+import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsViewModel
+import com.example.vetclinic.presentation.detailedDoctorInfoScreen.DetailedDoctorInfoViewModel
+import com.example.vetclinic.presentation.profileScreen.userScreen.UserViewModel
+import com.example.vetclinic.presentation.updatePasswordScreen.UpdatePasswordViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -58,6 +59,11 @@ interface ViewModelModule {
     fun bindDoctorViewModel(impl: DoctorViewModel): ViewModel
 
     @IntoMap
+    @ViewModelKey(DetailedDoctorInfoViewModel::class)
+    @Binds
+    fun bindDetailedDoctorInfoViewModel (infoViewModel: DetailedDoctorInfoViewModel): ViewModel
+
+    @IntoMap
     @ViewModelKey(ServiceWithDepViewModel::class)
     @Binds
     fun bindServiceViewModel(impl: ServiceWithDepViewModel): ViewModel
@@ -66,11 +72,6 @@ interface ViewModelModule {
     @ViewModelKey(PlainServiceViewModel::class)
     @Binds
     fun bindPlainServiceViewModel(impl: PlainServiceViewModel): ViewModel
-
-//    @IntoMap
-//    @ViewModelKey(ProfileViewModel::class)
-//    @Binds
-//    fun bindProfileViewModel(impl: ProfileViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(UserViewModel::class)
@@ -95,40 +96,32 @@ interface ViewModelModule {
     fun bindSettingsViewModel(impl: SettingsViewModel): ViewModel
 
     @IntoMap
-    @ViewModelKey(ResetPasswordViewModel::class)
+    @ViewModelKey(SendResetLinkViewModel::class)
     @Binds
-    fun bindResetPasswordViewModel(impl: ResetPasswordViewModel): ViewModel
+    fun bindSendResetLinkViewModel(impl: SendResetLinkViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(UpdatePasswordViewModel::class)
+    @Binds
+    fun bindUpdatePasswordViewModel (infoViewModel: UpdatePasswordViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(BookAppointmentViewModel::class)
     @Binds
     fun bindBookAppointmentViewModel(impl: BookAppointmentViewModel): ViewModel
 
-//    @IntoMap
-//    @ViewModelKey(CurrentAppointmentsViewModel::class)
-//    @Binds
-//    fun bindCurrentAppointmentsViewModel(impl: CurrentAppointmentsViewModel): ViewModel
-//
-//    @IntoMap
-//    @ViewModelKey(ArchivedAppointmentsViewModel::class)
-//    @Binds
-//    fun bindArchivedAppointmentsViewModel(impl: ArchivedAppointmentsViewModel): ViewModel
 
     @IntoMap
     @ViewModelKey(AdminHomeViewModel::class)
     @Binds
     fun bindAdminHomeViewModel(impl: AdminHomeViewModel): ViewModel
 
-
-    @IntoMap
-    @ViewModelKey(AppointmentsViewModel::class)
-    @Binds
-    fun bindAppointmentsViewModel(impl: AppointmentsViewModel): ViewModel
-
     @IntoMap
     @ViewModelKey(SharedAppointmentsViewModel::class)
     @Binds
     fun bindDetailedAppointmentsViewModel(impl: SharedAppointmentsViewModel): ViewModel
+
+
 
 
 }

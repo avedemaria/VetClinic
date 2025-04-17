@@ -2,7 +2,7 @@ package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vetclinic.databinding.ItemArchivedAppointmentAdminBinding
-import com.example.vetclinic.domain.entities.AppointmentWithDetails
+import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 
 class ArchivedAppointmentViewHolder(
     private val binding: ItemArchivedAppointmentAdminBinding,

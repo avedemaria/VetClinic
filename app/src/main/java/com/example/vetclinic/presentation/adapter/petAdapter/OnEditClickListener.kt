@@ -1,6 +1,6 @@
 package com.example.vetclinic.presentation.adapter.petAdapter
 
-import com.example.vetclinic.domain.entities.Pet
+import com.example.vetclinic.domain.entities.pet.Pet
 
 interface OnEditClickListener {
 

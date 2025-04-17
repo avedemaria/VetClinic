@@ -1,6 +1,6 @@
 package com.example.vetclinic.presentation.adapter.servicesAdapter
 
-import com.example.vetclinic.domain.entities.Service
+import com.example.vetclinic.domain.entities.service.Service
 
 sealed class DepAndServiceItemList {
 
