@@ -254,7 +254,7 @@ class AdminHomeFragment : Fragment() {
         findNavController().navigate(AdminHomeFragmentDirections.actionAdminHomeFragment2ToLoginFragment())
         viewLifecycleOwner.lifecycleScope.launch {
             observingJob.cancel()
-            delay(100)
+            observingJob.join()
             viewModel.afterLogout()
         }
     }
