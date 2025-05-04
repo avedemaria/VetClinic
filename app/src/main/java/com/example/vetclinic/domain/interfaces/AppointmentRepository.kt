@@ -14,7 +14,6 @@ interface AppointmentRepository {
         userId: String,
     ): Result<List<AppointmentWithDetails>>
 
-//    suspend fun getAppointmentsByDate(date: String, offset:Int, limit:Int)
 
      fun getAppointmentsByDate(
         date: String
@@ -25,23 +24,15 @@ interface AppointmentRepository {
     ): Result<Unit>
 
 
-//    suspend fun getPetFromRoomById(petId: String): Pet
-//
-//    suspend fun getUserFromRoomById(userId: String): User
-
     suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit)
 
-//    suspend fun subscribeToAppointmentChanges(): Flow<Appointment>
-
     suspend fun unsubscribeFromAppointmentChanges()
-//
-//    suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>>
 
     fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>>
 
     suspend fun updateAppointmentStatusInRoom(updatedAppointment: AppointmentWithDetails): Result<Unit>
 
-//    suspend fun getAppointmentsByDateFromRoom(date: String): Result<List<AppointmentWithDetails>>
+
 
 
 }

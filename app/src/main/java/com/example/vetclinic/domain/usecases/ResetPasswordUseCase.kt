@@ -1,9 +1,10 @@
 package com.example.vetclinic.domain.usecases
 
+import com.example.vetclinic.domain.interfaces.AuthRepository
 import com.example.vetclinic.domain.interfaces.Repository
 import jakarta.inject.Inject
 
-class ResetPasswordUseCase @Inject constructor(private val repository: Repository) {
+class ResetPasswordUseCase @Inject constructor(private val repository: AuthRepository) {
 
 
     suspend fun sendResetLink(email: String) {

@@ -28,7 +28,6 @@ import retrofit2.Response
 
 
 class RepositoryImpl @Inject constructor(
-    private val supabaseClient: SupabaseClient,
     private val supabaseApiService: SupabaseApiService,
     private val vetClinicDao: VetClinicDao,
     private val departmentMapper: DepartmentMapper,
@@ -38,141 +37,6 @@ class RepositoryImpl @Inject constructor(
     private val serviceMapper: ServiceMapper,
 ) : Repository {
 
-
-    //authentication
-    override suspend fun loginUser(email: String, password: String): Result<UserSession> {
-        return try {
-
-            val deferred = CompletableDeferred<UserSession>()
-
-            Email.login(
-                supabaseClient,
-                onSuccess = { session ->
-                    deferred.complete(session)
-                }
-            ) {
-                this.email = email
-                this.password = password
-            }
-            Result.success(deferred.await())
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-
-    override suspend fun registerUser(email: String, password: String): Result<UserSession> {
-        return try {
-
-            val deferred = CompletableDeferred<UserSession>()
-
-            Email.signUp(
-                supabaseClient,
-                onSuccess = { session ->
-                    Log.d(TAG, "registerUser onSuccess")
-                    deferred.complete(session)
-                }
-            ) {
-                this.email = email
-                this.password = password
-            }
-
-            Result.success(withTimeout(10_000) { deferred.await() })
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-
-    override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
-
-        supabaseClient.auth.signOut()
-//        clearAllData()
-        Log.d(TAG, "User has been signed out successfully")
-        Unit
-    }
-        .onFailure { e ->
-            Log.d(TAG, "Error while signing out user")
-        }
-
-    override suspend fun resetPasswordWithEmail(email: String): Result<Unit> =
-        kotlin.runCatching {
-            val resetPasswordUrl = "vetclinic://reset-password?token="
-            supabaseClient.auth.resetPasswordForEmail(email, resetPasswordUrl)
-            Log.d(TAG, "The reset password link has been sent to $email")
-            Unit
-        }
-            .onFailure { e ->
-                Log.d(TAG, "Error while sending the reset link to $email")
-            }
-
-
-    override suspend fun updatePassword(newPassword: String, token: String)
-            : Result<Unit> =
-        kotlin.runCatching {
-
-            if (token.isBlank()) {
-                throw IllegalArgumentException("Token is empty")
-            }
-
-
-            val email = decodeJwtAndGetEmail(token) ?: ""
-
-            supabaseClient.auth.verifyEmailOtp(
-                email = email,
-                token = token,
-                type = OtpType.Email.RECOVERY
-            )
-
-            supabaseClient.auth.updateUser {
-                password = newPassword
-            }
-            Log.d(
-                TAG,
-                "The password has been successfully updated for " +
-                        "${supabaseClient.auth.currentUserOrNull()}"
-            )
-            Unit
-        }
-            .onFailure { e ->
-                Log.d(TAG, "Error while updating password $e")
-            }
-
-
-    private fun decodeJwtAndGetEmail(token: String): String? {
-        try {
-            val payload = token.split(".")[1]
-            val decodedBytes = android.util.Base64.decode(payload, android.util.Base64.URL_SAFE)
-            val decodedPayload = String(decodedBytes)
-
-            // Use a JSON parser to extract the email
-            val jsonObject = org.json.JSONObject(decodedPayload)
-            return jsonObject.optString("email")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error decoding JWT", e)
-            return null
-        }
-    }
-
-
-    override suspend fun checkUserSession(): Boolean {
-        return try {
-            supabaseClient.auth.currentUserOrNull() != null
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    override suspend fun deleteUserAccount(): Result<Unit> = kotlin.runCatching {
-        val response = supabaseApiService.deleteUser()
-        if (response.isSuccessful) {
-            logOut().getOrThrow()
-        } else {
-            throw Exception("Failed to delete user: ${response.code()} ${response.errorBody()?.string()}")
-        }
-    }.onFailure { e ->
-        Log.d(TAG, "Error while deleting user account $e")
-    }
 
 
 //SupabaseDB
@@ -282,35 +146,14 @@ class RepositoryImpl @Inject constructor(
             }
 
 
-//    override suspend fun deletePetFromSupabaseDb(pet: Pet, userId: String): Result<List<Pet>> = kotlin.runCatching {
-//
-//        val idWithOperator = "eq.${pet.petId}"
-//
-//        val response = supabaseApiService.deletePet(idWithOperator)
-//
-//        if (response.isSuccessful) {
-//            Log.d(TAG, "Successfully deleted pet in Supabase DB")
-//            deletePetFromRoom(pet)
-//            getPetsFromSupabaseDb(userId).getOrNull()?: emptyList()
-//        } else {
-//            val errorBody = response.errorBody()?.string()
-//            throw Exception("Failed to delete pet. ${response.code()} - $errorBody\")")
-//        }
-//    }
-//        .onFailure { error ->
-//            Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
-//        }
-
     override suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> = kotlin.runCatching {
-        // Сначала пытаемся удалить питомца из Room
         deletePetFromRoom(pet)
 
         val idWithOperator = "eq.${pet.petId}"
         val response = supabaseApiService.deletePet(idWithOperator)
 
         if (!response.isSuccessful) {
-            // Если ошибка на сервере, откатываем изменения в Room
-            addPetToRoom(pet) // Вставляем обратно в Room, если не получилось удалить с сервера
+            addPetToRoom(pet)
             val errorBody = response.errorBody()?.string()
             throw Exception("Failed to delete pet. ${response.code()} - $errorBody")
         }

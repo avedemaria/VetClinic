@@ -82,14 +82,6 @@ class LoginFragment : Fragment() {
                 }
             })
 
-
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                     // Возврат к предыдущему фрагменту
-//                }
-//            })
-
     }
 
     private fun observeViewModel() {

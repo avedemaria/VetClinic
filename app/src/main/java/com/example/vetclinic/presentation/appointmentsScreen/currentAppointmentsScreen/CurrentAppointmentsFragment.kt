@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointm
 import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsState
 import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -67,7 +68,6 @@ class CurrentAppointmentsFragment : Fragment() {
 
 
         setUpAdapter()
-
         observeViewModel()
 
 
@@ -149,10 +149,22 @@ class CurrentAppointmentsFragment : Fragment() {
                         is SharedAppointmentsState.Success -> {
                             binding.progressBar.visibility = View.GONE
                             binding.currentAppointmentContent.isEnabled = true
+                            binding.tvEmptyAppointments.visibility = View.GONE
+
 
                             val appointments = state.appointments
                             val filteredAppointments =
                                 appointments.filter { !it.isArchived }.sortedBy { it.dateTime }
+
+
+
+                            if (filteredAppointments.isEmpty()) {
+                                binding.rvCurrentAppointments.visibility = View.GONE
+                                binding.tvEmptyAppointments.visibility = View.VISIBLE
+                            } else {
+                                binding.rvCurrentAppointments.visibility = View.VISIBLE
+                                appointmentsAdapter.submitList(filteredAppointments)
+                            }
 
                             appointmentsAdapter.submitList(filteredAppointments)
                         }
@@ -162,6 +174,69 @@ class CurrentAppointmentsFragment : Fragment() {
             }
         }
     }
+
+//
+//    private fun handleEmptyState() {
+//        setVisibility(
+//            progressBarVisible = false,
+//            rvCurrentAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = true,
+//            currentAppointmentsContentEnabled = true
+//        )
+//    }
+//
+//
+//    private fun handleLoadingState() {
+//        setVisibility(
+//            progressBarVisible = true,
+//            rvCurrentAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = false,
+//            currentAppointmentsContentEnabled = false
+//        )
+//    }
+//
+//    private fun handleSuccessState(state: SharedAppointmentsState.Success) {
+//        val appointments = state.appointments
+//        val filteredAppointments = appointments.filter { !it.isArchived }.sortedBy { it.dateTime }
+//        val isListEmpty = filteredAppointments.isEmpty()
+//        setVisibility(
+//            progressBarVisible = false,
+//            currentAppointmentsContentEnabled = !isListEmpty,
+//            rvCurrentAppointmentsVisible = isListEmpty,
+//            tvEmptyAppointmentsVisible = false
+//        )
+//
+//        appointmentsAdapter.submitList(filteredAppointments)
+//    }
+//
+//
+//    private fun handleErrorState(state: SharedAppointmentsState.Error) {
+//        setVisibility(
+//            progressBarVisible = false,
+//            rvCurrentAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = false,
+//            currentAppointmentsContentEnabled = false
+//        )
+//        Snackbar.make(binding.root, "${state.message}", Snackbar.LENGTH_SHORT).show()
+//    }
+//
+//
+//    private fun setVisibility(
+//        progressBarVisible: Boolean,
+//        rvCurrentAppointmentsVisible: Boolean,
+//        tvEmptyAppointmentsVisible: Boolean,
+//        currentAppointmentsContentEnabled: Boolean,
+//    ) {
+//
+//        binding.progressBar.visibility = if (progressBarVisible) View.VISIBLE else View.GONE
+//        binding.rvCurrentAppointments.visibility =
+//            if (rvCurrentAppointmentsVisible) View.VISIBLE else View.GONE
+//        binding.tvEmptyAppointments.visibility =
+//            if (tvEmptyAppointmentsVisible) View.VISIBLE else View.GONE
+//        binding.currentAppointmentContent.isEnabled = currentAppointmentsContentEnabled
+//
+//    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

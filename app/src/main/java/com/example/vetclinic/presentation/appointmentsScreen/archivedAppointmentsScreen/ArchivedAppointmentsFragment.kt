@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsS
 import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.ViewModelFactory
 import com.example.vetclinic.toLocalDateOrNull
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -106,9 +107,13 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     private fun observeViewModel() {
 
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
+
+                    Log.d(TAG, "received state: $state")
                     when (state) {
                         SharedAppointmentsState.Empty -> {
                             binding.rvArchivedAppointments.visibility = View.GONE
@@ -133,9 +138,14 @@ class ArchivedAppointmentsFragment : Fragment() {
                         }
 
                         is SharedAppointmentsState.Success -> {
+                            Log.d(TAG, "tvEmptyAppointments visibility: ${binding.tvEmptyAppointments.visibility}")
+                            Log.d(TAG, "archivedAppointmentContent visibility: ${binding.archivedAppointmentContent.visibility}")
+
                             binding.progressBar.visibility = View.GONE
                             binding.archivedAppointmentContent.isEnabled = true
+                            binding.archivedAppointmentContent.visibility = View.VISIBLE
                             binding.rvArchivedAppointments.visibility = View.VISIBLE
+                            binding.tvEmptyAppointments.visibility = View.GONE
 
 
                             val selectedDate = state.selectedDate
@@ -147,9 +157,11 @@ class ArchivedAppointmentsFragment : Fragment() {
                             if (filteredAppointments.isEmpty()) {
                                 binding.rvArchivedAppointments.visibility = View.GONE
                                 binding.tvEmptyAppointments.visibility = View.VISIBLE
+                                binding.btnCalendar.visibility = View.VISIBLE
                             } else {
                                 binding.rvArchivedAppointments.visibility = View.VISIBLE
                                 binding.tvEmptyAppointments.visibility = View.GONE
+                                binding.btnCalendar.visibility = View.VISIBLE
                             }
                             Log.d(TAG, "filtered archived appointments: $filteredAppointments")
 
@@ -161,6 +173,74 @@ class ArchivedAppointmentsFragment : Fragment() {
             }
         }
     }
+
+
+//    private fun handleEmptyState() {
+//        setVisibility(
+//            progressBarVisible = false,
+//            rvArchivedAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = true,
+//            archivedAppointmentsContentEnabled = true
+//        )
+//    }
+//
+//
+//    private fun handleLoadingState() {
+//        setVisibility(
+//            progressBarVisible = true,
+//            rvArchivedAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = false,
+//            archivedAppointmentsContentEnabled = false
+//        )
+//    }
+//
+//    private fun handleSuccessState(state: SharedAppointmentsState.Success) {
+//
+//        val selectedDate = state.selectedDate
+//        val appointments = state.appointments
+//
+//        val filteredAppointments =
+//            filterAppointments(appointments, selectedDate)
+//
+//        val isListEmpty = filteredAppointments.isEmpty()
+//
+//        setVisibility(
+//            progressBarVisible = false,
+//            archivedAppointmentsContentEnabled = !isListEmpty,
+//            rvArchivedAppointmentsVisible = isListEmpty,
+//            tvEmptyAppointmentsVisible = false
+//        )
+//
+//        appointmentsAdapter.submitList(filteredAppointments)
+//    }
+//
+//
+//    private fun handleErrorState(state: SharedAppointmentsState.Error) {
+//        setVisibility(
+//            progressBarVisible = false,
+//            rvArchivedAppointmentsVisible = false,
+//            tvEmptyAppointmentsVisible = false,
+//            archivedAppointmentsContentEnabled = false
+//        )
+//        Snackbar.make(binding.root, "${state.message}", Snackbar.LENGTH_SHORT).show()
+//    }
+//
+//
+//    private fun setVisibility(
+//        progressBarVisible: Boolean,
+//        rvArchivedAppointmentsVisible: Boolean,
+//        tvEmptyAppointmentsVisible: Boolean,
+//        archivedAppointmentsContentEnabled: Boolean,
+//    ) {
+//
+//        binding.progressBar.visibility = if (progressBarVisible) View.VISIBLE else View.GONE
+//        binding.rvArchivedAppointments.visibility =
+//            if (rvArchivedAppointmentsVisible) View.VISIBLE else View.GONE
+//        binding.tvEmptyAppointments.visibility =
+//            if (tvEmptyAppointmentsVisible) View.VISIBLE else View.GONE
+//        binding.archivedAppointmentContent.isEnabled = archivedAppointmentsContentEnabled
+//
+//    }
 
 
     private fun filterAppointments(

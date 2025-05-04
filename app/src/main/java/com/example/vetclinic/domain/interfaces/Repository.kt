@@ -9,20 +9,6 @@ import io.github.jan.supabase.auth.user.UserSession
 
 interface Repository {
 
-    suspend fun loginUser(email: String, password: String): Result<UserSession>
-
-    suspend fun registerUser(
-        email: String,
-        password: String,
-    ): Result<UserSession>
-
-    suspend fun logOut(): Result<Unit>
-
-    suspend fun resetPasswordWithEmail(email: String): Result<Unit>
-
-    suspend fun updatePassword(newPassword: String, token: String): Result<Unit>
-
-    suspend fun deleteUserAccount (): Result<Unit>
 
     suspend fun getUserFromSupabaseDb(userId: String): Result<User?>
 
@@ -45,8 +31,6 @@ interface Repository {
     suspend fun getServiceList(): Result<List<Service>>
 
     suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>>
-
-    suspend fun checkUserSession(): Boolean
 
     suspend fun addUserAndPetToRoom(user: User, pet: Pet)
 

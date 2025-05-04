@@ -1,8 +1,8 @@
 package com.example.vetclinic.data.network
 
 import com.example.vetclinic.BuildConfig
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,29 +14,24 @@ object SupabaseApiFactory {
     private const val BASE_URL = BuildConfig.SUPABASE_URL
     private const val API_KEY = BuildConfig.SUPABASE_KEY
 
-//    private var userDataStore: UserDataStore? = null
-//
-//
-//    fun init(userDataStore: UserDataStore) {
-//        SupabaseApiFactory.userDataStore = userDataStore
-//    }
-
-
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level =
-            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
-            else HttpLoggingInterceptor.Level.NONE
+    private val loggingInterceptor by lazy {
+        HttpLoggingInterceptor().apply {
+            level =
+                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                else HttpLoggingInterceptor.Level.NONE
+        }
     }
 
-    private val authInterceptor = Interceptor { chain ->
-//        val token = runBlocking { userDataStore?.getAccessToken() }
-        val original = chain.request()
-        val request = original.newBuilder()
-            .addHeader("apikey", API_KEY)
-            .addHeader("Authorization", "Bearer $API_KEY")
-            .method(original.method, original.body)
-            .build()
-        chain.proceed(request)
+    private val authInterceptor by lazy {
+        Interceptor { chain ->
+            val original = chain.request()
+            val request = original.newBuilder()
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer $API_KEY")
+                .method(original.method, original.body)
+                .build()
+            chain.proceed(request)
+        }
     }
 
 
@@ -45,6 +40,7 @@ object SupabaseApiFactory {
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(loggingInterceptor)
+//        .addInterceptor(headerInterceptor)
         .addInterceptor(authInterceptor)
         .build()
 
@@ -59,6 +55,7 @@ object SupabaseApiFactory {
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(BASE_URL)
+            // supabase sdk injection and observing retrofit requests
             .build()
     }
 

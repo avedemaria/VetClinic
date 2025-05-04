@@ -101,7 +101,6 @@ class HomeFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.homeState.observe(viewLifecycleOwner) { state ->
-            Log.d("HomeFragment", "State changed to: $state")
             when (state) {
                 is HomeState.Error -> {
                     Toast.makeText(
@@ -181,7 +180,6 @@ class HomeFragment : Fragment() {
                 dialog.dismiss()
             }
 
-            // Выравниваем кнопки по центру, если хочешь
             val layoutParams = positive.layoutParams as LinearLayout.LayoutParams
             layoutParams.weight = 1f
             positive.layoutParams = layoutParams

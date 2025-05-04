@@ -40,6 +40,8 @@ class AppointmentsFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
+    private var isInitialFragmentLoaded = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,18 +109,26 @@ class AppointmentsFragment : Fragment() {
                         }
 
                         is SharedAppointmentsState.Success -> {
+
                             binding.fragmentContent.isEnabled = true
                             binding.fragmentContent.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
-                            loadChildFragment(CurrentAppointmentsFragment())
+
+                            if (!isInitialFragmentLoaded) {
+                                loadChildFragment(CurrentAppointmentsFragment())
+                                isInitialFragmentLoaded = true
+                            }
                         }
 
-                        SharedAppointmentsState.Empty -> Log.d(TAG, "заглушка")
+                        SharedAppointmentsState.Empty -> Log.d(TAG, "Your appointment list is empty.")
                     }
                 }
             }
         }
     }
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

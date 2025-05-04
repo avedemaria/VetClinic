@@ -119,8 +119,6 @@ class RegistrationFragment : Fragment() {
 
     private fun setUpSmoothPaging() {
         val totalPages = 2
-
-        // Set up ViewPager2 page change callback
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)

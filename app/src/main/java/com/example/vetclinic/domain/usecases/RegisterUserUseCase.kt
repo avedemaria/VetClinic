@@ -1,10 +1,11 @@
 package com.example.vetclinic.domain.usecases
 
+import com.example.vetclinic.domain.interfaces.AuthRepository
 import com.example.vetclinic.domain.interfaces.Repository
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 
-class RegisterUserUseCase @Inject constructor(private val repository: Repository) {
+class RegisterUserUseCase @Inject constructor(private val repository: AuthRepository) {
 
     suspend fun registerUser(
         email: String,

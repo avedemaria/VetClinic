@@ -2,7 +2,6 @@ package com.example.vetclinic.di
 
 import android.app.Application
 import android.content.Context
-import android.provider.Settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -11,19 +10,17 @@ import androidx.room.Room
 import com.example.vetclinic.BuildConfig
 import com.example.vetclinic.data.database.model.VetClinicDao
 import com.example.vetclinic.data.database.model.VetClinicDatabase
+import com.example.vetclinic.data.network.HeaderInterceptor
 import com.example.vetclinic.data.network.SupabaseApiFactory
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.di.qualifiers.DialogPrefs
 import com.example.vetclinic.di.qualifiers.UserPrefs
-import com.russhwolf.settings.SharedPreferencesSettings
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.SessionManager
-import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
@@ -56,9 +53,23 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideHeaderInterceptor(supabaseClient: SupabaseClient): HeaderInterceptor {
+        return HeaderInterceptor(supabaseClient)
+    }
+
+//    @Provides
+//    @Singleton
+//    fun provideSupabaseApiFactory(headerInterceptor: HeaderInterceptor): SupabaseApiFactory {
+//        return SupabaseApiFactory(headerInterceptor)
+//    }
+
+
+    @Provides
+    @Singleton
     fun provideSupabaseDb(): SupabaseApiService {
         return SupabaseApiFactory.apiService
     }
+
 
     @Provides
     @Singleton
@@ -104,31 +115,5 @@ class DataModule {
             produceFile = {application.preferencesDataStoreFile("dialog_prefs")}
         )
     }
-
-//
-//    @Provides
-//    @Singleton
-//    fun provideAppointmentRemoteMediatorFactory(
-//        vetClinicDao: VetClinicDao,
-//        supabaseApiService: SupabaseApiService,
-//        appointmentMapper: AppointmentMapper,
-//        petMapper: PetMapper,
-//        userMapper: UserMapper,
-//        doctorMapper: DoctorMapper,
-//        serviceMapper: ServiceMapper
-//
-//        ): AppointmentRemoteMediatorFactory {
-//        return AppointmentRemoteMediatorFactory(
-//            vetClinicDao = vetClinicDao,
-//            supabaseApiService = supabaseApiService,
-//            appointmentMapper = appointmentMapper,
-//            petMapper = petMapper,
-//            userMapper = userMapper,
-//            doctorMapper = doctorMapper,
-//            serviceMapper = serviceMapper
-//
-//        )
-//    }
-
 
 }

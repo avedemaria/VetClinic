@@ -139,14 +139,12 @@ class PetFragment : Fragment() {
                         PetUiState.Loading -> {
                             binding.petContent.visibility = View.GONE
                             binding.progressBar.visibility = View.VISIBLE
-                            Log.d(TAG, "Загрузка данных...")
                         }
 
                         is PetUiState.Success -> {
                             binding.petContent.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
                             petsAdapter.submitList(state.pets)
-                            Log.d(TAG, "Данные загружены: ${state.pets}")
                         }
 
                     }
@@ -160,8 +158,8 @@ class PetFragment : Fragment() {
         binding.btnAddPet.setOnClickListener {
             val addPetFragment = AddPetFragment()
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, addPetFragment) // Контейнер из ProfileFragment
-                .addToBackStack(null) // Позволяет вернуться назад
+                .replace(R.id.fragmentContainer, addPetFragment)
+                .addToBackStack(null)
                 .commit()
 
         }

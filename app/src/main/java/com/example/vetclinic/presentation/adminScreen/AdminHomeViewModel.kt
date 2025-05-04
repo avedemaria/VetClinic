@@ -25,10 +25,7 @@ import kotlin.coroutines.cancellation.CancellationException
 data class AdminHomeViewModel @Inject constructor(
     private val appointmentUseCase: AppointmentUseCase,
     private val loginUseCase: LoginUseCase,
-    private val userDataStore: UserDataStore
-
-
-    ) : ViewModel() {
+    private val userDataStore: UserDataStore) : ViewModel() {
 
     private val _adminState = MutableStateFlow<AdminHomeState>(AdminHomeState.Empty)
     val adminState: StateFlow<AdminHomeState> get() = _adminState.asStateFlow()
