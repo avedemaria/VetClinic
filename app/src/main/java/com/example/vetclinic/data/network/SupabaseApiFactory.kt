@@ -9,52 +9,41 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-object SupabaseApiFactory {
-    private const val BASE_URL = BuildConfig.SUPABASE_URL
-    private const val API_KEY = BuildConfig.SUPABASE_KEY
-
+class SupabaseApiFactory @Inject constructor(
+    headerInterceptor: HeaderInterceptor
+) {
     private val loggingInterceptor by lazy {
         HttpLoggingInterceptor().apply {
-            level =
-                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
-                else HttpLoggingInterceptor.Level.NONE
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+            else HttpLoggingInterceptor.Level.NONE
         }
     }
 
     private val authInterceptor by lazy {
         Interceptor { chain ->
             val original = chain.request()
-            val request = original.newBuilder()
-                .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer $API_KEY")
-                .method(original.method, original.body)
-                .build()
+            val request = original.newBuilder().addHeader("apikey", BuildConfig.SUPABASE_KEY)
+                .addHeader("Authorization", "Bearer ${BuildConfig.SUPABASE_KEY}")
+                .method(original.method, original.body).build()
             chain.proceed(request)
         }
     }
 
 
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(loggingInterceptor)
-//        .addInterceptor(headerInterceptor)
-        .addInterceptor(authInterceptor)
-        .build()
+    private val client = OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(loggingInterceptor).addInterceptor(headerInterceptor)
+        .addInterceptor(authInterceptor).build()
 
 
-    private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .add(SingleUserAdapter())
-        .build()
+    private val moshi =
+        Moshi.Builder().add(KotlinJsonAdapterFactory()).add(SingleUserAdapter()).build()
 
     private val retrofit by lazy {
-        Retrofit.Builder()
-            .client(client)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BASE_URL)
+        Retrofit.Builder().client(client).addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BuildConfig.SUPABASE_URL)
             // supabase sdk injection and observing retrofit requests
             .build()
     }

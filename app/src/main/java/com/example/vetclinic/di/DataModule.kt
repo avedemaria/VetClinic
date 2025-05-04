@@ -53,21 +53,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideHeaderInterceptor(supabaseClient: SupabaseClient): HeaderInterceptor {
-        return HeaderInterceptor(supabaseClient)
-    }
-
-//    @Provides
-//    @Singleton
-//    fun provideSupabaseApiFactory(headerInterceptor: HeaderInterceptor): SupabaseApiFactory {
-//        return SupabaseApiFactory(headerInterceptor)
-//    }
-
-
-    @Provides
-    @Singleton
-    fun provideSupabaseDb(): SupabaseApiService {
-        return SupabaseApiFactory.apiService
+    fun provideSupabaseDb(
+          headerInterceptor: HeaderInterceptor
+    ): SupabaseApiService {
+        return SupabaseApiFactory(headerInterceptor).apiService
     }
 
 
