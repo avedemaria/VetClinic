@@ -21,7 +21,7 @@ import com.example.vetclinic.presentation.servicesScreen.PlainServicesFragment
 import com.example.vetclinic.presentation.profileScreen.ProfileFragment
 import com.example.vetclinic.presentation.registrationScreen.RegistrationFragment
 import com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkFragment
-import com.example.vetclinic.presentation.servicesWithDepScreen.ServicesWithDepFragment
+import com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment
 import com.example.vetclinic.presentation.settingsScreen.SettingsFragment
 import com.example.vetclinic.presentation.updatePasswordScreen.UpdatePasswordFragment
 import com.example.vetclinic.presentation.profileScreen.userScreen.UserFragment

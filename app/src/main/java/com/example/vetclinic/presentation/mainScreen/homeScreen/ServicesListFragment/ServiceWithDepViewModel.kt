@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.servicesWithDepScreen
+package com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment
 
 import android.util.Log
 import androidx.lifecycle.LiveData

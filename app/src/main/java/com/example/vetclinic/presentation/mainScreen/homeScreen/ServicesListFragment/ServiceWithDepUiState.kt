@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.servicesWithDepScreen
+package com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment
 
 import com.example.vetclinic.domain.entities.department.DepartmentWithServices
 

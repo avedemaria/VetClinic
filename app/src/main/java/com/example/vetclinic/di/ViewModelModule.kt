@@ -14,7 +14,7 @@ import com.example.vetclinic.presentation.profileScreen.petScreen.PetViewModel
 import com.example.vetclinic.presentation.servicesScreen.PlainServiceViewModel
 import com.example.vetclinic.presentation.registrationScreen.RegistrationViewModel
 import com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkViewModel
-import com.example.vetclinic.presentation.servicesWithDepScreen.ServiceWithDepViewModel
+import com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.settingsScreen.SettingsViewModel
 import com.example.vetclinic.presentation.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.detailedDoctorInfoScreen.DetailedDoctorInfoViewModel

@@ -12,10 +12,13 @@ class HeaderInterceptor @Inject constructor(
     private val supabaseClient: SupabaseClient
 ): Interceptor {
 
+    private var token: String? = supabaseClient.auth.currentSessionOrNull()?.accessToken
+
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        val token = runBlocking {
-            withTimeout(1000) {
+         token = runBlocking {
+            withTimeout(3*60*1000) {
+                supabaseClient.auth.refreshCurrentSession()
                 supabaseClient.auth.currentSessionOrNull()?.accessToken
             }
         }

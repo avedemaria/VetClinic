@@ -35,11 +35,6 @@
         android:id="@+id/profileFragment"
         android:name="com.example.vetclinic.presentation.profileScreen.ProfileFragment"
         android:label="Profile" >
-            <action
-                android:id="@+id/action_profileFragment_to_homeFragment"
-                app:destination="@id/homeFragment"
-                app:popUpTo="@id/homeFragment"
-                app:popUpToInclusive="true" />
             <argument
                 android:name="userId"
                 app:argType="string"
@@ -82,7 +77,7 @@
         tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/servicesWithDepFragment"
-        android:name="com.example.vetclinic.presentation.servicesWithDepScreen.ServicesWithDepFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
     <fragment
         android:id="@+id/bookAppointmentFragment"
@@ -95,9 +90,6 @@
         <argument
             android:name="doctor"
             app:argType="com.example.vetclinic.domain.entities.doctor.Doctor" />
-        <action
-            android:id="@+id/action_bookAppointmentFragment_to_appointmentFragment"
-            app:destination="@id/appointmentFragment" />
     </fragment>
 
 
