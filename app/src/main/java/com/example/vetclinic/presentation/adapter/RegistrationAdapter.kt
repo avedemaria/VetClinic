@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.vetclinic.presentation.PetInput
-import com.example.vetclinic.presentation.registrationScreen.UserInput
+import com.example.vetclinic.presentation.loginScreen.registrationFragment.UserInput
 
 class RegistrationAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {

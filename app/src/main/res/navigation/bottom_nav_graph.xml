@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/doctorsFragment"
-        android:name="com.example.vetclinic.presentation.doctorsScreen.DoctorsFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.DoctorsFragment"
         android:label="Записи"
         app:defaultNavHost="false" >
         <action
@@ -33,7 +33,7 @@
 
         <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.vetclinic.presentation.profileScreen.ProfileFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.profileFragment.ProfileFragment"
         android:label="Profile" >
             <argument
                 android:name="userId"
@@ -42,7 +42,7 @@
         </fragment>
     <fragment
         android:id="@+id/detailedDoctorInfoFragment"
-        android:name="com.example.vetclinic.presentation.detailedDoctorInfoScreen.DetailedDoctorInfoFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.detailedDoctorInfoFragment.DetailedDoctorInfoFragment"
         android:label="DetailedDoctorInfoFragment" >
         <action
             android:id="@+id/action_detailedDoctorInfoFragment_to_plainServicesFragment"
@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/plainServicesFragment"
-        android:name="com.example.vetclinic.presentation.servicesScreen.PlainServicesFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.plainServicesListFragment.PlainServicesFragment"
         android:label="PlainServicesFragment" >
         <argument
             android:name="doctor"
@@ -81,7 +81,7 @@
         android:label="ServicesWithDepFragment" />
     <fragment
         android:id="@+id/bookAppointmentFragment"
-        android:name="com.example.vetclinic.presentation.bookAppointmentScreen.BookAppointmentFragment"
+        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment.BookAppointmentFragment"
         android:label="fragment_book_appointment"
         tools:layout="@layout/fragment_book_appointment" >
         <argument

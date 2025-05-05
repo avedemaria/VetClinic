@@ -25,7 +25,7 @@ class SupabaseApiFactory @Inject constructor(
         Interceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder().addHeader("apikey", BuildConfig.SUPABASE_KEY)
-                .addHeader("Authorization", "Bearer ${BuildConfig.SUPABASE_KEY}")
+//                .addHeader("Authorization", "Bearer ${BuildConfig.SUPABASE_KEY}")
                 .method(original.method, original.body).build()
             chain.proceed(request)
         }

@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentAppointmentsBinding
 import com.example.vetclinic.presentation.VetClinicApplication
-import com.example.vetclinic.presentation.appointmentsScreen.archivedAppointmentsScreen.ArchivedAppointmentsFragment
-import com.example.vetclinic.presentation.appointmentsScreen.currentAppointmentsScreen.CurrentAppointmentsFragment
+import com.example.vetclinic.presentation.appointmentsScreen.archivedAppointmentsFragment.ArchivedAppointmentsFragment
+import com.example.vetclinic.presentation.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment
 import com.example.vetclinic.presentation.ViewModelFactory
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
