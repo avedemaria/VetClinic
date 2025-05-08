@@ -91,14 +91,14 @@ class AuthRepositoryImpl @Inject constructor(
                 throw IllegalArgumentException("Token is empty")
             }
 
-
-            val email = decodeJwtAndGetEmail(token) ?: ""
-
-            supabaseClient.auth.verifyEmailOtp(
-                email = email,
-                token = token,
-                type = OtpType.Email.RECOVERY
-            )
+//
+//            val email = decodeJwtAndGetEmail(token) ?: ""
+//
+//            supabaseClient.auth.verifyEmailOtp(
+//                email = email,
+//                token = token,
+//                type = OtpType.Email.RECOVERY
+//            )
 
             supabaseClient.auth.updateUser {
                 password = newPassword
