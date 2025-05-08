@@ -3,6 +3,10 @@ package com.example.vetclinic.di
 import android.app.Application
 import com.example.vetclinic.MainActivity
 import com.example.vetclinic.VetClinicApplication
+import com.example.vetclinic.di.modules.DataModule
+import com.example.vetclinic.di.modules.DomainModule
+import com.example.vetclinic.di.modules.ViewModelModule
+import com.example.vetclinic.di.modules.WorkerBindsModule
 import com.example.vetclinic.presentation.screens.adminScreen.AdminHomeFragment
 import com.example.vetclinic.presentation.screens.loginScreen.LoadingFragment
 import com.example.vetclinic.presentation.screens.loginScreen.LoginFragment

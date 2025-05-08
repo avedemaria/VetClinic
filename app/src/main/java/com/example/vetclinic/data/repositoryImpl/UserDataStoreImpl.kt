@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.vetclinic.di.qualifiers.UserPrefs
-import com.example.vetclinic.domain.interfaces.UserDataStore
+import com.example.vetclinic.domain.repository.UserDataStore
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.first

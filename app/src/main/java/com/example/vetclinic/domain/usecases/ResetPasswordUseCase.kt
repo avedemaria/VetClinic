@@ -1,7 +1,6 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.interfaces.AuthRepository
-import com.example.vetclinic.domain.interfaces.Repository
+import com.example.vetclinic.domain.repository.AuthRepository
 import jakarta.inject.Inject
 
 class ResetPasswordUseCase @Inject constructor(private val repository: AuthRepository) {

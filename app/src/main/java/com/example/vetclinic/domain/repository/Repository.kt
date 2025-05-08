@@ -1,11 +1,10 @@
-package com.example.vetclinic.domain.interfaces
+package com.example.vetclinic.domain.repository
 
 import com.example.vetclinic.domain.entities.department.Department
 import com.example.vetclinic.domain.entities.doctor.Doctor
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.service.Service
 import com.example.vetclinic.domain.entities.user.User
-import io.github.jan.supabase.auth.user.UserSession
 
 interface Repository {
 

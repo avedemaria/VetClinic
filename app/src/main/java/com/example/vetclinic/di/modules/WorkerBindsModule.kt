@@ -1,4 +1,4 @@
-package com.example.vetclinic.di
+package com.example.vetclinic.di.modules
 
 import androidx.work.WorkerFactory
 import com.example.vetclinic.data.workers.AppointmentReminderWorker

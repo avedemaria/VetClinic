@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain.interfaces
+package com.example.vetclinic.domain.repository
 
 interface UserDataStore {
 

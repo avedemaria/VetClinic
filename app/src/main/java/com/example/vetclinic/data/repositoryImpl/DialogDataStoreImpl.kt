@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.example.vetclinic.di.qualifiers.DialogPrefs
-import com.example.vetclinic.domain.interfaces.DialogDataStore
+import com.example.vetclinic.domain.repository.DialogDataStore
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.first
 

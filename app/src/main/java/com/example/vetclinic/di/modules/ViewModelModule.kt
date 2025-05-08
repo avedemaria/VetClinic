@@ -1,4 +1,4 @@
-package com.example.vetclinic.di
+package com.example.vetclinic.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.example.vetclinic.di.keys.ViewModelKey

@@ -2,7 +2,7 @@ package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
 import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.domain.interfaces.AuthRepository
+import com.example.vetclinic.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth

@@ -1,4 +1,4 @@
-package com.example.vetclinic.di
+package com.example.vetclinic.di.modules
 
 import android.app.Application
 import android.content.Context

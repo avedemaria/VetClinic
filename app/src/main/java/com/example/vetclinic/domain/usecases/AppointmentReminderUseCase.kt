@@ -1,6 +1,6 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.interfaces.ReminderRepository
+import com.example.vetclinic.domain.repository.ReminderRepository
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import jakarta.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.example.vetclinic.domain.usecases
 
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
-import com.example.vetclinic.domain.interfaces.TimeSlotsRepository
+import com.example.vetclinic.domain.repository.TimeSlotsRepository
 import jakarta.inject.Inject
 
 class TimeSlotsUseCase @Inject constructor(private val repository: TimeSlotsRepository) {

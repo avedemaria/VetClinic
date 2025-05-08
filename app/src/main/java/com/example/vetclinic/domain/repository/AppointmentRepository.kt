@@ -1,4 +1,4 @@
-package com.example.vetclinic.domain.interfaces
+package com.example.vetclinic.domain.repository
 
 import androidx.paging.PagingData
 import com.example.vetclinic.domain.entities.appointment.Appointment

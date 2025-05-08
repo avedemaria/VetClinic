@@ -1,4 +1,4 @@
-package com.example.vetclinic.di
+package com.example.vetclinic.di.modules
 
 import com.example.vetclinic.data.repositoryImpl.AppointmentRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.AuthRepositoryImpl
@@ -7,13 +7,13 @@ import com.example.vetclinic.data.repositoryImpl.ReminderRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.RepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.TimeSlotsRepositoryImpl
 import com.example.vetclinic.data.repositoryImpl.UserDataStoreImpl
-import com.example.vetclinic.domain.interfaces.AppointmentRepository
-import com.example.vetclinic.domain.interfaces.AuthRepository
-import com.example.vetclinic.domain.interfaces.DialogDataStore
-import com.example.vetclinic.domain.interfaces.ReminderRepository
-import com.example.vetclinic.domain.interfaces.Repository
-import com.example.vetclinic.domain.interfaces.TimeSlotsRepository
-import com.example.vetclinic.domain.interfaces.UserDataStore
+import com.example.vetclinic.domain.repository.AppointmentRepository
+import com.example.vetclinic.domain.repository.AuthRepository
+import com.example.vetclinic.domain.repository.DialogDataStore
+import com.example.vetclinic.domain.repository.ReminderRepository
+import com.example.vetclinic.domain.repository.Repository
+import com.example.vetclinic.domain.repository.TimeSlotsRepository
+import com.example.vetclinic.domain.repository.UserDataStore
 import dagger.Binds
 import dagger.Module
 

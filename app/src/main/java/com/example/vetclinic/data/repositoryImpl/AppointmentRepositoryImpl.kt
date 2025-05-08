@@ -12,7 +12,7 @@ import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.network.AppointmentQuery
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentDto
-import com.example.vetclinic.domain.interfaces.AppointmentRepository
+import com.example.vetclinic.domain.repository.AppointmentRepository
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.squareup.moshi.Moshi

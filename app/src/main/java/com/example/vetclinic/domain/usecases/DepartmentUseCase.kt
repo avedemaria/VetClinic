@@ -1,6 +1,6 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.interfaces.Repository
+import com.example.vetclinic.domain.repository.Repository
 import com.example.vetclinic.domain.entities.department.Department
 import jakarta.inject.Inject
 

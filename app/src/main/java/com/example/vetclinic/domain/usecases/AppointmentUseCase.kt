@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.paging.PagingData
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.domain.interfaces.AppointmentRepository
+import com.example.vetclinic.domain.repository.AppointmentRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

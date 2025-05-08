@@ -1,7 +1,6 @@
 package com.example.vetclinic.domain.usecases
 
-import com.example.vetclinic.domain.interfaces.AuthRepository
-import com.example.vetclinic.domain.interfaces.Repository
+import com.example.vetclinic.domain.repository.AuthRepository
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 
