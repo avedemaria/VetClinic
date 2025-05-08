@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".presentation.loginScreen.registrationFragment.UserInput">
+    tools:context=".presentation.screens.loginScreen.registrationFragment.UserInput">
 
 
     <com.google.android.material.textfield.TextInputLayout

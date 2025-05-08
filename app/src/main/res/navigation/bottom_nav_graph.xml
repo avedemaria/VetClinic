@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.HomeFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.HomeFragment"
         android:label="Главная"
         app:defaultNavHost="false" >
         <action
@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/doctorsFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.DoctorsFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.DoctorsFragment"
         android:label="Записи"
         app:defaultNavHost="false" >
         <action
@@ -33,7 +33,7 @@
 
         <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.profileFragment.ProfileFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment"
         android:label="Profile" >
             <argument
                 android:name="userId"
@@ -42,7 +42,7 @@
         </fragment>
     <fragment
         android:id="@+id/detailedDoctorInfoFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.detailedDoctorInfoFragment.DetailedDoctorInfoFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.detailedDoctorInfoFragment.DetailedDoctorInfoFragment"
         android:label="DetailedDoctorInfoFragment" >
         <action
             android:id="@+id/action_detailedDoctorInfoFragment_to_plainServicesFragment"
@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/plainServicesFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.plainServicesListFragment.PlainServicesFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.plainServicesListFragment.PlainServicesFragment"
         android:label="PlainServicesFragment" >
         <argument
             android:name="doctor"
@@ -72,16 +72,16 @@
     </fragment>
     <fragment
         android:id="@+id/appointmentFragment"
-        android:name="com.example.vetclinic.presentation.appointmentsScreen.AppointmentsFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.AppointmentsFragment"
         android:label="fragment_appointment"
         tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/servicesWithDepFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
     <fragment
         android:id="@+id/bookAppointmentFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment.BookAppointmentFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment.BookAppointmentFragment"
         android:label="fragment_book_appointment"
         tools:layout="@layout/fragment_book_appointment" >
         <argument
@@ -90,6 +90,9 @@
         <argument
             android:name="doctor"
             app:argType="com.example.vetclinic.domain.entities.doctor.Doctor" />
+        <action
+            android:id="@+id/action_bookAppointmentFragment_to_appointmentFragment"
+            app:destination="@id/appointmentFragment" />
     </fragment>
 
 

@@ -8,11 +8,9 @@ import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.DepartmentDto
 import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
-import com.example.vetclinic.data.network.model.QueryBody
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.data.network.model.UserDTO
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -21,7 +19,6 @@ import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
-import retrofit2.http.QueryMap
 
 
 interface SupabaseApiService {
@@ -137,10 +134,6 @@ interface SupabaseApiService {
 
     @POST("rest/v1/rpc/delete_user")
     suspend fun deleteUser(): Response<Unit>
-
-
-    @POST("rest/v1/appointments")
-    suspend fun addMockAppointment(@Body appointmentDto: AppointmentDto): Response<Unit>
 
 }
 

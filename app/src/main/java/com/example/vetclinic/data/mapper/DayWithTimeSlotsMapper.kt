@@ -6,7 +6,7 @@ import com.example.vetclinic.data.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.timeSlot.Day
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
 import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
-import com.example.vetclinic.toLocalDateDefault
+import com.example.vetclinic.presentation.utils.toLocalDateDefault
 import jakarta.inject.Inject
 
 class DayWithTimeSlotsMapper @Inject constructor() {

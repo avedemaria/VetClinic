@@ -14,13 +14,17 @@ class HeaderInterceptor @Inject constructor(
 
     private var token: String? = supabaseClient.auth.currentSessionOrNull()?.accessToken
 
-    override fun intercept(chain: Interceptor.Chain): Response {
 
-         token = runBlocking {
-            withTimeout(3*60*1000) {
-                supabaseClient.auth.refreshCurrentSession()
-                supabaseClient.auth.currentSessionOrNull()?.accessToken
-            }
+    override fun intercept(chain: Interceptor.Chain): Response {
+        
+        val session = supabaseClient.auth.currentSessionOrNull()
+        if (session?.refreshToken!= null) {
+            token = runBlocking {
+                withTimeout(3*60*1000) {
+                    supabaseClient.auth.refreshCurrentSession()
+                    supabaseClient.auth.currentSessionOrNull()?.accessToken
+                }
+        }
         }
 
         val request = chain.request().newBuilder().apply {

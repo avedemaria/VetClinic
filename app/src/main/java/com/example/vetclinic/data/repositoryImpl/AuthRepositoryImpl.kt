@@ -73,7 +73,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun resetPasswordWithEmail(email: String): Result<Unit> =
         kotlin.runCatching {
-            val resetPasswordUrl = "vetclinic://reset-password?token="
+            val resetPasswordUrl = "vetclinic://reset-password"
             supabaseClient.auth.resetPasswordForEmail(email, resetPasswordUrl)
             Log.d(TAG, "The reset password link has been sent to $email")
             Unit

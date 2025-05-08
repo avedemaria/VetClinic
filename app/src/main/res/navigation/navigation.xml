@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.vetclinic.presentation.loginScreen.LoginFragment"
+        android:name="com.example.vetclinic.presentation.screens.loginScreen.LoginFragment"
         android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.vetclinic.presentation.loginScreen.registrationFragment.RegistrationFragment"
+        android:name="com.example.vetclinic.presentation.screens.loginScreen.registrationFragment.RegistrationFragment"
         android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_mainFragment"
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.vetclinic.presentation.mainScreen.MainFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.MainFragment"
         android:label="MainFragment" >
         <action
             android:id="@+id/action_mainFragment_to_loginFragment"
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/sendResetLinkFragment"
-        android:name="com.example.vetclinic.presentation.sendResetLinkScreen.SendResetLinkFragment"
+        android:name="com.example.vetclinic.presentation.screens.sendResetLinkScreen.SendResetLinkFragment"
         android:label="ResetPasswordWithEmailFragment" >
         <argument
             android:name="email"
@@ -63,22 +63,22 @@
 
     <fragment
         android:id="@+id/updatePasswordFragment"
-        android:name="com.example.vetclinic.presentation.updatePasswordScreen.UpdatePasswordFragment"
+        android:name="com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment"
         android:label="Update Password"
         tools:layout="@layout/fragment_update_password">
         <argument
             android:name="token"
             app:argType="string"
             app:nullable="false" />
-        <deepLink
-            app:uri= "vetclinic://reset-password?token={token}"/>
+<!--        <deepLink-->
+<!--            app:uri= "vetclinic://reset-password?token={token}"/>-->
         <action
             android:id="@+id/action_updatePasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"
-        android:name="com.example.vetclinic.presentation.loginScreen.LoadingFragment"
+        android:name="com.example.vetclinic.presentation.screens.loginScreen.LoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" >
         <action
@@ -93,7 +93,7 @@
     </fragment>
     <fragment
         android:id="@+id/adminHomeFragment"
-        android:name="com.example.vetclinic.presentation.adminScreen.AdminHomeFragment"
+        android:name="com.example.vetclinic.presentation.screens.adminScreen.AdminHomeFragment"
         android:label="AdminHomeFragment" >
         <action
             android:id="@+id/action_adminHomeFragment2_to_loginFragment"

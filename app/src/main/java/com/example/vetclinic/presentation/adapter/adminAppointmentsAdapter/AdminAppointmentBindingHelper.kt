@@ -4,7 +4,7 @@ import androidx.core.content.ContextCompat
 import com.example.vetclinic.R
 import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.extractTime
+import com.example.vetclinic.presentation.utils.extractTime
 
 object AdminAppointmentBindingHelper {
 

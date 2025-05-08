@@ -1,11 +1,7 @@
 package com.example.vetclinic.data.database.model
 
-import android.app.Application
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 
 //@Database(
 //    entities = [UserDbModel::class, PetDbModel::class, AppointmentWithDetailsDbModel::class],
@@ -16,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
     @Database(
         entities = [UserDbModel::class, PetDbModel::class, AppointmentWithDetailsDbModel::class],
         version = 10,
-        exportSchema = false  // Если тебе нужно отключить создание схемы
+        exportSchema = false
     )
     abstract class VetClinicDatabase : RoomDatabase() {
         abstract fun vetClinicDao(): VetClinicDao

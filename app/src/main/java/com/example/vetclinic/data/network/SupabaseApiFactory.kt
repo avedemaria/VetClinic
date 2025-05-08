@@ -39,7 +39,7 @@ class SupabaseApiFactory @Inject constructor(
 
 
     private val moshi =
-        Moshi.Builder().add(KotlinJsonAdapterFactory()).add(SingleUserAdapter()).build()
+        Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     private val retrofit by lazy {
         Retrofit.Builder().client(client).addConverterFactory(MoshiConverterFactory.create(moshi))
