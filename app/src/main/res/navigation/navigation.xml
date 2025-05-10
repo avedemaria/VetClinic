@@ -70,6 +70,10 @@
             android:name="token"
             app:argType="string"
             app:nullable="false" />
+        <argument
+            android:name="refresh_token"
+            app:argType="string"
+            app:nullable="false" />
 <!--        <deepLink-->
 <!--            app:uri= "vetclinic://reset-password?token={token}"/>-->
         <action

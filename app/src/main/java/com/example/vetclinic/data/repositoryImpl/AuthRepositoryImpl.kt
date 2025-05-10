@@ -11,6 +11,7 @@ import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.json.put
 
 class AuthRepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
@@ -83,7 +84,7 @@ class AuthRepositoryImpl @Inject constructor(
             }
 
 
-    override suspend fun updatePassword(newPassword: String, token: String)
+    override suspend fun updatePassword(newPassword: String, token: String, refreshToken: String)
             : Result<Unit> =
         kotlin.runCatching {
 
@@ -91,16 +92,17 @@ class AuthRepositoryImpl @Inject constructor(
                 throw IllegalArgumentException("Token is empty")
             }
 
-//
-//            val email = decodeJwtAndGetEmail(token) ?: ""
-//
-//            supabaseClient.auth.verifyEmailOtp(
-//                email = email,
-//                token = token,
-//                type = OtpType.Email.RECOVERY
-//            )
+            supabaseClient.auth.importSession(
+                session = UserSession(
+                    accessToken = token,
+                    refreshToken = refreshToken,
+                    expiresIn = 2000,
+                    tokenType = "Bearer",
+                    user = null
+                )
+            )
 
-            supabaseClient.auth.updateUser {
+            supabaseClient.auth.updateUser(updateCurrentUser = false) {
                 password = newPassword
             }
             Log.d(
@@ -110,6 +112,7 @@ class AuthRepositoryImpl @Inject constructor(
             )
             Unit
         }
+
             .onFailure { e ->
                 Log.d(TAG, "Error while updating password $e")
             }
@@ -144,7 +147,6 @@ class AuthRepositoryImpl @Inject constructor(
     }.onFailure { e ->
         Log.d(TAG, "Error while deleting user account $e")
     }
-
 
 
     override suspend fun checkUserSession(): Boolean {

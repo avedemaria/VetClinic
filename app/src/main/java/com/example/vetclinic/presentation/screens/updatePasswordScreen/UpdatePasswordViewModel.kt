@@ -16,7 +16,7 @@ class UpdatePasswordViewModel @Inject constructor(
     val updatePasswordState: LiveData<UpdatePasswordState> = _updatePasswordState
 
 
-    fun updatePassword(newPassword: String, token: String) {
+    fun updatePassword(newPassword: String, token: String, refreshToken:String) {
        _updatePasswordState.value = UpdatePasswordState.Loading
 
         viewModelScope.launch {
@@ -33,7 +33,7 @@ class UpdatePasswordViewModel @Inject constructor(
                 return@launch
             }
 
-            val result = resetPasswordUseCase.updatePassword(newPassword, token)
+            val result = resetPasswordUseCase.updatePassword(newPassword, token, refreshToken)
             if (result.isSuccess) {
                _updatePasswordState.value = UpdatePasswordState.Success
             } else {

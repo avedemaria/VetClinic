@@ -61,24 +61,35 @@ class MainActivity : AppCompatActivity() {
                 val fullUri = uri.toString()
 
                 val token = fullUri.substringAfter("#access_token=").substringBefore("&")
+                val refreshToken = fullUri.substringAfter("refresh_token=").substringBefore("&")
 
                 Log.d(TAG, "Extracted token: $token")
-
+                Log.d(TAG, "Extracted refresh token: $refreshToken")
                 if (token.isNotBlank()) {
                     Log.d(TAG, "Navigating with token: $token")
 
+                    //datastore - token
+                    //intent is bad cuz token is long
+                    //parcelable - navigation, data is smaller serialable - json, network
+
                     navController.navigate(
                         R.id.updatePasswordFragment,
-                        Bundle().apply { putString(TOKEN, token) })
+                        Bundle().apply {
+                            putString(TOKEN, token)
+                            putString("refresh_token", refreshToken)
+                        }
+                    )//refreshToken put string
+
                 }
             }
         }
     }
+
     companion object {
         private const val TOKEN = "token"
         private const val TAG = "MainActivity"
     }
-    }
+}
 
 
 

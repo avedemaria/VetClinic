@@ -60,13 +60,13 @@ class UpdatePasswordFragment : Fragment() {
 //            val token = arguments?.getString(TOKEN)
 //                ?: throw IllegalArgumentException("No token has been found")
 //
-
-
             val token = args.token
+            val refreshToken = args.refreshToken
             Log.d("UpdatePasswordFragment", "onCreate received token: $token")
+            Log.d("UpdatePasswordFragment", "onCreate received refresh token: $refreshToken")
 
             val newPassword = binding.etConfirmNewPassword.text.toString()
-                viewModel.updatePassword(newPassword, token)
+                viewModel.updatePassword(newPassword, token, refreshToken)//instance in viewmodel
 
         }
 

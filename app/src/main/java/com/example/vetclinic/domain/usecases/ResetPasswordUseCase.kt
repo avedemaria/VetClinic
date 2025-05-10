@@ -10,7 +10,7 @@ class ResetPasswordUseCase @Inject constructor(private val repository: AuthRepos
         repository.resetPasswordWithEmail(email)
     }
 
-    suspend fun updatePassword(newPassword: String, token: String): Result<Unit> {
-        return repository.updatePassword(newPassword, token)
+    suspend fun updatePassword(newPassword: String, token: String, refreshToken:String): Result<Unit> {
+        return repository.updatePassword(newPassword, token, refreshToken)
     }
 }
