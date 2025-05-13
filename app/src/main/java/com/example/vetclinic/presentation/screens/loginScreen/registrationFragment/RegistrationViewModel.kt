@@ -85,7 +85,11 @@ class RegistrationViewModel @Inject constructor(
                         petAge = calculatePetAge(petData.bDay)
                     )
 
-                    userDataStore.saveUserSession(userId, supabaseUser.accessToken)
+                    userDataStore.saveUserSession(
+                        userId,
+                        supabaseUser.accessToken,
+                        supabaseUser.refreshToken
+                    )
 
                     userUseCase.addUserToSupabaseDb(user).onSuccess {
                         userUseCase.getUserFromSupabaseDb(user.uid)

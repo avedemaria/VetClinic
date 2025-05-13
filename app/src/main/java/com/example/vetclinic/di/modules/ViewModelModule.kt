@@ -121,7 +121,4 @@ interface ViewModelModule {
     @Binds
     fun bindDetailedAppointmentsViewModel(impl: SharedAppointmentsViewModel): ViewModel
 
-
-
-
 }

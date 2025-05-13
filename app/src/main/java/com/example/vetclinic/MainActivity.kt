@@ -7,10 +7,12 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.domain.usecases.HandleDeepLinkUseCase
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var deepLinkUseCase: HandleDeepLinkUseCase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,36 +59,20 @@ class MainActivity : AppCompatActivity() {
         intent?.data?.let { uri ->
             Log.d(TAG, "Received URI: $uri")
 
-            if (uri.host == "reset-password") {
-                val fullUri = uri.toString()
-
-                val token = fullUri.substringAfter("#access_token=").substringBefore("&")
-                val refreshToken = fullUri.substringAfter("refresh_token=").substringBefore("&")
-
-                Log.d(TAG, "Extracted token: $token")
-                Log.d(TAG, "Extracted refresh token: $refreshToken")
-                if (token.isNotBlank()) {
-                    Log.d(TAG, "Navigating with token: $token")
-
-                    //datastore - token
-                    //intent is bad cuz token is long
-                    //parcelable - navigation, data is smaller serialable - json, network
-
+            lifecycleScope.launch {
+                val result = deepLinkUseCase.handleDeepLink(uri)
+                if (result.isSuccess) {
                     navController.navigate(
                         R.id.updatePasswordFragment,
-                        Bundle().apply {
-                            putString(TOKEN, token)
-                            putString("refresh_token", refreshToken)
-                        }
-                    )//refreshToken put string
-
+                    )
+                } else {
+                    Log.d(TAG, "Error processing deep link: ${result.exceptionOrNull()?.message}")
                 }
             }
         }
     }
 
     companion object {
-        private const val TOKEN = "token"
         private const val TAG = "MainActivity"
     }
 }

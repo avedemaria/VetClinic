@@ -90,7 +90,9 @@ class AppointmentsFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 viewModel.appointmentsState.collect { state ->
+                    Log.d(TAG, "currentState: $state")
                     when (state) {
                         is SharedAppointmentsState.Error -> {
                             binding.fragmentContent.isEnabled = false
@@ -120,7 +122,11 @@ class AppointmentsFragment : Fragment() {
                             }
                         }
 
-                        SharedAppointmentsState.Empty -> Log.d(TAG, "Your appointment list is empty.")
+                        SharedAppointmentsState.Empty -> {
+                            Log.d(TAG, "Your appointment list is empty.")
+                            binding.progressBar.visibility = View.GONE
+                            binding.fragmentContent.visibility = View.VISIBLE
+                        }
                     }
                 }
             }

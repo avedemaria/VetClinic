@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginUserUseCase.loginUser(email, password).onSuccess {
 
-                userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken)
+                userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken, it.refreshToken)
 
                 Log.d(TAG, "Saving userId: ${it.user?.id}, token: ${it.accessToken}")
 

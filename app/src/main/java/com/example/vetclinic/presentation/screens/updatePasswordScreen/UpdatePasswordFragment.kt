@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.screens.updatePasswordScreen
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,21 +9,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.example.vetclinic.databinding.FragmentUpdatePasswordBinding
 import com.example.vetclinic.VetClinicApplication
+import com.example.vetclinic.databinding.FragmentUpdatePasswordBinding
+import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import jakarta.inject.Inject
 
 
 class UpdatePasswordFragment : Fragment() {
 
-    private val args: UpdatePasswordFragmentArgs by navArgs()
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel: UpdatePasswordViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentUpdatePasswordBinding? = null
     private val binding
@@ -32,14 +27,21 @@ class UpdatePasswordFragment : Fragment() {
             "FragmentUpdatePasswordBinding is null"
         )
 
+    private val viewModel: UpdatePasswordViewModel by viewModels { viewModelFactory  }
+
+    @Inject  lateinit var resetPasswordUseCase: ResetPasswordUseCase
+
+//
+//    private val viewModel: UpdatePasswordViewModel by viewModels {
+//        UpdatePasswordViewModelFactory(
+//            resetPasswordUseCase,
+//            this,
+//            arguments
+//        )
+//    }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
     }
 
 
@@ -55,21 +57,12 @@ class UpdatePasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        component.inject(this)
+
         binding.updatePasswordButton.setOnClickListener {
-
-//            val token = arguments?.getString(TOKEN)
-//                ?: throw IllegalArgumentException("No token has been found")
-//
-            val token = args.token
-            val refreshToken = args.refreshToken
-            Log.d("UpdatePasswordFragment", "onCreate received token: $token")
-            Log.d("UpdatePasswordFragment", "onCreate received refresh token: $refreshToken")
-
             val newPassword = binding.etConfirmNewPassword.text.toString()
-                viewModel.updatePassword(newPassword, token, refreshToken)//instance in viewmodel
-
+                viewModel.updatePassword(newPassword)
         }
-
         observeViewModel()
     }
 
@@ -115,6 +108,5 @@ class UpdatePasswordFragment : Fragment() {
 
     companion object {
         private const val TAG = "UpdatePasswordFragment"
-        private const val TOKEN = "token"
     }
 }

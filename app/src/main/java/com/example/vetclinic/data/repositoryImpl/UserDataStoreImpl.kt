@@ -17,11 +17,16 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
     UserDataStore {
 
 
-    override suspend fun saveUserSession(userId: String, accessToken: String) {
+    override suspend fun saveUserSession(
+        userId: String,
+        accessToken: String,
+        refreshToken: String,
+    ) {
         Log.d("UserDataStore", "Saving userId: $userId")
         dataStore.edit { preferences ->
             preferences[KEY_USER_ID] = userId
             preferences[KEY_ACCESS_TOKEN] = accessToken
+            preferences[KEY_REFRESH_TOKEN] = refreshToken
 
         }
     }
@@ -32,16 +37,24 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
         }
     }
 
-    override suspend fun saveAccessToken(token: String) {
+    override suspend fun saveAccessToken(accessToken: String) {
         dataStore.edit { preferences ->
-            preferences[KEY_ACCESS_TOKEN] = token
+            preferences[KEY_ACCESS_TOKEN] = accessToken
         }
     }
+
+
+    override suspend fun saveRefreshToken(refreshToken: String) {
+        dataStore.edit { preferences ->
+            preferences[KEY_REFRESH_TOKEN] = refreshToken
+        }
+    }
+
 
     override suspend fun saveUserRole(userRole: String) {
         dataStore.edit { preferences ->
             preferences[KEY_USER_ROLE] = userRole
-            Log.d("UserDataStore", "savedUserRole^ $userRole")
+            Log.d("UserDataStore", "savedUserRole: $userRole")
         }
     }
 
@@ -54,6 +67,10 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
         return dataStore.data.first()[KEY_ACCESS_TOKEN]
     }
 
+    override suspend fun getRefreshToken(): String? {
+        return dataStore.data.first()[KEY_REFRESH_TOKEN]
+    }
+
 
     override suspend fun getUserRole(): String? {
         return dataStore.data.first()[KEY_USER_ROLE]
@@ -63,6 +80,7 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
         dataStore.edit { preferences ->
             preferences.remove(KEY_USER_ID)
             preferences.remove(KEY_ACCESS_TOKEN)
+            preferences.remove(KEY_REFRESH_TOKEN)
             preferences.remove(KEY_USER_ROLE)
         }
 
@@ -72,6 +90,7 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
     companion object {
         private val KEY_USER_ID = stringPreferencesKey("key_user_id")
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("key_access_token")
+        private val KEY_REFRESH_TOKEN = stringPreferencesKey("key_refresh_token")
         private val KEY_USER_ROLE = stringPreferencesKey("key_user_role")
     }
 }
