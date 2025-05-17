@@ -21,5 +21,5 @@ data class AppointmentWithDetails(
     val petName: String,
     val userName: String,
     val userLastName: String,
-    val petAge: String,
+    val petBday: String? = null
 ) : Parcelable

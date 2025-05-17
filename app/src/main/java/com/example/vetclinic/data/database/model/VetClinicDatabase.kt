@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
 //abstract class VetClinicDatabase : RoomDatabase() {
     @Database(
         entities = [UserDbModel::class, PetDbModel::class, AppointmentWithDetailsDbModel::class],
-        version = 10,
+        version = 12,
         exportSchema = false
     )
     abstract class VetClinicDatabase : RoomDatabase() {

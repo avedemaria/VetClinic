@@ -1,26 +1,21 @@
 package com.example.vetclinic.presentation.widgets
 
 import android.os.Bundle
-import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import com.example.vetclinic.databinding.FragmentPetRegistrationFormBinding
-import com.example.vetclinic.domain.entities.pet.PetInputData
 import com.example.vetclinic.VetClinicApplication
+import com.example.vetclinic.databinding.FragmentPetInputBinding
+import com.example.vetclinic.domain.entities.pet.PetInputData
 
 
 class PetInput : Fragment() {
 
-
-
-    private var _binding: FragmentPetRegistrationFormBinding? = null
+    private var _binding: FragmentPetInputBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
-            "FragmentPetRegistrationFormBinding is null"
+            "FragmentPetInputBinding is null"
         )
 
 
@@ -33,7 +28,7 @@ class PetInput : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentPetRegistrationFormBinding.inflate(
+        _binding = FragmentPetInputBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
             false
@@ -45,75 +40,11 @@ class PetInput : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
-
-        setUpPetTypeSpinner()
-        setUpPetGenderSpinner()
-
-
-        binding.etBday.apply {
-            inputType = InputType.TYPE_NULL
-            keyListener = null
-        }
-            .setOnClickListener {
-                Log.d(TAG, "clicked")
-                showDatePickerDialog()
-            }
-
-
-//        val petName = binding.etPetName.text.toString()
-//        val petBirthday = binding.etBday.text.toString()
-//        val petType = binding.autoPetType.text.toString()
-//        val petGender = binding.autoPetGender.text.toString()
-//        viewModel.updatePetInputInState(
-//            PetInputData(
-//                name = petName,
-//                type = petType,
-//                bDay = petBirthday,
-//                gender = petGender
-//            )
-//        )
-
     }
 
 
-  fun collectPetInput(): PetInputData {
-      val petName = binding.etPetName.text.toString()
-      val petBirthday = binding.etBday.text.toString()
-      val petType = binding.autoPetType.text.toString()
-      val petGender = binding.autoPetGender.text.toString()
-         return PetInputData(
-              name = petName,
-              type = petType,
-              bDay = petBirthday,
-              gender = petGender
-          )
-  }
-
-    private fun showDatePickerDialog() {
-        CustomDatePicker(requireContext()) { selectedDate ->
-            binding.etBday.setText(selectedDate)
-        }.show()
-    }
-
-
-    private fun setUpPetTypeSpinner() {
-        val petTypes = arrayOf("Кот", "Собака", "Грызун")
-        val spinnerAdapter = ArrayAdapter(
-            requireContext(),
-            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, petTypes
-        )
-        binding.autoPetType.setAdapter(spinnerAdapter)
-
-    }
-
-
-    private fun setUpPetGenderSpinner() {
-        val genders = arrayOf("Мальчик", "Девочка")
-        val spinnerAdapter = ArrayAdapter(
-            requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-            genders
-        )
-        binding.autoPetGender.setAdapter(spinnerAdapter)
+    fun collectPetInput(): PetInputData {
+        return binding.customPetInput.collectPetInput()
     }
 
 

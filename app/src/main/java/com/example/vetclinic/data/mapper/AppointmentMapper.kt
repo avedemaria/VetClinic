@@ -59,7 +59,7 @@ class AppointmentMapper @Inject constructor() {
             petName = entity.petName,
             userName = entity.userName,
             userLastName = entity.userLastName,
-            petAge = entity.petAge
+            petBday = entity.petBday
         )
     }
 
@@ -81,7 +81,7 @@ class AppointmentMapper @Inject constructor() {
             petName = dto.petName,
             userName = dto.userName,
             userLastName = dto.userLastName,
-            petAge = dto.petAge
+            petBday = dto.petBday
 
         )
     }
@@ -104,7 +104,7 @@ class AppointmentMapper @Inject constructor() {
             petName = dto.petName,
             userName = dto.userName,
             userLastName = dto.userLastName,
-            petAge = dto.petAge
+            petBday = dto.petBday
         )
     }
 
@@ -142,26 +142,9 @@ class AppointmentMapper @Inject constructor() {
             petName = dbModel.petName,
             userName = dbModel.userName,
             userLastName = dbModel.userLastName,
-            petAge = dbModel.petAge
+            petBday = dbModel.petBday
         )
     }
-
-
-//    fun appointmentWithDetailsToAppointment(appointmentWithDetails: AppointmentWithDetails):
-//            Appointment {
-//        return Appointment(
-//            id = appointmentWithDetails.id,
-//            userId = appointmentWithDetails.userId,
-//            petId = appointmentWithDetails.petId,
-//            doctorId = appointmentWithDetails.doctorId,
-//            serviceId = appointmentWithDetails.serviceId,
-//            dateTime = appointmentWithDetails.dateTime,
-//            status = appointmentWithDetails.status,
-//            isArchived = appointmentWithDetails.isArchived,
-//            isConfirmed = appointmentWithDetails.isConfirmed
-//        )
-//    }
-
 
     private fun String.toStatusEnum(): AppointmentStatus {
         return try {

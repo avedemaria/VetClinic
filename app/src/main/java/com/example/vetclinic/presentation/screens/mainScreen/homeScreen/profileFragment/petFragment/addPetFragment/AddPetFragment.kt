@@ -1,19 +1,16 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.vetclinic.presentation.widgets.CustomDatePicker
 import com.example.vetclinic.R
-import com.example.vetclinic.databinding.FragmentAddPetBinding
 import com.example.vetclinic.VetClinicApplication
+import com.example.vetclinic.databinding.FragmentAddPetBinding
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.PetFragment
 import jakarta.inject.Inject
@@ -40,10 +37,6 @@ class AddPetFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,17 +50,13 @@ class AddPetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        setUpPetTypeSpinner()
-        setUpPetGenderSpinner()
+        component.inject(this)
+//
+//        setUpPetTypeSpinner()
+//        setUpPetGenderSpinner()
 
         binding.btnAddPet.setOnClickListener {
             onAddPetButtonClick()
-        }
-
-
-        binding.llBDay.setOnClickListener{
-            showDatePickerDialog()
         }
 
         observeViewModel()
@@ -77,15 +66,10 @@ class AddPetFragment : Fragment() {
 
     private fun onAddPetButtonClick() {
 
-        val petName = binding.etPetName.text.toString()
-        val petType = binding.spinnerPetType.selectedItem.toString()
-        val petGender = binding.spinnerPetGender.selectedItem.toString()
+        val petData = binding.petInput.collectPetInput()
 
-        val petBirthday = binding.tvBday.text.toString()
-
-
-        if (petType == CHOOSE_TYPE || petGender == CHOOSE_GENDER ||
-            petName.isBlank() || petBirthday.isBlank()
+        if (petData.type == CHOOSE_TYPE || petData.gender == CHOOSE_GENDER ||
+            petData.name.isBlank() || petData.bDay.isBlank()
         ) {
             Toast.makeText(
                 requireContext(), "Заполните все обязательные поля",
@@ -95,7 +79,7 @@ class AddPetFragment : Fragment() {
             return
         }
 
-        viewModel.addPetData(petName, petType, petGender, petBirthday)
+        viewModel.addPetData(petData.name, petData.type, petData.gender, petData.bDay)
 
     }
 
@@ -109,8 +93,8 @@ class AddPetFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
-                com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
-                com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetUiState.Success -> parentFragmentManager.beginTransaction()
+                AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
+                AddPetUiState.Success -> parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, PetFragment())
                     .addToBackStack(null)
                     .commit()
@@ -119,40 +103,38 @@ class AddPetFragment : Fragment() {
     }
 
 
-    private fun showDatePickerDialog() {
-        CustomDatePicker(requireContext()){selectedDate ->
-            binding.tvBday.setText(selectedDate)
-        }.show()
-    }
+//    private fun showDatePickerDialog() {
+//        CustomDatePicker(requireContext()) { selectedDate ->
+//            binding.tvBday.setText(selectedDate)
+//        }.show()
+//    }
 
 
-    private fun setUpPetTypeSpinner() {
-        val petTypes = arrayOf(CHOOSE_TYPE, "Кот", "Собака", "Грызун")
-        val spinnerAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item, petTypes
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerPetType.adapter = spinnerAdapter
-
-        binding.spinnerPetType.setSelection(0)
-
-    }
-
-
-    private fun setUpPetGenderSpinner() {
-        val genders = arrayOf(CHOOSE_GENDER, "Мальчик", "Девочка")
-        val spinnerAdapter = ArrayAdapter(
-            requireContext(), android.R.layout.simple_spinner_item,
-            genders
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerPetGender.adapter = spinnerAdapter
-
-        binding.spinnerPetGender.setSelection(0)
-    }
-
-
+//    private fun setUpPetTypeSpinner() {
+//        val petTypes = arrayOf(CHOOSE_TYPE, "Кот", "Собака", "Грызун")
+//        val spinnerAdapter = ArrayAdapter(
+//            requireContext(),
+//            android.R.layout.simple_spinner_item, petTypes
+//        )
+//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//        binding.spinnerPetType.adapter = spinnerAdapter
+//
+//        binding.spinnerPetType.setSelection(0)
+//
+//    }
+//
+//
+//    private fun setUpPetGenderSpinner() {
+//        val genders = arrayOf(CHOOSE_GENDER, "Мальчик", "Девочка")
+//        val spinnerAdapter = ArrayAdapter(
+//            requireContext(), android.R.layout.simple_spinner_item,
+//            genders
+//        )
+//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//        binding.spinnerPetGender.adapter = spinnerAdapter
+//
+//        binding.spinnerPetGender.setSelection(0)
+//    }
 
 
     override fun onDestroyView() {

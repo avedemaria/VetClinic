@@ -1,25 +1,22 @@
 package com.example.vetclinic.presentation.screens.loginScreen.registrationFragment
 
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.repository.UserDataStore
-import com.example.vetclinic.domain.entities.user.User
-import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.pet.PetInputData
+import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.entities.user.UserInputData
+import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.utils.Validator
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.Period
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class RegistrationViewModel @Inject constructor(
@@ -27,18 +24,13 @@ class RegistrationViewModel @Inject constructor(
     private val petUseCase: PetUseCase,
     private val userUseCase: UserUseCase,
     private val userDataStore: UserDataStore,
+    private val userValidator: Validator<UserInputData>,
+    private val petValidator: Validator<PetInputData>,
 ) : ViewModel() {
 
 
     private val _registrationState = MutableLiveData<RegistrationState>()
     val registrationState: LiveData<RegistrationState> = _registrationState
-
-//    private val _registrationState = MutableStateFlow(RegistrationState.Result())
-//    val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
-//
-//    private val _registrationEvent = MutableSharedFlow<RegistrationEvent>()
-//    val registrationEvent: SharedFlow<RegistrationEvent> = _registrationEvent.asSharedFlow()
-
 
     fun registerUser() {
 
@@ -46,18 +38,14 @@ class RegistrationViewModel @Inject constructor(
         val userInputData = currentState?.userdata
         val petInputData = currentState?.petData
 
-        val error = validateInputs(userInputData, petInputData)
-        if (error != null) {
-            _registrationState.value = RegistrationState.Error(error)
+        val validationError = validateInputs(userInputData, petInputData)
+        if (validationError != null) {
+            _registrationState.value = RegistrationState.Error(validationError)
             return
         }
 
-        val userData = userInputData
-        val petData = petInputData
-
-
         viewModelScope.launch(Dispatchers.IO) {
-            registerUserUseCase.registerUser(userData!!.email, userData.password)
+            registerUserUseCase.registerUser(userInputData!!.email, userInputData.password)
                 .onSuccess { supabaseUser ->
                     Log.d(
                         TAG,
@@ -69,20 +57,19 @@ class RegistrationViewModel @Inject constructor(
 
                     val user = User(
                         userId,
-                        userData.name,
-                        userData.lastName,
-                        userData.phone,
-                        userData.email
+                        userInputData.name,
+                        userInputData.lastName,
+                        userInputData.phone,
+                        userInputData.email
                     )
 
                     val pet = Pet(
                         petId,
                         userId,
-                        petData!!.name,
-                        petData.bDay,
-                        petData.type,
-                        petData.gender,
-                        petAge = calculatePetAge(petData.bDay)
+                        petInputData!!.name,
+                        petInputData.bDay,
+                        petInputData.type,
+                        petInputData.gender
                     )
 
                     userDataStore.saveUserSession(
@@ -104,14 +91,13 @@ class RegistrationViewModel @Inject constructor(
                     }
 
 
-                    petUseCase.addPetToSupabaseDb(pet).onSuccess { savedPet ->
+                    petUseCase.addPetToSupabaseDb(pet).onSuccess {
                         petUseCase.getPetsFromSupabaseDb(userId)
 
                         _registrationState.postValue(
                             RegistrationState.Success
                         )
                     }
-
                 }
                 .onFailure { error ->
                     Log.e(TAG, "Failed to register", error)
@@ -133,77 +119,27 @@ class RegistrationViewModel @Inject constructor(
         )
     }
 
-    private fun validateInputs(user: UserInputData?, pet: PetInputData?): String? {
-        Log.d(TAG, "User data: $user, Pet data: $pet")
-        if (user == null || pet == null || user.name.isBlank() || user.lastName.isBlank() ||
-            user.phone.isBlank() || user.email.isBlank() || user.password.isBlank() ||
-            pet.name.isBlank() || pet.type.isBlank() || pet.gender.isBlank() || pet.bDay.isBlank()
-        ) {
-            return "Все поля должны быть заполнены"
+
+
+        private fun validateInputs(
+            userInputData: UserInputData?,
+            petInputData: PetInputData?
+        ): String? {
+            userInputData ?: return "Данные пользователя не должны быть пустыми"
+            petInputData ?: return "Данные питомца не должны быть пустыми"
+
+            val userError = userValidator.validate(userInputData)
+            if (userError != null) return userError
+
+            val petError = petValidator.validate(petInputData)
+            if (petError != null) return petError
+
+            return null
         }
 
-
-        val phonePattern = "^(?:\\+7|7|8)(\\d{10})$".toRegex()
-
-        return when {
-            !phonePattern.matches(user.phone) -> "Введите корректный номер телефона"
-
-            !Patterns.EMAIL_ADDRESS.matcher(user.email).matches() -> "Введите корректный email"
-
-            user.password.length < 6 -> "Пароль должен быть не менее 6 символов"
-            else -> null
-        }
-    }
-
-
-    private fun calculatePetAge(petBday: String): String {
-        return try {
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            val birthDate = LocalDate.parse(petBday, formatter)
-            val currentDate = LocalDate.now()
-            val period = Period.between(birthDate, currentDate)
-
-            val year = period.years
-            val month = period.months
-
-
-            val yearText = if (year > 0) {
-                "$year ${getYearSuffix(year)}"
-            } else {
-                ""
-            }
-
-            val monthText = if (month > 0 || year == 0) {
-                "$month ${getMonthSuffix(month)}"
-            } else {
-                ""
-            }
-
-            listOf(yearText, monthText).filter {
-                it.isNotEmpty()
-            }.joinToString(" ")
-
-        } catch (e: Exception) {
-            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
-            "0 мес."
-        }
-    }
-
-
-    private fun getYearSuffix(years: Int): String {
-        return when {
-            years % 10 == 1 && years % 100 != 11 -> "год"
-            years % 10 in 2..4 && (years % 100 !in 12..14) -> "года"
-            else -> "лет"
-        }
-    }
-
-    private fun getMonthSuffix(month: Int): String {
-        return "мес."
-    }
 
 
     companion object {
-        private const val TAG = "RegistrationVM"
+        private const val TAG = "RegistrationViewModel"
     }
 }

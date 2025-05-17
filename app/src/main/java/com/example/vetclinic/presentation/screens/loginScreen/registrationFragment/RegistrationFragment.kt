@@ -12,11 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.VetClinicApplication
+import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.adapter.RegistrationAdapter
-import com.example.vetclinic.presentation.widgets.PetInput
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.widgets.PetInput
 import jakarta.inject.Inject
 
 
@@ -172,15 +172,6 @@ class RegistrationFragment : Fragment() {
         _binding = null
     }
 
-
-//    private fun generateMockForm() {
-//        binding.etName.setText("John")
-//        binding.etLastName.setText("Doe")
-//        binding.etPetName.setText("Rex")
-//        binding.etPhoneNumber.setText("123456789")
-//        binding.etEmail.setText("test${UUID.randomUUID()}@test.com")
-//        binding.etPassword.setText("password")
-//    }
 
 
     companion object {

@@ -1,106 +1,28 @@
-//package com.example.vetclinic.data
+
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.withTransaction
 import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.database.model.VetClinicDao
-import com.example.vetclinic.data.database.model.VetClinicDatabase
 import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
+import com.example.vetclinic.utils.AgeUtils
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.io.IOException
 import retrofit2.HttpException
 import retrofit2.Response
-import java.time.format.DateTimeFormatter
 
-//
-//@OptIn(ExperimentalPagingApi::class)
-//class AppointmentRemoteMediator @Inject constructor(
-//    private val selectedDate: String,
-//    private val db: VetClinicDatabase,
-//    private val vetClinicDao: VetClinicDao,
-//    private val supabaseApiService: SupabaseApiService,
-//    private val appointmentMapper: AppointmentMapper,
-//
-//
-//    ) : RemoteMediator<Int, AppointmentWithDetailsDbModel>() {
-//
-//
-//    private var nextPageKey = 0
-//
-//    override suspend fun load(
-//        loadType: LoadType,
-//        state: PagingState<Int, AppointmentWithDetailsDbModel>,
-//    ): MediatorResult {
-//        return try {
-//
-//            Log.d("AppointmentMediator", "Loading with type: $loadType, nextPageKey: $nextPageKey")
-//            val limit = state.config.pageSize
-//            when (loadType) {
-//                LoadType.REFRESH -> nextPageKey = 0
-//                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-//                LoadType.APPEND -> {
-//                    if (state.lastItemOrNull() == null) {
-//                        return MediatorResult.Success(endOfPaginationReached = true)
-//                    }
-//                    nextPageKey
-////                    val lastItem = state.lastItemOrNull()
-////                    if (lastItem == null) 0 else (lastItem.id.toInt() / limit) + 1
-//                }
-//            }
-//
-//            val offset = nextPageKey * limit
-//            val response =
-//                supabaseApiService.getAppointmentsWithDetailsByDate(selectedDate, offset, limit)
-//
-//            if (response.isSuccessful) {
-//                val dtos = response.body().orEmpty()
-//                val dbModels = dtos.map {
-//                    appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(it)
-//                }
-//                db.withTransaction {
-//                    if (loadType == LoadType.REFRESH) {
-//                        vetClinicDao.clearAllAppointments()
-//                    }
-//                    vetClinicDao.insertAppointments(dbModels)
-//                }
-//
-//                if (dtos.isNotEmpty()) {
-//                    nextPageKey++
-//                }
-//
-//                MediatorResult.Success(endOfPaginationReached = dtos.isEmpty())
-//            } else {
-//                MediatorResult.Error(
-//                    Exception(
-//                        "Server's error: ${response.code()} " +
-//                                "- ${response.message()}"
-//                    )
-//                )
-//            }
-//        } catch (e: Exception) {
-//            MediatorResult.Error(e)
-//        }
-//
-//    }
-//
-//
-//}
-//
-//
 @OptIn(ExperimentalPagingApi::class)
 class AppointmentRemoteMediator @Inject constructor(
     private val selectedDate: String,
     private val supabaseApiService: SupabaseApiService,
     private val appointmentMapper: AppointmentMapper,
     private val vetClinicDao: VetClinicDao,
+    private val ageUtils: AgeUtils
 ) : RemoteMediator<Int, AppointmentWithDetailsDbModel>() {
 
     private var pageIndex = 0
@@ -129,9 +51,8 @@ class AppointmentRemoteMediator @Inject constructor(
 
             val appointmentsDto = response.body().orEmpty()
             Log.d(TAG, "Fetched ${appointmentsDto.size} appointments from API")
-            val appointmentsDb = appointmentsDto.map { // 👈 лог 2
-                appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(it)
-            }
+
+            val appointmentsDb = calculatePetAgeAndFetchAppointments(appointmentsDto)
             if (loadType == LoadType.REFRESH) {
 
                 vetClinicDao.refresh(appointmentsDb)
@@ -169,6 +90,16 @@ class AppointmentRemoteMediator @Inject constructor(
         return supabaseApiService.getAppointmentsWithDetailsByDate(date, offset, limit)
     }
 
+
+    private fun calculatePetAgeAndFetchAppointments (appointmentsDto: List<AppointmentWithDetailsDto>):
+            List<AppointmentWithDetailsDbModel>  {
+        return appointmentsDto.map { dto ->
+            val calculatedPetAge = ageUtils.calculatePetAge(dto.petBday)
+            appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetailsDbModel(
+                dto.copy(petBday = calculatedPetAge)
+            )
+        }
+    }
 
     companion object {
         private const val TAG = "AppointmentRemoteMediator"

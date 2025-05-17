@@ -1,6 +1,6 @@
 package com.example.vetclinic.data.network.model
 
-import com.example.vetclinic.presentation.utils.extractTime
+import com.example.vetclinic.utils.extractTime
 import com.squareup.moshi.Json
 
 data class TimeSlotDto(

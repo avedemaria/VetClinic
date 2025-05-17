@@ -22,7 +22,7 @@ import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointm
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsState
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.providers.ViewModelFactory
-import com.example.vetclinic.presentation.utils.toLocalDateOrNull
+import com.example.vetclinic.utils.toLocalDateOrNull
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate

@@ -1,16 +1,17 @@
 package com.example.vetclinic.presentation.screens.sendResetLinkScreen
 
-import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
+import com.example.vetclinic.utils.FieldValidator
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class SendResetLinkViewModel @Inject constructor(
     private val resetPasswordUseCase: ResetPasswordUseCase,
+    private val fieldValidator: FieldValidator
 ) : ViewModel() {
 
     private val _sendResetLinkState = MutableLiveData<SendResetLinkState>()
@@ -35,11 +36,9 @@ class SendResetLinkViewModel @Inject constructor(
         }
     }
 
-    private fun validateEmail(email: String): String? {
-        return when {
-            email.isBlank() -> "Поле не может быть пустым"
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Некорректный email"
-            else -> null
-        }
-    }
+
+            private fun validateEmail(email: String): String? {
+                if (email.isBlank()) return "Поле не может быть пустым"
+                return fieldValidator.validateEmail(email)
+            }
 }

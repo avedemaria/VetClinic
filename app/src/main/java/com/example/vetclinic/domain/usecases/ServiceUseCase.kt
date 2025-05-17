@@ -13,10 +13,6 @@ class ServiceUseCase @Inject constructor(private val repository: Repository) {
 
 
     suspend fun getServicesByDepartmentId(departmentId: String): Result<List<Service>> {
-        Log.d(
-            "GetServiceUseCase",
-            "Inside UseCase: fetching services for department: $departmentId"
-        )
         return repository.getServicesByDepartmentId(departmentId)
     }
 }

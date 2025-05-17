@@ -19,5 +19,5 @@ data class AppointmentWithDetailsDto(
     @Json(name = "doctor_name") val doctorName: String,
     @Json(name = "doctor_role") val doctorRole: String,
     @Json(name = "service_name") val serviceName: String,
-    @Json(name = "pet_age") val petAge:String = "0"
+    @Json(name = "pet_bday") val petBday:String? = null
 )

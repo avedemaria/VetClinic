@@ -6,13 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.user.User
+import com.example.vetclinic.domain.entities.user.UserInputData
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.utils.FieldValidator
+import com.example.vetclinic.utils.Validator
+import com.example.vetclinic.utils.impl.UserValidatorImpl
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class UserViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    private val fieldValidator: FieldValidator
 
 ) : ViewModel() {
 
@@ -117,18 +122,8 @@ class UserViewModel @Inject constructor(
 
     private fun validateField(field: String, value: String): String? {
         return when (field) {
-            UserField.PHONE_NUMBER.name -> validatePhoneNumber(value)
+            UserField.PHONE_NUMBER.name -> fieldValidator.validatePhone(value)
             else -> "Неизвестное поле"
-        }
-    }
-
-
-    private fun validatePhoneNumber(phone: String): String? {
-        val phonePattern = "^\\+?\\d{10,15}$"
-        return if (phone.matches(phonePattern.toRegex())) {
-            null
-        } else {
-            "Неверный формат номера телефона"
         }
     }
 

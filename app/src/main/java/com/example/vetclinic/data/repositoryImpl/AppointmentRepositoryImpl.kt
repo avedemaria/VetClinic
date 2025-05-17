@@ -15,6 +15,7 @@ import com.example.vetclinic.data.network.model.AppointmentDto
 import com.example.vetclinic.domain.repository.AppointmentRepository
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
+import com.example.vetclinic.utils.AgeUtils
 import com.squareup.moshi.Moshi
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.realtime.PostgresAction
@@ -36,6 +37,7 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val vetClinicDao: VetClinicDao,
     private val appointmentMapper: AppointmentMapper,
     private val moshi: Moshi,
+    private val ageUtils: AgeUtils
 ) : AppointmentRepository {
 
 
@@ -142,20 +144,6 @@ class AppointmentRepositoryImpl @Inject constructor(
         }
 
 
-//    override suspend fun getAppointmentsByDate(date: String, offset: Int, limit: Int) {
-//
-//        val response =
-//            supabaseApiService.getAppointmentsWithDetailsByDate(date, offset, limit)
-//        if (response.isSuccessful) {
-//            val appointmentDtos = response.body() ?: emptyList()
-//            val appointments = appointmentDtos.map {
-//                appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(it)
-//            }
-//            Log.d(TAG, "appointments:  $appointments")
-//        }
-//    }
-
-
     @OptIn(ExperimentalPagingApi::class)
     override fun getAppointmentsByDate(
         date: String
@@ -169,7 +157,9 @@ class AppointmentRepositoryImpl @Inject constructor(
                 selectedDate = date,
                 supabaseApiService = supabaseApiService,
                 appointmentMapper = appointmentMapper,
-                vetClinicDao = vetClinicDao
+                vetClinicDao = vetClinicDao,
+                ageUtils = ageUtils
+
             ),
             pagingSourceFactory = pagingSourceFactory
         )
@@ -181,63 +171,6 @@ class AppointmentRepositoryImpl @Inject constructor(
             }
         }
     }
-
-//
-//    override suspend fun getAppointmentsByDate(date: String): Result<List<AppointmentWithDetails>> =
-//        kotlin.runCatching {
-//            val startOfDay = "${date}T10:00:00"
-//            val endOfDay = "${date}T20:00:00"
-//
-//            val response =
-//                supabaseApiService.getAppointmentsByDate(
-//                    startOfDay = "gte.$startOfDay",
-//                    endOfDay = "lt.$endOfDay",
-//                    page = 1,
-//                    pageCount = 2
-//                )
-//            if (response.isSuccessful) {
-//                val appointmentDtos = response.body() ?: throw Exception("Empty response body")
-//                val appointments =
-//                    appointmentDtos.map { appointmentMapper.appointmentDtoToAppointmentEntity(it) }
-//
-//                val appointmentsWithDetails = appointments.map { appointment ->
-//                    getAppointmentWithDetailsForAdmin(appointment)
-//                }
-//                val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
-//                    appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
-//                }
-//                vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
-//
-//                appointmentsWithDetails
-//            } else {
-//                throw Exception(
-//                    "Error fetching appointments for admin: ${response.code()} " +
-//                            "- ${response.message()}"
-//                )
-//            }
-//        }
-//            .onFailure { e ->
-//                Log.e(TAG, "Error while fetching appointments for admin", e)
-//                emptyList<AppointmentWithDetails>()
-//            }
-
-
-//    override suspend fun getAppointmentsByUserIdFromRoom(userId: String): Result<List<AppointmentWithDetails>> =
-//        kotlin.runCatching {
-//            withContext(Dispatchers.IO) {
-//                val appointmentDbModels = vetClinicDao.getAppointmentsByUserId(userId)
-//                if (appointmentDbModels.isEmpty()) {
-//                    throw NoSuchElementException("Appointments with userID $userId not found in Room")
-//                }
-//
-//                appointmentDbModels.map {
-//                    appointmentMapper.appointmentWithDetailsDbModelToEntity(it)
-//                }
-//            }
-//        }
-//            .onFailure {
-//                Log.e(TAG, "Error while getting appointments from Room", it)
-//            }
 
 
     override fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {

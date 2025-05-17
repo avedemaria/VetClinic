@@ -7,7 +7,7 @@ import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
-import com.example.vetclinic.presentation.utils.toLocalDateOrNull
+import com.example.vetclinic.utils.toLocalDateOrNull
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch

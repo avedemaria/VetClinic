@@ -28,7 +28,7 @@ data class AppointmentWithDetailsDbModel(
     @ColumnInfo(name = "pet_name") val petName: String,
     @ColumnInfo(name = "user_name") val userName: String,
     @ColumnInfo(name = "user_last_name") val userLastName: String,
-    @ColumnInfo(name = "pet_age") val petAge: String,
+    @ColumnInfo(name = "pet_bday") val petBday: String? = null
 ) {
 
 

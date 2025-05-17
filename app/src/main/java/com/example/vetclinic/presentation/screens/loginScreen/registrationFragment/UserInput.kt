@@ -13,8 +13,6 @@ import com.google.android.material.textfield.TextInputEditText
 
 class UserInput : Fragment() {
 
-
-
     private var _binding: FragmentUserRegistrationFormBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(

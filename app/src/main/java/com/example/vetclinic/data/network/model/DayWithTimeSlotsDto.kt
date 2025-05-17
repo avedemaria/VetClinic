@@ -1,7 +1,7 @@
 package com.example.vetclinic.data.network.model
 
 import com.squareup.moshi.Json
-import com.example.vetclinic.presentation.utils.extractDayOfMonth
+import com.example.vetclinic.utils.extractDayOfMonth
 
 data class DayWithTimeSlotsDto(
 

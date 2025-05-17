@@ -54,10 +54,11 @@ interface VetClinicDao {
     @Query("DELETE FROM appointments")
     suspend fun clearAllAppointments()
 
+
     @Query("SELECT * FROM appointments WHERE user_id=:userId")
     fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
 
-    // Это метод будет возвращать PagingSource для данных
+
     @Query("SELECT * FROM appointments WHERE  date(date_time) = :selectedDate")
     fun observeAppointmentsPaging(
         selectedDate: String,

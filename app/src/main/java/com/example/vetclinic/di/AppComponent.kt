@@ -5,6 +5,7 @@ import com.example.vetclinic.MainActivity
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.di.modules.DataModule
 import com.example.vetclinic.di.modules.DomainModule
+import com.example.vetclinic.di.modules.UtilsModule
 import com.example.vetclinic.di.modules.ViewModelModule
 import com.example.vetclinic.di.modules.WorkerBindsModule
 import com.example.vetclinic.presentation.screens.adminScreen.AdminHomeFragment
@@ -37,7 +38,7 @@ import jakarta.inject.Singleton
 @Singleton
 @Component(
     modules = [DataModule::class, DomainModule::class, ViewModelModule::class,
-        WorkerBindsModule::class]
+        WorkerBindsModule::class, UtilsModule::class]
 )
 interface AppComponent {
 

@@ -55,7 +55,6 @@ class AdminHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        Log.d(TAG, "onCreateView")
         _binding = FragmentAdminHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -109,13 +108,6 @@ class AdminHomeFragment : Fragment() {
                             handleLoadingState()
 
                         is AdminHomeState.Success -> {
-
-                            Log.d(TAG, "State Success, appointments: ${state.appointments}")
-                            state.appointments.map {
-                                Log.d(TAG, "$it")
-                                it
-                            }
-
                             handleSuccessState(state)
                         }
 
@@ -143,7 +135,6 @@ class AdminHomeFragment : Fragment() {
                 requireContext(), RecyclerView.VERTICAL,
                 false
             )
-            Log.d(TAG, "Setting up adapter")
             adapter = appointmentsAdapter
             itemAnimator = null
         }

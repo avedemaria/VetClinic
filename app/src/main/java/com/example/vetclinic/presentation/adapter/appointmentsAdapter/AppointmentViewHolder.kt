@@ -6,7 +6,7 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.AppointmentItemBinding
 import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.presentation.utils.formatAppointmentDateTime
+import com.example.vetclinic.utils.formatAppointmentDateTime
 
 class AppointmentViewHolder(
     private val binding: AppointmentItemBinding,

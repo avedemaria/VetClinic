@@ -26,14 +26,14 @@ import com.example.vetclinic.domain.entities.doctor.Doctor
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.service.Service
 import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
-import com.example.vetclinic.presentation.utils.formatDateTime
+import com.example.vetclinic.utils.formatDateTime
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.DaysAdapter
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnDayClickedListener
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnTimeSlotClickedListener
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.TimeSlotAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
-import com.example.vetclinic.presentation.utils.toFormattedString
+import com.example.vetclinic.utils.toFormattedString
 import jakarta.inject.Inject
 
 

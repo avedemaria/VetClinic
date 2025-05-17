@@ -68,7 +68,7 @@ class DataModule {
             VetClinicDatabase::class.java,
             "VetClinicDb"
         )
-            .fallbackToDestructiveMigration()  // Обрабатываем миграции, если что-то не так
+            .fallbackToDestructiveMigration()
             .build()
     }
 

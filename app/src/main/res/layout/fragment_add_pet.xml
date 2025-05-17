@@ -3,138 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".presentation.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetFragment">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:text="Имя:" />
-
-    <EditText
-        android:id="@+id/etPetName"
-        android:layout_margin="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:hint="Введите имя питомца"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/dark_blue" />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_marginStart="8dp"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Тип питомца:" />
-
-    <Spinner
-        android:id="@+id/spinnerPetType"
-        android:layout_margin="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/dark_blue" />
-
-
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Пол:" />
-
-    <Spinner
-        android:layout_margin="8dp"
-        android:id="@+id/spinnerPetGender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/dark_blue" />
-
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Дата рождения:" />
-
+    tools:context=".presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetFragment">
 
     <LinearLayout
-        android:id ="@+id/llBDay"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:background="?attr/selectableItemBackground"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        <TextView
-            android:id="@+id/tvBday"
-            android:layout_margin="8dp"
+        <com.example.vetclinic.presentation.widgets.CustomPetInput
+            android:id="@+id/petInput"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnAddPet"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:hint="День/Месяц/Год"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_height="1dp"
-            android:background="@color/black" />
-
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/dark_blue"
+            android:text="Добавить"
+            android:textColor="@color/white" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/dark_blue" />
-
-    <Button
-        android:id="@+id/btnAddPet"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:text="Добавить"
-        android:backgroundTint="@color/dark_blue"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
-
-
-</LinearLayout>
-
-
 </ScrollView>

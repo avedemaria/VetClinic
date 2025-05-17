@@ -4,7 +4,7 @@ import androidx.core.content.ContextCompat
 import com.example.vetclinic.R
 import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.presentation.utils.extractTime
+import com.example.vetclinic.utils.extractTime
 
 object AdminAppointmentBindingHelper {
 
@@ -36,7 +36,7 @@ object AdminAppointmentBindingHelper {
             )
             tvServiceName.text = appointment.serviceName
             tvTime.text = appointment.dateTime.extractTime()
-            tvPetAge.text = ", ${appointment.petAge}"
+            tvPetAge.text = ", ${appointment.petBday}"
 
             tvStatus.text = when (appointment.status) {
                 AppointmentStatus.SCHEDULED -> "Приём назначен"

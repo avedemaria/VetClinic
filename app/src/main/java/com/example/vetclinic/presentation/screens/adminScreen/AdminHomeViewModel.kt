@@ -50,8 +50,7 @@ data class AdminHomeViewModel @Inject constructor(
 
     fun setUpSelectedDate(date: LocalDate) {
         selectedDate = date
-        getAppointmentsByDate(date)//status
-        Log.d(TAG, "setUpselecetedDate")
+        getAppointmentsByDate(date)
     }
 
 

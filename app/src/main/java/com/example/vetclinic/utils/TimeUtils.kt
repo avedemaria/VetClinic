@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.utils
+package com.example.vetclinic.utils
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -47,7 +47,6 @@ fun String.formatAppointmentDateTime(): String {
             val parsedDateTime = LocalDateTime.parse(this, formatter)
             return parsedDateTime.format(outputFormatter)
         } catch (e: Exception) {
-            // Continue to next formatter
             continue
         }
     }
