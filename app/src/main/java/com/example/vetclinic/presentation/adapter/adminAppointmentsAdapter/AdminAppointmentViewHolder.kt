@@ -7,7 +7,7 @@ import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 
 class AdminAppointmentViewHolder(
     private val binding: ItemAppointmentAdminBinding,
-    private val listener: OnBellClickListener,
+    listener: OnBellClickListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
 

@@ -3,7 +3,7 @@ package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 import com.example.vetclinic.databinding.ItemArchivedAppointmentAdminBinding
 
 class ArchivedAppointmentBindingAdapter(
-    private val binding: ItemArchivedAppointmentAdminBinding
+    binding: ItemArchivedAppointmentAdminBinding
 ) : AppointmentViewBinding {
 
     override val root = binding.root

@@ -1,8 +1,7 @@
 package com.example.vetclinic.domain.usecases
 
-import android.util.Log
-import com.example.vetclinic.domain.repository.Repository
 import com.example.vetclinic.domain.entities.service.Service
+import com.example.vetclinic.domain.repository.Repository
 import jakarta.inject.Inject
 
 class ServiceUseCase @Inject constructor(private val repository: Repository) {

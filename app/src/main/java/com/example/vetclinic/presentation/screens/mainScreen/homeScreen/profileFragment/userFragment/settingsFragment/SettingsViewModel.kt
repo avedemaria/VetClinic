@@ -27,6 +27,7 @@ class SettingsViewModel @Inject constructor(
             val result = logInUserUseCase.logOut()
             if (result.isSuccess) {
                 userDataStore.clearUserSession()
+                logInUserUseCase.clearAllData()
                 _settingsState.value = SettingsState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"

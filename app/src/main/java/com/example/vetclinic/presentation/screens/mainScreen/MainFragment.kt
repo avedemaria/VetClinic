@@ -59,12 +59,11 @@ class MainFragment : Fragment() {
             })
 
 
-        // Получаем NavController из вложенного NavHostFragment
+
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 as NavHostFragment
         val navController = navHostFragment.navController
 
-        // Привязываем BottomNavigationView к navController
         binding.bottomNavigationView.setupWithNavController(navController)
 
         setUpListeners(navController)
@@ -90,8 +89,6 @@ class MainFragment : Fragment() {
                 }
 
                 R.id.miAddAppointment -> {
-//                    binding.bottomNavigationView.itemRippleColor =
-//                        ColorStateList.valueOf(Color.TRANSPARENT)
                     navController.navigate(R.id.doctorsFragment)
                     true
                 }

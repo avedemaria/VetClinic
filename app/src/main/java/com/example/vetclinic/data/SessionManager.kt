@@ -16,15 +16,15 @@ class SessionManager @Inject constructor(
         when (role.lowercase()) {
             "admin" -> {
                 cancelReminderWorkers()
-                Log.d("SessionManager", "Admin login detected, reminders cancelled")
+                Log.d(TAG, "Admin login detected, reminders cancelled")
             }
 
             "user" -> {
-                Log.d("SessionManager", "User login detected, reminders allowed")
+                Log.d(TAG, "User login detected, reminders allowed")
             }
 
             else -> {
-                Log.d("SessionManager", "Unknown role: $role, no action taken")
+                Log.d(TAG, "Unknown role: $role, no action taken")
             }
         }
     }
@@ -33,5 +33,9 @@ class SessionManager @Inject constructor(
         WorkManager.getInstance(context).cancelAllWorkByTag("reminders")
     }
 
+
+    companion object {
+        private const val TAG = "SessionManager"
+    }
 
 }

@@ -56,10 +56,6 @@ class DetailedDoctorInfoFragment : Fragment() {
 
         component.inject(this)
 
-
-        Log.d("Doctor", "${args.doctor}")
-
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {

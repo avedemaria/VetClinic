@@ -10,7 +10,7 @@ import com.example.vetclinic.data.network.model.DoctorDto
 import com.example.vetclinic.data.network.model.PetDto
 import com.example.vetclinic.data.network.model.ServiceDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.data.network.model.UserDTO
+import com.example.vetclinic.data.network.model.UserDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -25,7 +25,7 @@ interface SupabaseApiService {
 
     @GET("rest/v1/users")
     suspend fun getUserFromSupabaseDbById(@Query("uid") userId: String):
-            Response<List<UserDTO>>
+            Response<List<UserDto>>
 
     @GET("rest/v1/pets")
     suspend fun getPetsFromSupabaseDb(@Query("user_id") userId: String):
@@ -33,7 +33,7 @@ interface SupabaseApiService {
 
 
     @POST("rest/v1/users")
-    suspend fun addUser(@Body user: UserDTO): Response<Unit>
+    suspend fun addUser(@Body user: UserDto): Response<Unit>
 
     @POST("rest/v1/pets")
     suspend fun addPet(@Body petDto: PetDto): Response<Unit>
@@ -41,7 +41,7 @@ interface SupabaseApiService {
     @PATCH("rest/v1/users")
     suspend fun updateUser(
         @Query("uid") userId: String,
-        @Body updatedUser: UserDTO,
+        @Body updatedUser: UserDto,
     ): Response<Unit>
 
     @PATCH("rest/v1/pets")

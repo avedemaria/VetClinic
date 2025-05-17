@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class ServiceWithDepViewModel @Inject constructor(
     private val serviceUseCase: ServiceUseCase,
-    private val departmentUseCase: DepartmentUseCase
+    private val departmentUseCase: DepartmentUseCase,
 ) : ViewModel() {
 
 
@@ -29,7 +29,7 @@ class ServiceWithDepViewModel @Inject constructor(
     }
 
 
-    fun fetchServicesWithDep() {
+    private fun fetchServicesWithDep() {
         _serviceState.value = ServiceWithDepUiState.Loading
 
         viewModelScope.launch {

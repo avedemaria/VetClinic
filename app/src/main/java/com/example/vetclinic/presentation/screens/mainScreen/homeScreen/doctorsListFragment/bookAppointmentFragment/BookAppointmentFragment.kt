@@ -85,7 +85,7 @@ class BookAppointmentFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()  // Возврат к предыдущему фрагменту
+                    findNavController().navigateUp()
                 }
             })
 
@@ -101,10 +101,6 @@ class BookAppointmentFragment : Fragment() {
 
         binding.tvDoctorInfo.text = getStyledDoctorInfo(doctor)
         binding.tvServiceInfo.text = getStyledServiceInfo(service)
-
-//        binding.btnCreateAppointment.setOnClickListener {
-//            showConfirmationDialog(service, doctor)
-//        }
 
         setUpAdapters()
         observeViewModel()
@@ -137,7 +133,6 @@ class BookAppointmentFragment : Fragment() {
                     setUpPetSpinner(state.pets)
 
 
-                    //adapter RV
 
                     val updatedDays = state.daysWithTimeSlots.map { it.day }.map { day ->
                         day.copy(
@@ -155,7 +150,7 @@ class BookAppointmentFragment : Fragment() {
                     timeSlotAdapter.submitList(updatedTimeSlots)
 
 
-                    //confirmationDialog
+
 
                     binding.btnCreateAppointment.setOnClickListener {
                         showConfirmationDialog(

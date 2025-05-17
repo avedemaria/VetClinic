@@ -51,9 +51,6 @@ class AddPetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         component.inject(this)
-//
-//        setUpPetTypeSpinner()
-//        setUpPetGenderSpinner()
 
         binding.btnAddPet.setOnClickListener {
             onAddPetButtonClick()
@@ -101,40 +98,6 @@ class AddPetFragment : Fragment() {
             }
         }
     }
-
-
-//    private fun showDatePickerDialog() {
-//        CustomDatePicker(requireContext()) { selectedDate ->
-//            binding.tvBday.setText(selectedDate)
-//        }.show()
-//    }
-
-
-//    private fun setUpPetTypeSpinner() {
-//        val petTypes = arrayOf(CHOOSE_TYPE, "Кот", "Собака", "Грызун")
-//        val spinnerAdapter = ArrayAdapter(
-//            requireContext(),
-//            android.R.layout.simple_spinner_item, petTypes
-//        )
-//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        binding.spinnerPetType.adapter = spinnerAdapter
-//
-//        binding.spinnerPetType.setSelection(0)
-//
-//    }
-//
-//
-//    private fun setUpPetGenderSpinner() {
-//        val genders = arrayOf(CHOOSE_GENDER, "Мальчик", "Девочка")
-//        val spinnerAdapter = ArrayAdapter(
-//            requireContext(), android.R.layout.simple_spinner_item,
-//            genders
-//        )
-//        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        binding.spinnerPetGender.adapter = spinnerAdapter
-//
-//        binding.spinnerPetGender.setSelection(0)
-//    }
 
 
     override fun onDestroyView() {

@@ -105,7 +105,7 @@ class DoctorsFragment : Fragment() {
                 ).show()
 
                 is DoctorUiState.Loading -> Log.d(
-                    "DoctorsFragment",
+                    TAG,
                     "DoctorUiState.Loading - заглушка для теста"
                 )
 

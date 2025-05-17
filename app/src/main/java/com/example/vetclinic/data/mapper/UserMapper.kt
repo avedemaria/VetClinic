@@ -1,15 +1,15 @@
 package com.example.vetclinic.data.mapper
 
 import com.example.vetclinic.data.database.model.UserDbModel
-import com.example.vetclinic.data.network.model.UserDTO
+import com.example.vetclinic.data.network.model.UserDto
 import com.example.vetclinic.domain.entities.user.User
 import jakarta.inject.Inject
 
 class UserMapper @Inject constructor() {
 
-    fun userEntityToUserDto(entity: User): UserDTO {
+    fun userEntityToUserDto(entity: User): UserDto {
 
-        return UserDTO(
+        return UserDto(
             uid = entity.uid,
             userName = entity.userName,
             userLastName = entity.userLastName,
@@ -19,7 +19,7 @@ class UserMapper @Inject constructor() {
         )
     }
 
-    fun userDtoToUserDbModel(dto: UserDTO): UserDbModel {
+    fun userDtoToUserDbModel(dto: UserDto): UserDbModel {
         return UserDbModel(
             uid = dto.uid,
             userName = dto.userName,
@@ -30,9 +30,6 @@ class UserMapper @Inject constructor() {
         )
     }
 
-//    fun userDtoListToUserEntityList (): List<User> {
-//
-//    }
 
     fun userDbModelToUserEntity(dbModel: UserDbModel): User {
         return User(
@@ -56,7 +53,7 @@ class UserMapper @Inject constructor() {
         )
     }
 
-    fun userDtoToUserEntity(dto: UserDTO): User {
+    fun userDtoToUserEntity(dto: UserDto): User {
         return User(
             uid = dto.uid,
             userName = dto.userName,

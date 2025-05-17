@@ -7,7 +7,7 @@ import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 
 sealed class BookAppointmentState {
 
-    object Loading : BookAppointmentState()
+    data object Loading : BookAppointmentState()
 
     data class Success(
         val daysWithTimeSlots: List<DayWithTimeSlots>,

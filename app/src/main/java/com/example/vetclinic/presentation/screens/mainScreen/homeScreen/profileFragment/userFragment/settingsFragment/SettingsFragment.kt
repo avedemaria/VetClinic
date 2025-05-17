@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,11 +11,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.vetclinic.databinding.FragmentSettingsBinding
 import com.example.vetclinic.MainActivity
 import com.example.vetclinic.VetClinicApplication
-import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
+import com.example.vetclinic.databinding.FragmentSettingsBinding
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
 import jakarta.inject.Inject
 
 class SettingsFragment : Fragment() {
@@ -38,12 +37,6 @@ class SettingsFragment : Fragment() {
     }
 
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -55,7 +48,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        component.inject(this)
 
         hideToggleGroup()
 

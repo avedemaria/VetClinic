@@ -44,7 +44,6 @@ class SupabaseApiFactory @Inject constructor(
     private val retrofit by lazy {
         Retrofit.Builder().client(client).addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(BuildConfig.SUPABASE_URL)
-            // supabase sdk injection and observing retrofit requests
             .build()
     }
 

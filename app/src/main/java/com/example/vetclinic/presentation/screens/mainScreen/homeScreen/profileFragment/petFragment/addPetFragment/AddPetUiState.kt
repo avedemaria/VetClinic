@@ -2,7 +2,7 @@ package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profile
 
 sealed class AddPetUiState {
 
-    data object Loading : com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetUiState()
-    data object Success : com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetUiState()
-    data class Error(val message: String) : com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetUiState()
+    data object Loading : AddPetUiState()
+    data object Success : AddPetUiState()
+    data class Error(val message: String) : AddPetUiState()
 }

@@ -27,7 +27,7 @@ class DoctorViewModel @Inject constructor(
         fetchDoctors()
     }
 
-    fun fetchDoctors() {
+   private fun fetchDoctors() {
         _doctorState.value = DoctorUiState.Loading
         viewModelScope.launch {
 

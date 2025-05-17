@@ -21,7 +21,7 @@ class AppointmentReminderWorker(
 
 
     override suspend fun doWork(): Result {
-        Log.d("AppointmentReminderWorker", "Worker started")
+
         val doctorName = inputData.getString(DOCTOR_NAME) ?: return Result.failure()
         val serviceName = inputData.getString(SERVICE_NAME) ?: return Result.failure()
         val petName = inputData.getString(PET_NANE) ?: return Result.failure()

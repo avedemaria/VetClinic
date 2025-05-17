@@ -67,7 +67,7 @@ class PlainServicesFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()  // Возврат к предыдущему фрагменту
+                    findNavController().navigateUp()
                 }
             })
 

@@ -1,11 +1,9 @@
 package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 
-import android.view.View
-import android.widget.TextView
 import com.example.vetclinic.databinding.ItemAppointmentAdminBinding
 
 class ActiveAppointmentBindingAdapter (
-    private val binding:ItemAppointmentAdminBinding
+     binding:ItemAppointmentAdminBinding
 ): AppointmentViewBinding {
 
     override val root = binding.root

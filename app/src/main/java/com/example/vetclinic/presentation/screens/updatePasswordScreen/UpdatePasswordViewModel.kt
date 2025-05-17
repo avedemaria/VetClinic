@@ -2,7 +2,6 @@ package com.example.vetclinic.presentation.screens.updatePasswordScreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
@@ -16,17 +15,8 @@ class UpdatePasswordViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
-
     private val _updatePasswordState = MutableLiveData<UpdatePasswordState>()
     val updatePasswordState: LiveData<UpdatePasswordState> = _updatePasswordState
-
-//    private val token: String =
-//        savedStateHandle[TOKEN] ?: throw IllegalArgumentException("Token is missing")
-//
-//    private val refreshToken: String = savedStateHandle[REFRESH_TOKEN]
-//        ?: throw IllegalArgumentException("Refresh token is missing")
-
 
     fun updatePassword(newPassword: String) {
         _updatePasswordState.value = UpdatePasswordState.Loading
@@ -64,10 +54,4 @@ class UpdatePasswordViewModel @Inject constructor(
         }
     }
 
-
-
-    companion object {
-        private const val TOKEN = "token"
-        private const val REFRESH_TOKEN = "refresh_token"
-    }
 }

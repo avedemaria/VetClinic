@@ -31,14 +31,6 @@ class UpdatePasswordFragment : Fragment() {
 
     @Inject  lateinit var resetPasswordUseCase: ResetPasswordUseCase
 
-//
-//    private val viewModel: UpdatePasswordViewModel by viewModels {
-//        UpdatePasswordViewModelFactory(
-//            resetPasswordUseCase,
-//            this,
-//            arguments
-//        )
-//    }
 
     private val component by lazy {
         (requireActivity().application as VetClinicApplication).component

@@ -49,11 +49,4 @@ interface Repository {
 
     suspend fun clearAllData()
 
-//    suspend fun getPetsFromSupabaseDb(userId: String)
-
-
-
-    //time slots and appointments
-
-
 }

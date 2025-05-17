@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.utils.AgeUtils
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 class PetViewModel @Inject constructor(
     private val petUseCase: PetUseCase,
     private val userDataStore: UserDataStore,
+    private val ageUtils: AgeUtils
 ) : ViewModel() {
 
     private val _petState = MutableStateFlow<PetUiState>(PetUiState.Loading)
@@ -86,6 +88,10 @@ class PetViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun calculatePetAge (petBday:String) {
+        ageUtils.calculatePetAge(petBday)
     }
 
     companion object {

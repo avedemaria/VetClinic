@@ -5,8 +5,8 @@ import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.network.SupabaseApiService
 import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.network.model.TimeSlotDto
-import com.example.vetclinic.domain.repository.TimeSlotsRepository
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
+import com.example.vetclinic.domain.repository.TimeSlotsRepository
 import jakarta.inject.Inject
 import java.time.LocalDate
 import java.time.LocalTime
@@ -56,7 +56,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
                 timeSlots = day.timeSlots.map { timeSlot ->
                     timeSlot.copy(
                         dayId = insertedDay?.id ?: timeSlot.dayId
-                    ) // Используем новый day_id
+                    )
                 }
             )
         }

@@ -41,6 +41,7 @@ class PetFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+
     private val viewModel: PetViewModel by viewModels {
         viewModelFactory
     }
@@ -264,7 +265,9 @@ class PetFragment : Fragment() {
     private fun showCustomDatePicker(pet: Pet) {
         CustomDatePicker(requireContext()) { selectedDate ->
             val updatedPet =
-                pet.copy(petBDay = selectedDate, petAge = calculatePetAge(selectedDate))
+                pet.copy(
+                    petBDay = selectedDate
+                )
             viewModel.updatePet(pet.petId, updatedPet)
         }.show()
     }
@@ -285,61 +288,12 @@ class PetFragment : Fragment() {
     }
 
 
-    private fun calculatePetAge(petBday: String): String {
-        return try {
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            val birthDate = LocalDate.parse(petBday, formatter)
-            val currentDate = LocalDate.now()
-            val period = Period.between(birthDate, currentDate)
-
-            val year = period.years
-            val month = period.months
-
-
-            val yearText = if (year > 0) {
-                "$year ${getYearSuffix(year)}"
-            } else {
-                ""
-            }
-
-            val monthText = if (month > 0 || year == 0) {
-                "$month ${getMonthSuffix(month)}"
-            } else {
-                ""
-            }
-
-            listOf(yearText, monthText).filter {
-                it.isNotEmpty()
-            }.joinToString(" ")
-
-        } catch (e: Exception) {
-            Log.e("PetViewModel", "Error calculating pet age: ${e.message}")
-            "0 мес."
-        }
-    }
-
-
-    private fun getYearSuffix(years: Int): String {
-        return when {
-            years % 10 == 1 && years % 100 != 11 -> "год"
-            years % 10 in 2..4 && (years % 100 !in 12..14) -> "года"
-            else -> "лет"
-        }
-    }
-
-    private fun getMonthSuffix(month: Int): String {
-        return "мес."
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
 
-    companion object {
-        private const val TAG = "PetFragment"
-    }
+
 
 }

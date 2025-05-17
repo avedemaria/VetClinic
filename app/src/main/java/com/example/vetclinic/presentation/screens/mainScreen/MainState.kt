@@ -8,7 +8,6 @@ sealed class MainState {
     data class Result(
         val user: User?,
         val pets: List<Pet>
-//        val appointments: List<AppointmentWithDetails>
     ) : MainState()
 
     data class Error(val message: String) : MainState()

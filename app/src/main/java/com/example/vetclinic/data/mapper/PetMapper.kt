@@ -14,8 +14,7 @@ class PetMapper @Inject constructor() {
             petName = entity.petName,
             petBday = entity.petBDay,
             petType = entity.petType,
-            petGender = entity.petGender,
-            petAge = entity.petAge
+            petGender = entity.petGender
         )
     }
 
@@ -25,7 +24,6 @@ class PetMapper @Inject constructor() {
             userId = entity.userId,
             petName = entity.petName,
             petType = entity.petType,
-            petAge = entity.petAge,
             petBday = entity.petBDay,
             petGender = entity.petGender
         )
@@ -39,7 +37,6 @@ class PetMapper @Inject constructor() {
             petBDay = dto.petBday,
             petType = dto.petType,
             petGender = dto.petGender,
-            petAge = dto.petAge
         )
     }
 
@@ -51,7 +48,6 @@ class PetMapper @Inject constructor() {
             petName = dbModel.petName,
             petBDay = dbModel.petBday,
             petType = dbModel.petType,
-            petAge = dbModel.petAge,
             petGender = dbModel.petGender
         )
     }
@@ -63,7 +59,6 @@ class PetMapper @Inject constructor() {
             petName = petDto.petName,
             petBday = petDto.petBday,
             petType = petDto.petType,
-            petAge = petDto.petAge,
             petGender = petDto.petGender
         )
     }

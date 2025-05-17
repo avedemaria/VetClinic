@@ -19,7 +19,7 @@ class DetailedDoctorInfoViewModel @Inject constructor(
 
 
     fun getServicesByDepartmentId(departmentId: String) {
-        Log.d(TAG, "Calling getServicesByDepartmentId with: $departmentId")
+
         _detailedDoctorState.value = DetailedDoctorState.Loading
 
         viewModelScope.launch {
@@ -41,6 +41,6 @@ class DetailedDoctorInfoViewModel @Inject constructor(
 
 
     companion object {
-        private const val TAG = "PlainServicesViewModel"
+        private const val TAG = "DetailedDoctorInfoViewModel"
     }
 }
