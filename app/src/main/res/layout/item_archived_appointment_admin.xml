@@ -108,7 +108,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <!-- Плашка со статусом приема -->
+
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
