@@ -38,7 +38,7 @@ class DataModule {
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_KEY
         ) {
-            install(Auth)
+            install(Auth) {}
             install(Postgrest)
             install(Realtime)
         }

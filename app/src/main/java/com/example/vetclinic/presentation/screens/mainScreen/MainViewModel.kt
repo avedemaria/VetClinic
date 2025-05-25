@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
     fun getUserIdAndFetchData() {
         viewModelScope.launch {
             val userId = userDataStore.getUserId() ?: return@launch
-            Log.d("MainViewModel", "userId1 $userId")
+            Log.d(TAG, "userId1 $userId")
             getUserAndPet(userId)
             observeAppointmentsByUserId(userId)
         }

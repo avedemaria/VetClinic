@@ -59,7 +59,7 @@ interface VetClinicDao {
     fun observeAppointmentsByUserId(userId: String): Flow<List<AppointmentWithDetailsDbModel>>
 
 
-    @Query("SELECT * FROM appointments WHERE  date(date_time) = :selectedDate")
+    @Query("SELECT * FROM appointments WHERE date(date_time) = :selectedDate")
     fun observeAppointmentsPaging(
         selectedDate: String,
     ): PagingSource<Int, AppointmentWithDetailsDbModel>

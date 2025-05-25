@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
@@ -50,7 +51,6 @@ class MainFragment : Fragment() {
 
         component.inject(this)
 
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -75,31 +75,16 @@ class MainFragment : Fragment() {
 
     private fun setUpListeners(navController: NavController) {
 
-        binding.fab.setOnClickListener {
-            binding.bottomNavigationView.selectedItemId = R.id.miAddAppointment
-        }
+            binding.fab.setOnClickListener {
+                val currentDestination = navController.currentDestination?.id
+                if (currentDestination != R.id.doctorsFragment) {
+                    val navOptions = NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setPopUpTo(navController.graph.startDestinationId, false)
+                        .build()
 
-
-        binding.bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.miHome -> {
-
-                    navController.navigate(R.id.homeFragment)
-                    true
+                    navController.navigate(R.id.doctorsFragment, null, navOptions)
                 }
-
-                R.id.miAddAppointment -> {
-                    navController.navigate(R.id.doctorsFragment)
-                    true
-                }
-
-                R.id.miAppointments -> {
-                    navController.navigate(R.id.appointmentFragment)
-                    true
-                }
-
-                else -> false
-            }
         }
 
 

@@ -1,5 +1,7 @@
 package com.example.vetclinic.data.network
 
+import android.util.Log
+import com.example.vetclinic.domain.repository.UserDataStore
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import jakarta.inject.Inject
@@ -12,28 +14,32 @@ class HeaderInterceptor @Inject constructor(
     private val supabaseClient: SupabaseClient
 ): Interceptor {
 
+
     private var token: String? = supabaseClient.auth.currentSessionOrNull()?.accessToken
 
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        
+
         val session = supabaseClient.auth.currentSessionOrNull()
+        Log.d("HeaderInterceptor", "$session")
         if (session?.refreshToken!= null) {
             token = runBlocking {
                 withTimeout(3*60*1000) {
                     supabaseClient.auth.refreshCurrentSession()
                     supabaseClient.auth.currentSessionOrNull()?.accessToken
                 }
+
         }
         }
 
         val request = chain.request().newBuilder().apply {
             if (token!=null) {
-//                addHeader(HEADER_AUTHORIZATION, "Bearer $token")
+                addHeader(HEADER_AUTHORIZATION, "Bearer $token")
             }
         }.build()
 
         return chain.proceed(request)
+
     }
 
 
