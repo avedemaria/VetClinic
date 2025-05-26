@@ -14,6 +14,7 @@ import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.di.AppComponent
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 class LoginFragment : Fragment() {
@@ -91,8 +92,9 @@ class LoginFragment : Fragment() {
                     binding.progressIndicator.visibility = View.GONE
                     binding.btnLogin.isEnabled = true
 
-                    Toast.makeText(
-                        requireContext(), "${state.message}", Toast.LENGTH_SHORT
+                    Snackbar.make(binding.root,
+                        "Возникла ошибка: ${state.message}",
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
 

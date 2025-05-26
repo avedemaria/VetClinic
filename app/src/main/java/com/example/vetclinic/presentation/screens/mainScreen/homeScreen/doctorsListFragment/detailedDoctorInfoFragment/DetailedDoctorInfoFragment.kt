@@ -18,6 +18,7 @@ import com.example.vetclinic.databinding.FragmentDetailedDoctorInfoBinding
 import com.example.vetclinic.domain.entities.doctor.Doctor
 import com.example.vetclinic.presentation.adapter.doctorsAdapter.DoctorServicesAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 class DetailedDoctorInfoFragment : Fragment() {
@@ -107,9 +108,9 @@ class DetailedDoctorInfoFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.detailedDoctorState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is DetailedDoctorState.Error -> Toast.makeText(
-                    requireContext(),
-                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is DetailedDoctorState.Error -> Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
                 DetailedDoctorState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.DialogDataStore
 import com.example.vetclinic.domain.repository.UserDataStore
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
     private val dialogDataStore: DialogDataStore,
 ) : ViewModel() {
 
@@ -31,9 +32,7 @@ class HomeViewModel @Inject constructor(
 
     fun getUserIdAndLoadUserName() {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: return@launch
-            Log.d(TAG, "userId2 $userId")
-
+            val userId = sessionUseCase.getUserId() ?: return@launch
             if (userId.isNotEmpty()) {
                 loadUserName(userId)
             } else {

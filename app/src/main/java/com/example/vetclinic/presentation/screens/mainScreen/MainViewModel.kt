@@ -11,6 +11,7 @@ import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.usecases.AppointmentReminderUseCase
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.catch
@@ -23,7 +24,7 @@ class MainViewModel @Inject constructor(
     private val petUseCase: PetUseCase,
     private val appointmentUseCase: AppointmentUseCase,
     private val appointmentReminderUseCase: AppointmentReminderUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
 
     ) : ViewModel() {
 
@@ -38,7 +39,7 @@ class MainViewModel @Inject constructor(
 
     fun getUserIdAndFetchData() {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: return@launch
+            val userId = sessionUseCase.getUserId() ?: return@launch
             Log.d(TAG, "userId1 $userId")
             getUserAndPet(userId)
             observeAppointmentsByUserId(userId)

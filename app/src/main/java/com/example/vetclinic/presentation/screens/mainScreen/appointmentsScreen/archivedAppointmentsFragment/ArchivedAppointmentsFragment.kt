@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.utils.toLocalDateOrNull
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -124,9 +125,9 @@ class ArchivedAppointmentsFragment : Fragment() {
                             binding.archivedAppointmentContent.isEnabled = false
                             binding.progressBar.visibility = View.GONE
 
-                            Toast.makeText(
-                                requireContext(),
-                                "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                            Snackbar.make(binding.root,
+                                "Oшибка: ${state.message}",
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
 

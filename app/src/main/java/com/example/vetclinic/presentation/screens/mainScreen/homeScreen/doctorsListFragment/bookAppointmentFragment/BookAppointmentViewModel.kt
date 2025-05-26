@@ -14,6 +14,7 @@ import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.TimeSlotsUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ class BookAppointmentViewModel @Inject constructor(
     private val timeSlotsUseCase: TimeSlotsUseCase,
     private val petUseCase: PetUseCase,
     private val appointmentUseCase: AppointmentUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
 ) : ViewModel() {
 
     private val _bookAppointmentState = MutableLiveData<BookAppointmentState>()
@@ -40,7 +41,7 @@ class BookAppointmentViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: ""
+            val userId = sessionUseCase.getUserId() ?: ""
             Log.d(TAG, "Received userId: $userId")
             getPets(userId)
         }
@@ -98,7 +99,7 @@ class BookAppointmentViewModel @Inject constructor(
 
 
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: ""
+            val userId = sessionUseCase.getUserId() ?: ""
             val appointment = Appointment(
                 UUID.randomUUID().toString(),
                 userId,

@@ -68,9 +68,9 @@ class UserFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.userState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UserUiState.Error -> Toast.makeText(
-                    requireContext(),
-                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is UserUiState.Error ->   Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 is UserUiState.Loading -> Log.d(
@@ -131,11 +131,11 @@ class UserFragment : Fragment() {
                 addToBackStack(null)
                 commit()
             }
+        }
 
-            binding.llSettings.setOnClickListener {
-                Snackbar.make(binding.root, "В разработке", Snackbar.LENGTH_SHORT).show()
-            }
-
+        binding.llChangePassword.setOnClickListener {
+            Snackbar.make(binding.root, "Раздел находится в разработке", Snackbar.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -191,9 +191,9 @@ class UserFragment : Fragment() {
                             userLastName = newLastName.replaceFirstChar { it.uppercase() })
                     viewModel.updateUser(updatedUser)
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT
+                    Snackbar.make(binding.root,
+                        "Пожалуйста, заполните все поля",
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
                 dialog.dismiss()

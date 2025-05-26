@@ -19,6 +19,7 @@ import com.example.vetclinic.databinding.FragmentAppointmentsBinding
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.archivedAppointmentsFragment.ArchivedAppointmentsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -99,9 +100,10 @@ class AppointmentsFragment : Fragment() {
                             binding.toggleGroup.isEnabled = false
                             binding.fragmentContent.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                "Ошибка: ${state.message}", Toast.LENGTH_SHORT
+
+                            Snackbar.make(binding.root,
+                                "Oшибка: ${state.message}",
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
 

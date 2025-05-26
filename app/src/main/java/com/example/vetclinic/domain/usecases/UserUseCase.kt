@@ -1,10 +1,10 @@
 package com.example.vetclinic.domain.usecases
 
 import com.example.vetclinic.domain.entities.user.User
-import com.example.vetclinic.domain.repository.Repository
+import com.example.vetclinic.domain.repository.UserRepository
 import jakarta.inject.Inject
 
-class UserUseCase @Inject constructor(private val repository: Repository) {
+class UserUseCase @Inject constructor(private val repository: UserRepository) {
 
     suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
         return repository.addUserToSupabaseDb(user)

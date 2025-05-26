@@ -20,6 +20,7 @@ import com.example.vetclinic.presentation.adapter.doctorsAdapter.DepAndDocItemLi
 import com.example.vetclinic.presentation.adapter.doctorsAdapter.DoctorsAdapter
 import com.example.vetclinic.presentation.adapter.doctorsAdapter.OnAppointmentClickListener
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 class DoctorsFragment : Fragment() {
@@ -99,9 +100,9 @@ class DoctorsFragment : Fragment() {
         viewModel.doctorState.observe(viewLifecycleOwner) { state ->
             when (state) {
 
-                is DoctorUiState.Error -> Toast.makeText(
-                    requireContext(),
-                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is DoctorUiState.Error ->   Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 is DoctorUiState.Loading -> Log.d(

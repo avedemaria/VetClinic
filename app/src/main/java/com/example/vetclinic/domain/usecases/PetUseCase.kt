@@ -1,11 +1,11 @@
 package com.example.vetclinic.domain.usecases
 
 import com.example.vetclinic.domain.entities.pet.Pet
-import com.example.vetclinic.domain.repository.Repository
+import com.example.vetclinic.domain.repository.PetRepository
 import jakarta.inject.Inject
 
 class PetUseCase @Inject constructor(
-    private val repository: Repository
+    private val repository: PetRepository
 ) {
 
     suspend fun getPetsFromSupabaseDb (userId: String): Result<List<Pet>> {

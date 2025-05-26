@@ -13,6 +13,7 @@ import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentUpdatePasswordBinding
 import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -72,10 +73,9 @@ class UpdatePasswordFragment : Fragment() {
 
                 UpdatePasswordState.Loading -> Log.d(TAG, "Заглушка для Loading")
                 UpdatePasswordState.Success -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Пароль успешно обновлен",
-                        Toast.LENGTH_SHORT
+                    Snackbar.make(binding.root,
+                        "Пароль успешно обновлён",
+                        Snackbar.LENGTH_SHORT
                     ).show()
 
                     launchLoginFragment()

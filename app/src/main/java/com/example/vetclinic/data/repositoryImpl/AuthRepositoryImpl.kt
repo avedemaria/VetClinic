@@ -1,7 +1,7 @@
 package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
-import com.example.vetclinic.data.network.SupabaseApiService
+import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
 import com.example.vetclinic.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
@@ -26,6 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
             Email.login(
                 supabaseClient,
                 onSuccess = { session ->
+                    Log.d(TAG, "$session")
                     deferred.complete(session)
                 }
             ) {

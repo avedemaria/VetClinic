@@ -1,17 +1,17 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import AppointmentRemoteMediator
+import com.example.vetclinic.data.remoteSource.AppointmentRemoteMediator
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.vetclinic.data.database.model.VetClinicDao
+import com.example.vetclinic.data.localSource.database.VetClinicDao
 import com.example.vetclinic.data.mapper.AppointmentMapper
-import com.example.vetclinic.data.network.AppointmentQuery
-import com.example.vetclinic.data.network.SupabaseApiService
-import com.example.vetclinic.data.network.model.AppointmentDto
+import com.example.vetclinic.data.remoteSource.network.AppointmentQuery
+import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
+import com.example.vetclinic.data.remoteSource.network.model.AppointmentDto
 import com.example.vetclinic.domain.repository.AppointmentRepository
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails

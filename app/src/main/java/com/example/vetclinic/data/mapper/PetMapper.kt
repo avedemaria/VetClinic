@@ -1,7 +1,7 @@
 package com.example.vetclinic.data.mapper
 
-import com.example.vetclinic.data.database.model.PetDbModel
-import com.example.vetclinic.data.network.model.PetDto
+import com.example.vetclinic.data.localSource.database.models.PetDbModel
+import com.example.vetclinic.data.remoteSource.network.model.PetDto
 import com.example.vetclinic.domain.entities.pet.Pet
 import jakarta.inject.Inject
 

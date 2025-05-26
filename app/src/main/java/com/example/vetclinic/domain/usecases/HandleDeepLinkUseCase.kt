@@ -6,7 +6,7 @@ import com.example.vetclinic.domain.repository.UserDataStore
 import jakarta.inject.Inject
 
 class HandleDeepLinkUseCase @Inject constructor(
-    private val userDataStore: UserDataStore,
+    private val userDataStore: UserDataStore
 ) {
     suspend fun handleDeepLink(uri: Uri): Result<Unit> {
         return try {

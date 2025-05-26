@@ -6,14 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class LoadingViewModel @Inject constructor(
-    private val userDataStore: UserDataStore,
-    private val supabaseClient: SupabaseClient
+    private val sessionUseCase: SessionUseCase
 ) : ViewModel() {
 
 
@@ -22,9 +22,9 @@ class LoadingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: ""
+            val userId = sessionUseCase.getUserId() ?: ""
             Log.d(TAG, "userId: $userId")
-            val userRole = userDataStore.getUserRole() ?: ""
+            val userRole = sessionUseCase.getUserRole() ?: ""
             Log.d(TAG, "userRole: $userRole")
             _loadingState.value = LoadingState.Result(userId, userRole)
 
@@ -37,7 +37,7 @@ class LoadingViewModel @Inject constructor(
     fun clearUserSession() {
         _loadingState.value = LoadingState.Loading
         viewModelScope.launch {
-            userDataStore.clearUserSession()
+            sessionUseCase.clearSession()
         }
     }
 

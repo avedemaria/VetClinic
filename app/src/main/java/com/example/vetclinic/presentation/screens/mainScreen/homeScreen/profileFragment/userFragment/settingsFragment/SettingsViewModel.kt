@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.DeleteAccountUseCase
 import com.example.vetclinic.domain.usecases.LoginUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class SettingsViewModel @Inject constructor(
     private val logInUserUseCase: LoginUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
 ) : ViewModel() {
 
@@ -26,8 +27,8 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val result = logInUserUseCase.logOut()
             if (result.isSuccess) {
-                userDataStore.clearUserSession()
-                logInUserUseCase.clearAllData()
+                sessionUseCase.clearSession()
+                logInUserUseCase.clearAllLocalData()
                 _settingsState.value = SettingsState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
@@ -43,7 +44,8 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val result = deleteAccountUseCase.deleteAccount()
             if (result.isSuccess) {
-                userDataStore.clearUserSession()
+                sessionUseCase.clearSession()
+                logInUserUseCase.clearAllLocalData()
                 _settingsState.value = SettingsState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"

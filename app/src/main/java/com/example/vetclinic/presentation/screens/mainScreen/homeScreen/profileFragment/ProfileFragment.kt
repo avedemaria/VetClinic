@@ -8,9 +8,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentProfileBinding
 import com.example.vetclinic.di.AppComponent
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.PetFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.UserFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment
@@ -50,10 +50,15 @@ class ProfileFragment : Fragment() {
         toggleGroup = binding.toggleGroup
         updateToggleGroupVisibility()
 
-
         childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, UserFragment())
             .commit()
 
+        setUpListeners()
+
+
+    }
+
+    private fun setUpListeners () {
         binding.toggleGroup.addOnButtonCheckedListener { toggleButtonGroup, checkedId, isChecked ->
 
             if (isChecked) {

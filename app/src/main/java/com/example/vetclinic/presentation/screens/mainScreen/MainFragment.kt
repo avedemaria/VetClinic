@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentMainBinding
@@ -74,6 +75,26 @@ class MainFragment : Fragment() {
 
 
     private fun setUpListeners(navController: NavController) {
+
+        binding.bottomNavigationView.setOnItemReselectedListener { item ->
+            navController.popBackStack(navController.graph.startDestinationId, false)
+        }
+
+
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            if (item.itemId == R.id.homeFragment) {
+                navController.navigate(
+                    R.id.homeFragment,
+                    null,
+                    NavOptions.Builder()
+                        .setPopUpTo(navController.graph.startDestinationId, true) 
+                        .build()
+                )
+                true
+            } else {
+                NavigationUI.onNavDestinationSelected(item, navController)
+            }
+        }
 
             binding.fab.setOnClickListener {
                 val currentDestination = navController.currentDestination?.id

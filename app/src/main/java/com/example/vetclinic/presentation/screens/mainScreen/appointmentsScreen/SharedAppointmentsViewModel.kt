@@ -7,6 +7,7 @@ import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.utils.toLocalDateOrNull
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import java.time.LocalDate
 
 class SharedAppointmentsViewModel @Inject constructor(
     private val appointmentUseCase: AppointmentUseCase,
-    private val userDataStore: UserDataStore
+    private val sessionUseCase: SessionUseCase
 ) : ViewModel() {
 
     private val _appointmentsState =
@@ -28,7 +29,7 @@ class SharedAppointmentsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId().orEmpty()
+            val userId = sessionUseCase.getUserId().orEmpty()
             Log.d(TAG, "userId: $userId")
             getAppointmentsByUserId(userId)
             observeAppointmentsByUserId(userId)

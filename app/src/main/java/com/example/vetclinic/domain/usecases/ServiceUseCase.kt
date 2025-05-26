@@ -1,10 +1,10 @@
 package com.example.vetclinic.domain.usecases
 
 import com.example.vetclinic.domain.entities.service.Service
-import com.example.vetclinic.domain.repository.Repository
+import com.example.vetclinic.domain.repository.ServiceRepository
 import jakarta.inject.Inject
 
-class ServiceUseCase @Inject constructor(private val repository: Repository) {
+class ServiceUseCase @Inject constructor(private val repository: ServiceRepository) {
 
     suspend fun getServiceList(): Result<List<Service>> {
         return repository.getServiceList()

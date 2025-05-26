@@ -127,10 +127,9 @@ class PetFragment : Fragment() {
                 viewModel.petState.collect { state ->
                     when (state) {
                         is PetUiState.Error -> {
-                            Toast.makeText(
-                                requireContext(),
-                                "Ошибка: ${state.message}",
-                                Toast.LENGTH_SHORT
+                            Snackbar.make(binding.root,
+                                "Oшибка: ${state.message}",
+                                Snackbar.LENGTH_SHORT
                             ).show()
 
                             binding.petContent.isEnabled = false

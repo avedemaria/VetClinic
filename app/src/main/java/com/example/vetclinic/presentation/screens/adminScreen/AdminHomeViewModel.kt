@@ -8,6 +8,7 @@ import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.LoginUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ import kotlin.coroutines.cancellation.CancellationException
 data class AdminHomeViewModel @Inject constructor(
     private val appointmentUseCase: AppointmentUseCase,
     private val loginUseCase: LoginUseCase,
-    private val userDataStore: UserDataStore) : ViewModel() {
+    private val sessionUseCase: SessionUseCase) : ViewModel() {
 
     private val _adminState = MutableStateFlow<AdminHomeState>(AdminHomeState.Empty)
     val adminState: StateFlow<AdminHomeState> get() = _adminState.asStateFlow()
@@ -111,7 +112,7 @@ data class AdminHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val result = loginUseCase.logOut()
             if (result.isSuccess) {
-                userDataStore.clearUserSession()
+                sessionUseCase.clearSession()
                 _adminState.value = AdminHomeState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
@@ -123,7 +124,7 @@ data class AdminHomeViewModel @Inject constructor(
 
     fun afterLogout() {
         viewModelScope.launch {
-            loginUseCase.clearAllData()
+            loginUseCase.clearAllLocalData()
         }
     }
 

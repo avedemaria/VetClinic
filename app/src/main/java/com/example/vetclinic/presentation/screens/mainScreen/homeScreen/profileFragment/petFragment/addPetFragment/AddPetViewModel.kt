@@ -6,15 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.entities.pet.Pet
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class AddPetViewModel @Inject constructor(
     private val petUseCase: PetUseCase,
-    private val userDataStore: UserDataStore
+    private val sessionUseCase: SessionUseCase
 
     ) : ViewModel() {
 
@@ -28,7 +28,7 @@ class AddPetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _userId.value = userDataStore.getUserId()
+            _userId.value = sessionUseCase.getUserId()
         }
     }
 

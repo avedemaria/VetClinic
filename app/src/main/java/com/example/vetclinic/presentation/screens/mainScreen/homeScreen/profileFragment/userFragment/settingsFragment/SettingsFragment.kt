@@ -1,6 +1,7 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment
 
 import android.content.Intent
+import android.health.connect.datatypes.units.Length
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentSettingsBinding
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 class SettingsFragment : Fragment() {
@@ -53,7 +55,9 @@ class SettingsFragment : Fragment() {
         hideToggleGroup()
 
         binding.llDeleteAccount.setOnClickListener {
-           showDeleteConfirmationDialog()
+//           showDeleteConfirmationDialog()
+            Snackbar.make(binding.root, "Раздел находится в разработке", Snackbar.LENGTH_SHORT)
+                .show()
         }
 
         binding.btnBack.setOnClickListener {
@@ -69,7 +73,7 @@ class SettingsFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    parentFragmentManager.popBackStack()  // Возврат к предыдущему фрагменту
+                    parentFragmentManager.popBackStack()
                 }
             })
 
@@ -81,9 +85,9 @@ class SettingsFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.settingsState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is SettingsState.Error -> Toast.makeText(
-                    requireContext(),
-                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is SettingsState.Error ->   Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 SettingsState.Loading -> Log.d(

@@ -20,6 +20,7 @@ import com.example.vetclinic.presentation.adapter.servicesAdapter.DepAndServiceI
 import com.example.vetclinic.presentation.adapter.servicesAdapter.OnServiceClickListener
 import com.example.vetclinic.presentation.adapter.servicesAdapter.ServicesWithDepAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -102,9 +103,9 @@ class ServicesWithDepFragment : Fragment() {
                 is ServiceWithDepUiState.Empty ->
                     Log.d(TAG, "ServiceWithDepUiState.Empty-заглушка для теста")
 
-                is ServiceWithDepUiState.Error -> Toast.makeText(
-                    requireContext(),
-                    "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is ServiceWithDepUiState.Error ->   Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 is ServiceWithDepUiState.Loading -> Log.d(

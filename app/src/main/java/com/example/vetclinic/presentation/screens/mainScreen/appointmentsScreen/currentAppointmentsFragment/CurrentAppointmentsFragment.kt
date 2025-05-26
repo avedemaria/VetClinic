@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointm
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsState
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -134,9 +135,9 @@ class CurrentAppointmentsFragment : Fragment() {
                             binding.tvEmptyAppointments.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
 
-                            Toast.makeText(
-                                requireContext(),
-                                "The error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                            Snackbar.make(binding.root,
+                                "Oшибка: ${state.message}",
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
 

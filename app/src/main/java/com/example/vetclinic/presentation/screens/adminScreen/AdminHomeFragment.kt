@@ -23,6 +23,7 @@ import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -174,7 +175,7 @@ class AdminHomeFragment : Fragment() {
             emptyAppointmentsVisible = false
         )
 
-        showToast("Возникла ошибка: ${state.message}")
+        showSnackbar(state.message)
     }
 
     private fun handleLoadingState() {
@@ -201,8 +202,11 @@ class AdminHomeFragment : Fragment() {
     }
 
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root,
+            "Oшибка: $message",
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 
@@ -212,9 +216,9 @@ class AdminHomeFragment : Fragment() {
         val currentDate = viewModel.getCurrentDate()
 
         if (currentDate == null) {
-            Toast.makeText(
-                requireContext(), "No appointments found",
-                Toast.LENGTH_SHORT
+            Snackbar.make(binding.root,
+                "Приёмы не найдены",
+                Snackbar.LENGTH_SHORT
             ).show()
             return
         }
@@ -251,7 +255,6 @@ class AdminHomeFragment : Fragment() {
 
 
     override fun onDestroyView() {
-        Log.d("AdminHomeFragment", "onDestroyView")
         super.onDestroyView()
         _binding = null
     }

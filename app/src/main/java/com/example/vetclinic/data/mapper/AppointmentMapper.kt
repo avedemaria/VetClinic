@@ -1,8 +1,8 @@
 package com.example.vetclinic.data.mapper
 
-import com.example.vetclinic.data.database.model.AppointmentWithDetailsDbModel
-import com.example.vetclinic.data.network.model.AppointmentDto
-import com.example.vetclinic.data.network.model.AppointmentWithDetailsDto
+import com.example.vetclinic.data.localSource.database.models.AppointmentWithDetailsDbModel
+import com.example.vetclinic.data.remoteSource.network.model.AppointmentDto
+import com.example.vetclinic.data.remoteSource.network.model.AppointmentWithDetailsDto
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails

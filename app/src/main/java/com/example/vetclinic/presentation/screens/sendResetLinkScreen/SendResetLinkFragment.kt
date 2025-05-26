@@ -94,10 +94,9 @@ class SendResetLinkFragment : Fragment() {
                 ).show()
 
                 SendResetLinkState.Loading -> Log.d(TAG, "Заглушка для Loading")
-                SendResetLinkState.Success -> Toast.makeText(
-                    requireContext(),
+                SendResetLinkState.Success ->   Snackbar.make(binding.root,
                     "Ссылка для восстановления пароля была отправлена на ваш email",
-                    Toast.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
         }

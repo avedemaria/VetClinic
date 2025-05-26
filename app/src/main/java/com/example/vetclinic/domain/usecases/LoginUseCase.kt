@@ -1,12 +1,12 @@
 package com.example.vetclinic.domain.usecases
 
+import com.example.vetclinic.domain.LocalDataCleaner
 import com.example.vetclinic.domain.repository.AuthRepository
-import com.example.vetclinic.domain.repository.Repository
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 
 class LoginUseCase @Inject constructor(private val authRepository: AuthRepository,
-                                       private val repository: Repository) {
+                                       private val localDataCleaner: LocalDataCleaner) {
 
 
 
@@ -19,7 +19,7 @@ class LoginUseCase @Inject constructor(private val authRepository: AuthRepositor
         return authRepository.logOut()
     }
 
-    suspend fun clearAllData() {
-        repository.clearAllData()
+    suspend fun clearAllLocalData() {
+        localDataCleaner.clearAllLocalData()
     }
 }

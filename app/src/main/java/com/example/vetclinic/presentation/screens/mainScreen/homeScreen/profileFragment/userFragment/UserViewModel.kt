@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.entities.user.UserInputData
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import com.example.vetclinic.utils.FieldValidator
 import com.example.vetclinic.utils.Validator
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class UserViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
     private val fieldValidator: FieldValidator
 
 ) : ViewModel() {
@@ -29,7 +30,7 @@ class UserViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = userDataStore.getUserId() ?: return@launch
+            val userId = sessionUseCase.getUserId() ?: return@launch
             getUserData(userId)
         }
 
@@ -105,7 +106,7 @@ class UserViewModel @Inject constructor(
         _userState.value = UserUiState.Loading
 
         viewModelScope.launch {
-            val userId = userDataStore.getUserId()?:""
+            val userId = sessionUseCase.getUserId()?:""
             val updatedResult = userUseCase.updateUserInSupabaseDb(userId, updatedUser)
 
             if (updatedResult.isSuccess) {

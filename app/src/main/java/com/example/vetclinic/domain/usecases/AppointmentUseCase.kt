@@ -44,7 +44,6 @@ class AppointmentUseCase @Inject constructor(private val repository: Appointment
     }
 
     suspend fun subscribeToAppointmentChanges(callback: (Appointment) -> Unit) {
-        Log.d("UpdateAppointmentUseCase", "subscribed to channel")
         repository.subscribeToAppointmentChanges(callback)
     }
 

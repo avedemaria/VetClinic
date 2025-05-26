@@ -13,6 +13,7 @@ import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentAddPetBinding
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.PetFragment
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -68,11 +69,10 @@ class AddPetFragment : Fragment() {
         if (petData.type == CHOOSE_TYPE || petData.gender == CHOOSE_GENDER ||
             petData.name.isBlank() || petData.bDay.isBlank()
         ) {
-            Toast.makeText(
-                requireContext(), "Заполните все обязательные поля",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Snackbar.make(binding.root,
+                "Oшибка: все поля должны быть заполнены",
+                Snackbar.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -84,12 +84,10 @@ class AddPetFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.addPetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AddPetUiState.Error -> Toast.makeText(
-                    requireContext(),
-                    "An error has occurred: ${state.message}",
-                    Toast.LENGTH_SHORT
+                is AddPetUiState.Error -> Snackbar.make(binding.root,
+                    "Возникла ошибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
-
                 AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
                 AddPetUiState.Success -> parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, PetFragment())

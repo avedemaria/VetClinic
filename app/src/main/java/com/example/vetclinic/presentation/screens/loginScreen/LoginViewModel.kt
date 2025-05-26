@@ -5,89 +5,100 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.data.SessionManager
+import com.example.vetclinic.data.workers.ReminderManager
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.LoginUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LoginUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
     private val userUseCase: UserUseCase,
     private val petUseCase: PetUseCase,
     private val appointmentUseCase: AppointmentUseCase,
-    private val sessionManager: SessionManager
+    private val reminderManager: ReminderManager,
 ) : ViewModel() {
 
     private val _loginState = MutableLiveData<LoginState>()
     val loginState: LiveData<LoginState> get() = _loginState
 
 
-    private var userRole: String? = null
-
-
     fun loginUser(email: String, password: String) {
-
-
         _loginState.value = LoginState.Loading
-
         viewModelScope.launch {
-            loginUserUseCase.loginUser(email, password).onSuccess {
+            authorizeUser(email, password)?.let { userSession ->
 
-                userDataStore.saveUserSession(it.user?.id ?: "", it.accessToken, it.refreshToken)
+                val userId =
+                    userSession.user?.id ?: return@launch showError("ID пользователя не найден")
 
-                Log.d(TAG, "Saving userId: ${it.user?.id}, token: ${it.accessToken}")
-
-
-                it.user?.id?.let { userId ->
-                    val userResult = userUseCase.getUserFromSupabaseDb(userId)
-
-                    if (userResult.isSuccess) {
-                        userRole = userResult.getOrNull()?.role
-                        Log.d(TAG, "saved user role: $userRole")
-                        userDataStore.saveUserRole(userRole ?: "")
-
-
-                        sessionManager.onLogin(userRole ?: "")
-
-                        when (userRole) {
-                            USER -> {
-                                petUseCase.getPetsFromSupabaseDb(userId)
-                            }
-
-                            ADMIN -> {
-                                appointmentUseCase.getAppointmentsByDate(
-                                    LocalDate.now().toString()
-                                )
-                            }
-
-                            else -> {
-                                _loginState.value = LoginState.Error("Неизвестная роль")
-                                return@launch
-                            }
-                        }
-                        _loginState.value = LoginState.Result(it, userRole ?: "")
-                    } else {
-                        _loginState.value = LoginState.Error(userResult.exceptionOrNull()?.message)
-                    }
-
-
+                getAndSaveUserRole(userId)?.let { role ->
+                    handleRoleWhileLogin(role, userId)
+                    _loginState.value = LoginState.Result(userSession, role)
                 }
             }
-                .onFailure {
-                    _loginState.value = LoginState.Error(it.message)
-                }
         }
     }
 
 
+    private suspend fun authorizeUser(email: String, password: String): UserSession? {
+        return loginUserUseCase.loginUser(email, password)
+            .onFailure { showError(it.message ?: "Ошибка авторизации") }
+            .getOrNull()
+            ?.also {
+                sessionUseCase.saveUserSession(
+                    it.user?.id.orEmpty(),
+                    it.accessToken,
+                    it.refreshToken
+                )
+            }
+    }
+
+    private suspend fun getAndSaveUserRole(userId: String): String? {
+        val result = userUseCase.getUserFromSupabaseDb(userId)
+
+        result.onFailure {
+            it.message?.let { error -> showError(error) }
+        }
+
+        return result.getOrNull()?.role?.also { role ->
+            sessionUseCase.saveUserRole(role)
+            reminderManager.onLogin(role)
+            Log.d(TAG, "saved user role: $role")
+        }
+
+    }
 
 
+    private suspend fun handleRoleWhileLogin(userRole: String?, userId: String) {
+        when (userRole) {
+            USER -> {
+                petUseCase.getPetsFromSupabaseDb(userId)
+            }
+
+            ADMIN -> {
+                appointmentUseCase.getAppointmentsByDate(
+                    LocalDate.now().toString()
+                )
+            }
+
+            else -> {
+                _loginState.value = LoginState.Error("Неизвестная роль")
+                return
+            }
+        }
+    }
+
+
+    private fun showError(message: String) {
+        _loginState.value = LoginState.Error(message)
+    }
 
     companion object {
         private const val TAG = "LoginViewModel"

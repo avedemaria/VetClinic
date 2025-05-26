@@ -12,6 +12,7 @@ import com.example.vetclinic.domain.entities.user.UserInputData
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.RegisterUserUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import com.example.vetclinic.utils.Validator
 import jakarta.inject.Inject
@@ -23,7 +24,7 @@ class RegistrationViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val petUseCase: PetUseCase,
     private val userUseCase: UserUseCase,
-    private val userDataStore: UserDataStore,
+    private val sessionUseCase: SessionUseCase,
     private val userValidator: Validator<UserInputData>,
     private val petValidator: Validator<PetInputData>,
 ) : ViewModel() {
@@ -72,7 +73,7 @@ class RegistrationViewModel @Inject constructor(
                         petInputData.gender
                     )
 
-                    userDataStore.saveUserSession(
+                    sessionUseCase.saveUserSession(
                         userId,
                         supabaseUser.accessToken,
                         supabaseUser.refreshToken

@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
+import com.example.vetclinic.domain.usecases.SessionUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class UpdatePasswordViewModel @Inject constructor(
     private val resetPasswordUseCase: ResetPasswordUseCase,
-    private val userDataStore: UserDataStore
+    private val sessionUseCase: SessionUseCase
 ) : ViewModel() {
 
 
@@ -22,7 +22,6 @@ class UpdatePasswordViewModel @Inject constructor(
         _updatePasswordState.value = UpdatePasswordState.Loading
 
         viewModelScope.launch {
-
             if (newPassword.isBlank()) {
                 _updatePasswordState.value =
                     UpdatePasswordState.Error("Пароль не может быть пустым")
@@ -35,21 +34,21 @@ class UpdatePasswordViewModel @Inject constructor(
                 return@launch
             }
 
-            val token = userDataStore.getAccessToken()
-            val refreshToken = userDataStore.getRefreshToken()
+            try {
+                val token = sessionUseCase.getAccessToken()
+                val refreshToken = sessionUseCase.getRefreshToken()
 
-            if (token.isNullOrBlank() || refreshToken.isNullOrBlank()) {
-                _updatePasswordState.value = UpdatePasswordState.Error("Токены не найдены")
-                return@launch
-            }
-
-            val result = resetPasswordUseCase.updatePassword(newPassword, token, refreshToken)
-            if (result.isSuccess) {
-                _updatePasswordState.value = UpdatePasswordState.Success
-            } else {
-                val errorMessage = result.exceptionOrNull() ?: "Неизвестная ошибка"
+                val result = resetPasswordUseCase.updatePassword(newPassword, token, refreshToken)
+                if (result.isSuccess) {
+                    _updatePasswordState.value = UpdatePasswordState.Success
+                } else {
+                    val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
+                    _updatePasswordState.value =
+                        UpdatePasswordState.Error("Ошибка загрузки: $errorMessage")
+                }
+            } catch (e: Exception) {
                 _updatePasswordState.value =
-                    UpdatePasswordState.Error("Ошибка загрузки: ${errorMessage.toString()}")
+                    UpdatePasswordState.Error("Ошибка сессии: ${e.message ?: "Неизвестная"}")
             }
         }
     }

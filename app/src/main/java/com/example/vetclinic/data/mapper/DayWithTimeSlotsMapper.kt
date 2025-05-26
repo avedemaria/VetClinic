@@ -1,8 +1,8 @@
 package com.example.vetclinic.data.mapper
 
-import com.example.vetclinic.data.network.model.DayDto
-import com.example.vetclinic.data.network.model.DayWithTimeSlotsDto
-import com.example.vetclinic.data.network.model.TimeSlotDto
+import com.example.vetclinic.data.remoteSource.network.model.DayDto
+import com.example.vetclinic.data.remoteSource.network.model.DayWithTimeSlotsDto
+import com.example.vetclinic.data.remoteSource.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.timeSlot.Day
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
 import com.example.vetclinic.domain.entities.timeSlot.TimeSlot

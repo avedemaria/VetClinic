@@ -1,6 +1,6 @@
 package com.example.vetclinic.data.mapper
 
-import com.example.vetclinic.data.network.model.DepartmentDto
+import com.example.vetclinic.data.remoteSource.network.model.DepartmentDto
 import com.example.vetclinic.domain.entities.department.Department
 import jakarta.inject.Inject
 

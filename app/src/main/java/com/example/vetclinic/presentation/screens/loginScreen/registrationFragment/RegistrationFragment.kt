@@ -17,6 +17,7 @@ import com.example.vetclinic.databinding.FragmentRegistrationBinding
 import com.example.vetclinic.presentation.adapter.RegistrationAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.widgets.PetInput
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -100,9 +101,9 @@ class RegistrationFragment : Fragment() {
         viewModel.registrationState.observe(viewLifecycleOwner) { state ->
             Log.d(TAG, "Received registration state: $state")
             when (state) {
-                is RegistrationState.Error -> Toast.makeText(
-                    requireContext(),
-                    "An error has occurred: ${state.message}", Toast.LENGTH_SHORT
+                is RegistrationState.Error -> Snackbar.make(binding.root,
+                    "Oшибка: ${state.message}",
+                    Snackbar.LENGTH_SHORT
                 ).show()
 
                 is RegistrationState.Result -> {
