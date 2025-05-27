@@ -64,45 +64,36 @@ android {
 }
 
 dependencies {
-    implementation(libs.firebase.bom)
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    implementation(libs.ktor.client.android)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor.v4100)
 
-    implementation("io.ktor:ktor-client-core:3.0.0")
-    implementation("io.ktor:ktor-client-okhttp:3.0.0")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
+    implementation(libs.assisted.inject.annotations.dagger2)
+    kapt(libs.assisted.inject.processor.dagger2)
 
-    implementation("io.ktor:ktor-client-android:3.0.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-
-    implementation("com.squareup.inject:assisted-inject-annotations-dagger2:0.6.0")
-    kapt("com.squareup.inject:assisted-inject-processor-dagger2:0.6.0")
-
-
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    implementation ("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("com.google.android.material:material:1.3.0-alpha03")
-    implementation ("com.wdullaer:materialdatetimepicker:4.2.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation(libs.glide)
+    implementation (libs.androidx.viewpager2)
+    implementation (libs.androidx.swiperefreshlayout)
+    implementation(libs.material.v130alpha03)
+    implementation (libs.materialdatetimepicker)
+    implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
     implementation(libs.realtime.kt)
     implementation(libs.storage.kt)
     implementation(libs.functions.kt)
-    implementation("io.github.jan-tennert.supabase:auth-kt:2.0.3")
+    implementation(libs.auth.kt)
 
-    implementation ("androidx.paging:paging-runtime:3.1.1")
-    implementation ("androidx.room:room-paging:2.5.0")
+    implementation (libs.androidx.paging.runtime)
+    implementation (libs.androidx.room.paging)
 
-
-    // Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
-
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
@@ -110,32 +101,38 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.logging.interceptor)
 
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.viewModel)
     implementation(libs.room)
     implementation(libs.room.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+
     ksp(libs.room.compiler)
     implementation(libs.dagger2)
     ksp(libs.dagger2.compiler)
     ksp(libs.dagger2.android.processor)
+
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation("androidx.fragment:fragment-ktx:1.8.6")
-
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin.v521)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+
 
 }
 

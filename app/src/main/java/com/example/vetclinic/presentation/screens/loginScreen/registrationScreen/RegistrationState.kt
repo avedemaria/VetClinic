@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.screens.loginScreen.registrationFragment
+package com.example.vetclinic.presentation.screens.loginScreen.registrationScreen
 
 import com.example.vetclinic.domain.entities.pet.PetInputData
 import com.example.vetclinic.domain.entities.user.UserInputData

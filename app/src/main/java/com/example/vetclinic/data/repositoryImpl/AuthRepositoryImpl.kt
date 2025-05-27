@@ -43,20 +43,19 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun registerUser(email: String, password: String): Result<UserSession> {
         return try {
 
-            val deferred = CompletableDeferred<UserSession>()
+            var session: UserSession? = null
 
             Email.signUp(
                 supabaseClient,
-                onSuccess = { session ->
-                    Log.d(TAG, "registerUser onSuccess")
-                    deferred.complete(session)
+                onSuccess = { userSession ->
+                    session = userSession
                 }
             ) {
                 this.email = email
                 this.password = password
             }
 
-            Result.success(withTimeout(10_000) { deferred.await() })
+            Result.success(requireNotNull(session))
         } catch (e: Exception) {
             Result.failure(e)
         }

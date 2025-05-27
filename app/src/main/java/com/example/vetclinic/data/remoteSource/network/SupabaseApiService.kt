@@ -45,15 +45,17 @@ interface SupabaseApiService {
     ): Response<Unit>
 
     @PATCH("rest/v1/pets")
+    @Headers("Prefer: return=representation")
     suspend fun updatePet(
         @Query("pet_id") petId: String,
         @Body updatedPet: PetDto,
-    ): Response<Unit>
+    ): Response<List<PetDto>>
 
     @DELETE("rest/v1/pets")
+    @Headers("Prefer: return=representation")
     suspend fun deletePet(
         @Query("pet_id") petId: String,
-    ): Response<Unit>
+    ): Response<List<PetDto>>
 
 
     @GET("rest/v1/departments?select=*")

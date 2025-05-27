@@ -1,4 +1,4 @@
-package com.example.vetclinic.presentation.screens.loginScreen.registrationFragment
+package com.example.vetclinic.presentation.screens.loginScreen.registrationScreen
 
 import android.os.Bundle
 import android.view.LayoutInflater

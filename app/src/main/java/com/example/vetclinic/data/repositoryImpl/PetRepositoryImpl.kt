@@ -58,13 +58,14 @@ class PetRepositoryImpl @Inject constructor(
             val updatedPetDto = petMapper.petEntityToPetDto(updatedPet)
             val response = supabaseApiService.updatePet(idWithOperator, updatedPetDto)
 
-            if (response.isSuccessful) {
+            if (response.isSuccessful && !response.body().isNullOrEmpty()) {
                 Log.d(TAG, "Successfully updated pet in Supabase DB")
                 updatePetInRoom(updatedPet)
                 Unit
             } else {
                 val errorBody = response.errorBody()?.string()
-                throw Exception("Failed to update pet. ${response.code()} - $errorBody")
+                throw Exception("Pet update likely blocked by RLS or ID not matched." +
+                        " ${response.code()} - $errorBody")
             }
         }
             .onFailure { error ->
@@ -85,22 +86,20 @@ class PetRepositoryImpl @Inject constructor(
 
 
     override suspend fun deletePetFromSupabaseDb(pet: Pet): Result<Unit> = kotlin.runCatching {
-        deletePetFromRoom(pet)
-
         val idWithOperator = "eq.${pet.petId}"
         val response = supabaseApiService.deletePet(idWithOperator)
 
-        if (!response.isSuccessful) {
-            addPetToRoom(pet)
+        if (!response.isSuccessful || response.body().isNullOrEmpty()) {
             val errorBody = response.errorBody()?.string()
-            throw Exception("Failed to delete pet. ${response.code()} - $errorBody")
+            throw Exception("Failed to delete pet. Possibly blocked by RLS." +
+                    " ${response.code()} - $errorBody")
         }
+        deletePetFromRoom(pet)
         Log.d(TAG, "Successfully deleted pet in Supabase DB")
         Unit
     }.onFailure { error ->
         Log.e(TAG, "Error while deleting Pet in Supabase DB", error)
     }
-
 
     override suspend fun updatePetInRoom(pet: Pet): Result<Unit> = kotlin.runCatching {
         val petDbModel = petMapper.petEntityToPetDbModel(pet)

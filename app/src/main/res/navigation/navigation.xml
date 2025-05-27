@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.vetclinic.presentation.screens.loginScreen.registrationFragment.RegistrationFragment"
+        android:name="com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationFragment"
         android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_mainFragment"

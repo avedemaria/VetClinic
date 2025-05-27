@@ -5,7 +5,7 @@ import com.example.vetclinic.di.keys.ViewModelKey
 import com.example.vetclinic.presentation.screens.adminScreen.AdminHomeViewModel
 import com.example.vetclinic.presentation.screens.loginScreen.LoadingViewModel
 import com.example.vetclinic.presentation.screens.loginScreen.LoginViewModel
-import com.example.vetclinic.presentation.screens.loginScreen.registrationFragment.RegistrationViewModel
+import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.MainViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.HomeViewModel

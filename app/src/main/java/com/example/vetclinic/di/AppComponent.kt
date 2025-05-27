@@ -11,8 +11,8 @@ import com.example.vetclinic.di.modules.WorkerBindsModule
 import com.example.vetclinic.presentation.screens.adminScreen.AdminHomeFragment
 import com.example.vetclinic.presentation.screens.loginScreen.LoadingFragment
 import com.example.vetclinic.presentation.screens.loginScreen.LoginFragment
-import com.example.vetclinic.presentation.screens.loginScreen.registrationFragment.RegistrationFragment
-import com.example.vetclinic.presentation.screens.loginScreen.registrationFragment.UserInput
+import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationFragment
+import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.UserInput
 import com.example.vetclinic.presentation.screens.mainScreen.MainFragment
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.AppointmentsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.archivedAppointmentsFragment.ArchivedAppointmentsFragment
