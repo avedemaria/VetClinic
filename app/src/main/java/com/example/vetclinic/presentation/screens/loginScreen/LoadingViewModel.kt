@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.SessionUseCase
+import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationViewModel
+import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationViewModel.Companion
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LoadingViewModel @Inject constructor(
     private val sessionUseCase: SessionUseCase

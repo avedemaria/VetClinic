@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.screens.loginScreen.registrationScreen
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,9 +13,10 @@ import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import com.example.vetclinic.utils.Validator
+import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 
 class RegistrationViewModel @Inject constructor(
@@ -50,60 +50,80 @@ class RegistrationViewModel @Inject constructor(
             userInputData?.let {
                 registerUserUseCase.registerUser(it.email, it.password)
             }?.onSuccess { userSession ->
-                Log.d(
-                    TAG,
-                    "Auth successful, creating user with ID: ${userSession.user?.id}"
-                )
-                val userId = userSession.user?.id ?: return@onSuccess
-                val petId = UUID.randomUUID().toString()
-
-                val user = createUserAfterRegistration(userInputData, userId)
-                val pet = createPetAfterRegistration(petInputData!!, userId, petId)
-
-                saveUserSession(userId, userSession.accessToken, userSession.refreshToken)
-
-                addAndFetchUserFromSupabaseDb(user)
-                addAndFetchPetFromSupabaseDb(pet, userId)
-
-                _registrationState.value = RegistrationState.Success
-
+                Timber.d(TAG, "Auth successful, creating user with ID: ${userSession.user?.id}")
+                handleSuccessfulRegistration(userSession, userInputData, petInputData!!)
             }
                 ?.onFailure { error ->
-                    Log.e(TAG, "Failed to register", error)
+                    Timber.e(TAG, "Failed to register", error)
                     _registrationState.value = RegistrationState.Error(error.message)
+                    Timber.d(TAG, " state set to ${_registrationState.value}")
                 }
 
         }
     }
 
 
-    private suspend fun addAndFetchUserFromSupabaseDb(user: User) {
-        userUseCase.addUserToSupabaseDb(user)
-            .onSuccess {
-                userUseCase.getUserFromSupabaseDb(user.uid)
-            }
-            .onFailure { error ->
-                Log.e(TAG, "Failed to add user to DB", error)
-            }
-    }
+    private suspend fun handleSuccessfulRegistration(
+        userSession: UserSession,
+        userInputData: UserInputData,
+        petInputData: PetInputData,
+    ) {
+        val userId = userSession.user?.id ?: return
+        val petId = UUID.randomUUID().toString()
 
-    private suspend fun addAndFetchPetFromSupabaseDb(pet: Pet, userId: String) {
-        petUseCase.addPetToSupabaseDb(pet)
-            .onSuccess {
-                petUseCase.getPetsFromSupabaseDb(userId)
-            }
-            .onFailure { error ->
-                Log.e(TAG, "Failed to add pet to DB", error)
-            }
-    }
+        val user = createUserAfterRegistration(userInputData, userId)
+        val pet = createPetAfterRegistration(petInputData, userId, petId)
 
-
-    private suspend fun saveUserSession(userId: String, accessToken: String, refreshToken: String) {
-        sessionUseCase.saveUserSession(
-            userId,
-            accessToken,
-            refreshToken
+        runCatching {
+            saveUserSession(userId, userSession.accessToken, userSession.refreshToken).getOrThrow()
+            addAndFetchUserFromSupabaseDb(user).getOrThrow()
+            addAndFetchPetFromSupabaseDb(pet, user).getOrThrow()
+        }.fold(
+            onSuccess = { _registrationState.value = RegistrationState.Success },
+            onFailure = { error -> _registrationState.value = RegistrationState.Error(error.message) }
         )
+    }
+
+
+    private suspend fun addAndFetchUserFromSupabaseDb(user: User): Result<Unit> {
+        return try {
+            userUseCase.addUserToSupabaseDb(user).getOrThrow()
+            userUseCase.getUserFromSupabaseDb(user.uid).getOrThrow()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to add or fetch user from Supabase")
+            Result.failure(e)
+        }
+    }
+
+
+    private suspend fun addAndFetchPetFromSupabaseDb(pet: Pet, user: User): Result<Unit> {
+        return try {
+            petUseCase.addPetToSupabaseDb(pet).getOrThrow()
+            petUseCase.getPetsFromSupabaseDb(user.uid).getOrThrow()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to add or fetch user from Supabase")
+            Result.failure(e)
+        }
+    }
+
+    private suspend fun saveUserSession(
+        userId: String,
+        accessToken: String,
+        refreshToken: String,
+    ): Result<Unit> {
+       return try {
+           sessionUseCase.saveUserSession(
+               userId,
+               accessToken,
+               refreshToken
+           )
+           Result.success(Unit)
+       } catch (e:Exception) {
+           Timber.tag(TAG).e(e, "Failed to save user session to datastore")
+           Result.failure(e)
+       }
     }
 
     private fun createUserAfterRegistration(
@@ -146,19 +166,19 @@ class RegistrationViewModel @Inject constructor(
 
     private fun validateInputs(
         userInputData: UserInputData?,
-        petInputData: PetInputData?,
+        petInputData: PetInputData?
     ): String? {
-        userInputData ?: return "Данные пользователя не должны быть пустыми"
-        petInputData ?: return "Данные питомца не должны быть пустыми"
-
-        val userError = userValidator.validate(userInputData)
-        userError?.let { return it }
-
-        val petError = petValidator.validate(petInputData)
-        petError?.let { return it }
-
+        userValidator.validate(userInputData)?.let { return it }
+        petValidator.validate(petInputData)?.let { return it }
         return null
     }
+
+
+    private fun showError(message: String) {
+        _registrationState.value = RegistrationState.Error(message)
+    }
+
+
 
     companion object {
         private const val TAG = "RegistrationViewModel"

@@ -77,14 +77,10 @@ class RegistrationFragment : Fragment() {
             val userData = userFragment?.collectUserInput()
             val petData = petFragment?.collectPetInput()
 
-            if (userData != null && petData != null) {
-                viewModel.updateFormState(userData, petData)
-            }
 
+            viewModel.updateFormState(userData, petData)
             viewModel.registerUser()
         }
-
-
 
         binding.tvBackToLogin.setOnClickListener {
             launchLoginFragment()
@@ -100,7 +96,8 @@ class RegistrationFragment : Fragment() {
         viewModel.registrationState.observe(viewLifecycleOwner) { state ->
             Log.d(TAG, "Received registration state: $state")
             when (state) {
-                is RegistrationState.Error -> Snackbar.make(binding.root,
+                is RegistrationState.Error -> Snackbar.make(
+                    binding.root,
                     "Oшибка: ${state.message}",
                     Snackbar.LENGTH_SHORT
                 ).show()
@@ -171,7 +168,6 @@ class RegistrationFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 
 
     companion object {

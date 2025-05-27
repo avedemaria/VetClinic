@@ -1,12 +1,10 @@
 package com.example.vetclinic.presentation.screens.loginScreen
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.data.workers.ReminderManager
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.LoginUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
@@ -15,6 +13,7 @@ import com.example.vetclinic.domain.usecases.UserUseCase
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 
 class LoginViewModel @Inject constructor(
@@ -33,31 +32,47 @@ class LoginViewModel @Inject constructor(
     fun loginUser(email: String, password: String) {
         _loginState.value = LoginState.Loading
         viewModelScope.launch {
-            authorizeUser(email, password)?.let { userSession ->
+            authorizeUser(email, password).fold(
+                onSuccess = { userSession ->
+                    val userId = userSession.user?.id ?: return@launch showError("ID пользователя не найден")
 
-                val userId =
-                    userSession.user?.id ?: return@launch showError("ID пользователя не найден")
-
-                getAndSaveUserRole(userId)?.let { role ->
-                    handleRoleWhileLogin(role, userId)
-                    _loginState.value = LoginState.Result(userSession, role)
+                    getAndSaveUserRole(userId)?.let { role ->
+                        handleRoleWhileLogin(role, userId)
+                        _loginState.value = LoginState.Result(userSession, role)
+                    }
+                },
+                onFailure = { error ->
+                    showError(error.message ?: "Ошибка авторизации")
                 }
-            }
+            )
         }
     }
 
 
-    private suspend fun authorizeUser(email: String, password: String): UserSession? {
-        return loginUserUseCase.loginUser(email, password)
-            .onFailure { showError(it.message ?: "Ошибка авторизации") }
-            .getOrNull()
-            ?.also {
-                sessionUseCase.saveUserSession(
-                    it.user?.id.orEmpty(),
-                    it.accessToken,
-                    it.refreshToken
-                )
-            }
+    private suspend fun authorizeUser(
+        email: String,
+        password: String,
+    ): Result<UserSession> {
+        return runCatching {
+            val userSession = loginUserUseCase.loginUser(email, password).getOrThrow()
+            saveUserSession(userSession).getOrThrow()
+            userSession
+        }
+    }
+
+
+    private suspend fun saveUserSession(userSession: UserSession): Result<Unit> {
+        return try {
+            sessionUseCase.saveUserSession(
+                userSession.user?.id.orEmpty(),
+                userSession.accessToken,
+                userSession.refreshToken
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to save user session to datastore")
+            Result.failure(e)
+        }
     }
 
     private suspend fun getAndSaveUserRole(userId: String): String? {
@@ -70,7 +85,6 @@ class LoginViewModel @Inject constructor(
         return result.getOrNull()?.role?.also { role ->
             sessionUseCase.saveUserRole(role)
             reminderManager.onLogin(role)
-            Log.d(TAG, "saved user role: $role")
         }
 
     }

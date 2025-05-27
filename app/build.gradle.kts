@@ -129,9 +129,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin.v521)
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation (libs.mockk.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.core.testing)
+
+    implementation ("com.jakewharton.timber:timber:5.0.1")
 
 
 }

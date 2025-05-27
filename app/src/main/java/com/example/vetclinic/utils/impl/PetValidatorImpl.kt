@@ -8,7 +8,9 @@ import jakarta.inject.Singleton
 @Singleton
 class PetValidatorImpl @Inject constructor(): Validator<PetInputData> {
 
+
     override fun validate(input: PetInputData?): String? {
+
         if (input == null ||
             input.name.isBlank() ||
             input.type.isBlank() ||
