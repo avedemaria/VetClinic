@@ -25,7 +25,7 @@ class RegistrationViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
     private val sessionUseCase: SessionUseCase,
     private val userValidator: Validator<UserInputData>,
-    private val petValidator: Validator<PetInputData>
+    private val petValidator: Validator<PetInputData>,
 ) : ViewModel() {
 
 
@@ -38,15 +38,15 @@ class RegistrationViewModel @Inject constructor(
         val userInputData = currentState?.userdata
         val petInputData = currentState?.petData
 
-        val validationError = validateInputs(userInputData, petInputData)
-        if (validationError != null) {
-            _registrationState.value = RegistrationState.Error(validationError)
+        validateInputs(userInputData, petInputData)?.let {
+            _registrationState.value = RegistrationState.Error(it)
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO)
-        {
+        _registrationState.value = RegistrationState.Loading
 
+        viewModelScope.launch()
+        {
             userInputData?.let {
                 registerUserUseCase.registerUser(it.email, it.password)
             }?.onSuccess { userSession ->
@@ -65,12 +65,12 @@ class RegistrationViewModel @Inject constructor(
                 addAndFetchUserFromSupabaseDb(user)
                 addAndFetchPetFromSupabaseDb(pet, userId)
 
-                _registrationState.postValue(RegistrationState.Success)
+                _registrationState.value = RegistrationState.Success
 
             }
                 ?.onFailure { error ->
                     Log.e(TAG, "Failed to register", error)
-                    _registrationState.postValue(RegistrationState.Error(error.message))
+                    _registrationState.value = RegistrationState.Error(error.message)
                 }
 
         }
@@ -137,14 +137,9 @@ class RegistrationViewModel @Inject constructor(
 
 
     fun updateFormState(userData: UserInputData?, petData: PetInputData?) {
-        val currentState = _registrationState.value as? RegistrationState.Result
-
-        val updatedUser = userData ?: currentState?.userdata
-        val updatedPet = petData ?: currentState?.petData
-
         _registrationState.value = RegistrationState.Result(
-            userdata = updatedUser,
-            petData = updatedPet
+            userdata = userData,
+            petData = petData
         )
     }
 
@@ -157,10 +152,10 @@ class RegistrationViewModel @Inject constructor(
         petInputData ?: return "Данные питомца не должны быть пустыми"
 
         val userError = userValidator.validate(userInputData)
-        if (userError != null) return userError
+        userError?.let { return it }
 
         val petError = petValidator.validate(petInputData)
-        if (petError != null) return petError
+        petError?.let { return it }
 
         return null
     }
