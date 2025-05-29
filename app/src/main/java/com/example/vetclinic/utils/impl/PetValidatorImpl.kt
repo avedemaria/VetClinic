@@ -6,13 +6,14 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 
 @Singleton
-class PetValidatorImpl @Inject constructor(): Validator<PetInputData> {
+class PetValidatorImpl @Inject constructor() : Validator<PetInputData> {
 
 
     override fun validate(input: PetInputData?): String? {
 
-        if (input == null ||
-            input.name.isBlank() ||
+        if (input == null) return "Данные пользователя не должны быть пустыми"
+
+        if (input.name.isBlank() ||
             input.type.isBlank() ||
             input.gender.isBlank() ||
             input.bDay.isBlank()

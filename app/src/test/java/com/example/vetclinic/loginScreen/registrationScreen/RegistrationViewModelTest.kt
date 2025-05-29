@@ -76,7 +76,7 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `registerUser fails when pet addition fails`() = testUseCaseError(
+    fun `WHEN pet addition to remote db fails THEN registration fails`() = testUseCaseError(
         setup = {
             val userData = createUserData()
             val petData = createPetData()
@@ -101,7 +101,7 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `registerUser fails when fetching pet from sb fails after successful pet addition`() =
+    fun `WHEN fetching pet from remote db fails after successful pet addition THEN registration fails`() =
         testUseCaseError(
             setup = {
                 val userData = createUserData()
@@ -127,7 +127,7 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `registerUser succeeds when input is valid`() = runTest(testDispatcher) {
+    fun `WHEN input is valid THEN registration succeeds`() = runTest(testDispatcher) {
         val userData = createUserData()
         val petData = createPetData()
 
@@ -147,7 +147,7 @@ class RegistrationViewModelTest {
     }
 
     @Test
-    fun `registerUser fails when registerUserUseCase fails`() = testUseCaseError(
+    fun `WHEN registerUserUseCase fails THEN registration fails`() = testUseCaseError(
         setup = {
             val userData = createUserData()
             val petData = createPetData()
@@ -179,7 +179,7 @@ class RegistrationViewModelTest {
     )
 
     @Test
-    fun `registerUser fails when saving session to data store fails`() = testUseCaseError(
+    fun `WHEN saving session to data store fails THEN registration fails`() = testUseCaseError(
         setup = {
             val userData = createUserData()
             val petData = createPetData()
@@ -204,7 +204,7 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `registerUser fails when getUserUseCase fails`() = testUseCaseError(
+    fun `WHEN fetching user from remote db fails THEN registration fails`() = testUseCaseError(
         setup = {
             val userData = createUserData()
             val petData = createPetData()
@@ -229,7 +229,7 @@ class RegistrationViewModelTest {
     )
 
     @Test
-    fun `registerUser fails when addUserUseCase fails`() = testUseCaseError(
+    fun `WHEN adding user to remote db fails THEN registration fails`() = testUseCaseError(
         setup = {
             val userData = createUserData()
             val petData = createPetData()
@@ -251,7 +251,7 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `updateFormState updates both user and pet data`() {
+    fun `should updateFormState update both user and pet data`() {
 
         val userData = createUserData()
         val petData = createPetData()
@@ -268,7 +268,7 @@ class RegistrationViewModelTest {
     }
 
     @Test
-    fun `registerUser returns error when input fields are empty`() = runTest {
+    fun `WHEN input fields are empty THEN registerUser returns error`() = runTest {
         val userData = createUserData("", "", "", "", "")
         val petData = createPetData("", "", "", "")
 
@@ -289,11 +289,15 @@ class RegistrationViewModelTest {
     }
 
     @Test
-    fun `registerUser returns error when user input data is null`() = runTest {
+    fun `WHEN user input data is null THEN register user return error`() = runTest {
 
         viewModel.updateFormState(
             null, createPetData()
         )
+
+        every { userValidator.validate(null) } returns "Данные пользователя не должны быть пустыми"
+        every { petValidator.validate(createPetData()) } returns null
+
         viewModel.registerUser()
 
         val state = viewModel.registrationState.value
@@ -306,11 +310,15 @@ class RegistrationViewModelTest {
 
 
     @Test
-    fun `registerUser returns error when petInputData is null`() = runTest {
+    fun `WHEN petInputData is null THEN register user returns error`() = runTest {
         viewModel.updateFormState(
             createUserData(),
             null
         )
+
+        every { userValidator.validate(createUserData()) } returns null
+        every { petValidator.validate(null) } returns "Данные питомца не должны быть пустыми"
+
 
         viewModel.registerUser()
 

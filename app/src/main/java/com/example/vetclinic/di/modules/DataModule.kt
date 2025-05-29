@@ -56,23 +56,23 @@ class DataModule {
     @Provides
     @Singleton
     fun provideSupabaseDb(
-        authInterceptor: AuthInterceptor
+        authInterceptor: AuthInterceptor,
     ): SupabaseApiService {
         return SupabaseApiFactory(authInterceptor).apiService
     }
 
 
-    @Provides
-    @Singleton
-    fun provideVetClinicDatabase(context: Context): VetClinicDatabase {
-        return Room.databaseBuilder(
-            context,
-            VetClinicDatabase::class.java,
-            "VetClinicDb"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideVetClinicDatabase(context: Context): VetClinicDatabase {
+//        return Room.databaseBuilder(
+//            context,
+//            VetClinicDatabase::class.java,
+//            "VetClinicDb"
+//        )
+//            .fallbackToDestructiveMigration()
+//            .build()
+//    }
 
 
     @Provides
@@ -82,11 +82,10 @@ class DataModule {
     }
 
 
-
     @Provides
     @Singleton
-    fun provideVetClinicDao(db: VetClinicDatabase): VetClinicDao {
-        return db.vetClinicDao()
+    fun provideVetClinicDao(application: Application): VetClinicDao {
+        return VetClinicDatabase.getInstance(application).vetClinicDao()
     }
 
     @Provides
@@ -103,7 +102,7 @@ class DataModule {
     @DialogPrefs
     fun provideDialogDataStore(application: Application): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
-            produceFile = {application.preferencesDataStoreFile("dialog_prefs")}
+            produceFile = { application.preferencesDataStoreFile("dialog_prefs") }
         )
     }
 

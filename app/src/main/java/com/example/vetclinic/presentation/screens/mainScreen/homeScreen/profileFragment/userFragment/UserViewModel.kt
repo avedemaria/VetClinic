@@ -4,14 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.user.User
-import com.example.vetclinic.domain.entities.user.UserInputData
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
 import com.example.vetclinic.utils.FieldValidator
-import com.example.vetclinic.utils.Validator
-import com.example.vetclinic.utils.impl.UserValidatorImpl
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 

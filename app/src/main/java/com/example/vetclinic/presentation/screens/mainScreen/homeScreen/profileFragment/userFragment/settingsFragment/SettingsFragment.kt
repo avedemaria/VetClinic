@@ -1,13 +1,10 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment
 
 import android.content.Intent
-import android.health.connect.datatypes.units.Length
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -19,6 +16,7 @@ import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import timber.log.Timber
 
 class SettingsFragment : Fragment() {
 
@@ -90,10 +88,8 @@ class SettingsFragment : Fragment() {
                     Snackbar.LENGTH_SHORT
                 ).show()
 
-                SettingsState.Loading -> Log.d(
-                    "SettingsFragment",
-                    "Loading - заглушка для теста"
-                )
+                SettingsState.Loading -> Timber.tag("SettingsFragment")
+                    .d("Loading - заглушка для теста")
 
                 SettingsState.LoggedOut -> launchLoginFragment()
             }
@@ -121,7 +117,7 @@ class SettingsFragment : Fragment() {
 
     private fun launchLoginFragment() {
         // TODO: переделать на NavHostFragment.findNavController(this).navigate(R.id.action_settingsFragment_to_loginFragment)
-        Log.d("SettingsFragment", "logged out")
+        Timber.tag("SettingsFragment").d("logged out")
 
         val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

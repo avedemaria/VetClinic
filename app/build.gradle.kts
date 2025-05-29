@@ -11,6 +11,7 @@ plugins {
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 
@@ -31,6 +32,11 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 
     buildTypes {
@@ -69,7 +75,6 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.serialization.kotlinx.json)
-
     implementation(libs.ktor.client.android)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor.v4100)
@@ -136,6 +141,32 @@ dependencies {
 
     implementation ("com.jakewharton.timber:timber:5.0.1")
 
+    // Compose core
+    implementation("androidx.compose.ui:ui:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
+
+// Compose Material 3
+    implementation("androidx.compose.material3:material3:1.3.2")
+
+// Compose Material
+    implementation("androidx.compose.material:material:1.8.2")
+    implementation("androidx.compose.material:material-icons-core:1.7.8")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+// Pull refresh
+    implementation("androidx.compose.foundation:foundation:1.8.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
+
+// Paging
+    implementation("androidx.paging:paging-compose:3.3.6")
+
+// Activity + Lifecycle
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
 }
 

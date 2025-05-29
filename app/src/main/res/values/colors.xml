@@ -5,15 +5,16 @@
     <color name="blue">#4AD3BF</color>
     <color name="dark_blue">#28A492</color>
     <color name="dark_grey">#5B5858</color>
-    <color name="status_blue">#66A99C</color>
+    <color name="status_scheduled">#66A99C</color>
     <color name="status_red">#A26761</color>
     <color name="status_grey">#9E9E9E</color>
     <color name="bright_red">#CE1212</color>
-    <color name="dark_red">#AF3131</color>
+    <color name="status_cancelled">#AF3131</color>
     <color name="light_grey">#E2E0E0</color>
     <color name="time_slots_blue">#44AF9F</color>
     <color name="grey">#8C8585</color>
     <color name="cream_white">#F5F5F5</color>
     <color name="seawave_green">#64998C</color>
     <color name="light_blue">#AADBD3</color>
+    <color name="dark_red">#B83030</color>
 </resources>

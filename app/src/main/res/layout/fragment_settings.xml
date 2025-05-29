@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".presentation.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment">
+    tools:context=".presentation.screens.mainScreen.homeScreen.profileFragment.userComposeFragment.settingsFragment.SettingsComposeFragment">
 
 
 

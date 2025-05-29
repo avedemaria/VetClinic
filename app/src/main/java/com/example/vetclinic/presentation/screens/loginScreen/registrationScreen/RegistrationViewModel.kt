@@ -173,10 +173,10 @@ class RegistrationViewModel @Inject constructor(
         return null
     }
 
-
-    private fun showError(message: String) {
-        _registrationState.value = RegistrationState.Error(message)
-    }
+//
+//    private fun showError(message: String) {
+//        _registrationState.value = RegistrationState.Error(message)
+//    }
 
 
 

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.vetclinic.R
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentUpdatePasswordBinding
 import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
@@ -53,8 +54,9 @@ class UpdatePasswordFragment : Fragment() {
         component.inject(this)
 
         binding.updatePasswordButton.setOnClickListener {
-            val newPassword = binding.etConfirmNewPassword.text.toString()
-                viewModel.updatePassword(newPassword)
+            val newPassword = binding.etEnterNewPassword.text.toString()
+            val confirmPassword = binding.etConfirmNewPassword.text.toString()
+                viewModel.updatePassword(newPassword, confirmPassword)
         }
         observeViewModel()
     }
@@ -74,7 +76,7 @@ class UpdatePasswordFragment : Fragment() {
                 UpdatePasswordState.Loading -> Log.d(TAG, "Заглушка для Loading")
                 UpdatePasswordState.Success -> {
                     Snackbar.make(binding.root,
-                        "Пароль успешно обновлён",
+                        getString(R.string.password_updated),
                         Snackbar.LENGTH_SHORT
                     ).show()
 

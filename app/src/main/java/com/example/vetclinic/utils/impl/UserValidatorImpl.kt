@@ -12,8 +12,9 @@ class UserValidatorImpl @Inject constructor(private val fieldValidator: FieldVal
 
     override fun validate(input: UserInputData?): String? {
 
-        if (input == null ||
-            input.name.isBlank() ||
+        if (input == null) return "Данные пользователя не должны быть пустыми"
+
+        if (input.name.isBlank() ||
             input.lastName.isBlank() ||
             input.phone.isBlank() ||
             input.email.isBlank() ||

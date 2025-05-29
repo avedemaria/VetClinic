@@ -6,51 +6,71 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.usecases.ResetPasswordUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
+import com.example.vetclinic.utils.FieldValidator
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 class UpdatePasswordViewModel @Inject constructor(
     private val resetPasswordUseCase: ResetPasswordUseCase,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCase: SessionUseCase,
+    private val fieldValidator: FieldValidator,
 ) : ViewModel() {
 
 
     private val _updatePasswordState = MutableLiveData<UpdatePasswordState>()
     val updatePasswordState: LiveData<UpdatePasswordState> = _updatePasswordState
 
-    fun updatePassword(newPassword: String) {
+    fun updatePassword(newPassword: String, confirmPassword:String) {
         _updatePasswordState.value = UpdatePasswordState.Loading
 
         viewModelScope.launch {
-            if (newPassword.isBlank()) {
-                _updatePasswordState.value =
-                    UpdatePasswordState.Error("Пароль не может быть пустым")
-                return@launch
-            }
 
-            if (newPassword.length < 6) {
-                _updatePasswordState.value =
-                    UpdatePasswordState.Error("Пароль должен содержать не менее 6 символов")
-                return@launch
-            }
+            val isValid = validatePassword(newPassword, confirmPassword)
 
-            try {
-                val token = sessionUseCase.getAccessToken()
-                val refreshToken = sessionUseCase.getRefreshToken()
+            if (!isValid) return@launch
 
-                val result = resetPasswordUseCase.updatePassword(newPassword, token, refreshToken)
-                if (result.isSuccess) {
+            _updatePasswordState.value = UpdatePasswordState.Loading
+
+            val token = sessionUseCase.getAccessToken()
+            val refreshToken = sessionUseCase.getRefreshToken()
+
+            resetPasswordUseCase.updatePassword(newPassword, token, refreshToken)
+                .onSuccess {
                     _updatePasswordState.value = UpdatePasswordState.Success
-                } else {
-                    val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
+                }.onFailure { errorMessage ->
                     _updatePasswordState.value =
-                        UpdatePasswordState.Error("Ошибка загрузки: $errorMessage")
+                        UpdatePasswordState.Error("Ошибка загрузки: ${errorMessage.message}")
                 }
-            } catch (e: Exception) {
-                _updatePasswordState.value =
-                    UpdatePasswordState.Error("Ошибка сессии: ${e.message ?: "Неизвестная"}")
-            }
         }
+    }
+
+
+    private fun validatePassword(newPassword: String, confirmPassword: String): Boolean {
+        if (newPassword.isBlank()) {
+            _updatePasswordState.value =
+                UpdatePasswordState.Error("Пароль не может быть пустым")
+            return false
+        }
+
+        if (confirmPassword.isBlank()) {
+            _updatePasswordState.value =
+                UpdatePasswordState.Error("Повторите пароль")
+            return false
+        }
+
+        if (newPassword != confirmPassword) {
+            _updatePasswordState.value =
+                UpdatePasswordState.Error("Пароли не совпадают")
+            return false
+        }
+
+        val passwordError = fieldValidator.validatePassword(newPassword)
+        if (passwordError != null) {
+            _updatePasswordState.value = UpdatePasswordState.Error(passwordError)
+            return false
+        }
+
+        return true
     }
 
 }

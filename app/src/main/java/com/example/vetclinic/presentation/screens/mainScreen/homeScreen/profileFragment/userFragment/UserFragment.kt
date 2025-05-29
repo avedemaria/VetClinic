@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,8 +18,10 @@ import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment
+import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsViewModel
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import timber.log.Timber
 
 
 class UserFragment : Fragment() {
@@ -31,15 +32,18 @@ class UserFragment : Fragment() {
 
     private val viewModel: UserViewModel by viewModels { viewModelFactory }
 
+
+    private val component by lazy {
+        (requireActivity().application as VetClinicApplication).component
+    }
+
+
     private var _binding: FragmentUserBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException(
             "FragmentUserBinding is null"
         )
 
-    private val component by lazy {
-        (requireActivity().application as VetClinicApplication).component
-    }
 
 
     override fun onCreateView(
@@ -73,10 +77,8 @@ class UserFragment : Fragment() {
                     Snackbar.LENGTH_SHORT
                 ).show()
 
-                is UserUiState.Loading -> Log.d(
-                    TAG,
-                    "UserUiState.Loading - заглушка для теста"
-                )
+                is UserUiState.Loading -> Timber.tag(TAG)
+                    .d("UserUiState.Loading - заглушка для теста")
 
                 is UserUiState.Success -> {
                     binding.tvName.text = "${state.user.userName} ${state.user.userLastName}"
@@ -213,10 +215,10 @@ class UserFragment : Fragment() {
     }
 
 
-    companion object {
-        private const val TAG = "UserFragment"
+        companion object {
+            private const val TAG = "UserFragment"
+        }
     }
-}
 
 
 

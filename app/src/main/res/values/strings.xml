@@ -64,4 +64,10 @@
     <string name="disabled_empty_button">disabledEmptyButton</string>
     <string name="doctor_role_and_name">%s: %s</string>
     <string name="appointment_notifications">Appointment Notifications</string>
+    <string name="status_scheduled">Приём назначен</string>
+    <string name="status_cancelled">Приём отменён</string>
+    <string name="status_completed">Приём завершён</string>
+    <string name="owner_full_name">Владелец: %1$s %2$s</string>
+    <string name="no_available_appointments">Нет доступных приёмов</string>
+    <string name="password_updated">Пароль успешно обновлён</string>
 </resources>

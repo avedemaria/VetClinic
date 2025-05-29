@@ -71,7 +71,7 @@ interface AppComponent {
 
     fun inject(profileFragment: ProfileFragment)
 
-    fun inject(userFragment: UserFragment)
+    fun inject(userComposeFragment: UserFragment)
 
     fun inject(petFragment: PetFragment)
 
@@ -91,7 +91,7 @@ interface AppComponent {
 
     fun inject(archivedAppointmentsFragment: ArchivedAppointmentsFragment)
 
-    fun inject(adminHomeFragment: AdminHomeFragment)
+    fun inject(adminHomeComposeFragment: AdminHomeFragment)
 
 
     @Component.Factory

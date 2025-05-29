@@ -6,20 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentAdminHomeBinding
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
 import com.example.vetclinic.presentation.providers.ViewModelFactory
@@ -29,7 +28,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
-
 
 class AdminHomeFragment : Fragment() {
 
@@ -67,7 +65,7 @@ class AdminHomeFragment : Fragment() {
         component.inject(this)
 
         setUpAdapter()
-       observingJob = observeViewModel()
+        observingJob = observeViewModel()
 
         binding.btnAdminLogOut.setOnClickListener {
             viewModel.logOut()
@@ -94,11 +92,11 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun observeViewModel(): Job {
-       return viewLifecycleOwner.lifecycleScope.launch {
+        return viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.adminState.collect { state ->
                     Log.d(TAG, "Received state: $state")
-                   when (state) {
+                    when (state) {
                         is AdminHomeState.Empty -> handleEmptyState()
 
                         is AdminHomeState.Error -> {
