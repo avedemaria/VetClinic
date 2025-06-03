@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.screens.adminScreen,appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment">
+    tools:context=".presentation.screens.adminScreen.AdminHomeFragment">
 
 
     <LinearLayout
@@ -29,7 +29,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/button_calendar"
                 android:padding="8dp"
-                android:src="@drawable/baseline_calendar_month_24" />
+                android:src="@drawable/calendar_month" />
 
 
             <ImageButton
@@ -53,7 +53,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/button_admin_exit"
                 android:padding="8dp"
-                android:src="@drawable/baseline_exit_to_app_24" />
+                android:src="@drawable/exit_from_app" />
 
         </LinearLayout>
 

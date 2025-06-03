@@ -1,6 +1,5 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import android.util.Log
 import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
 import com.example.vetclinic.data.remoteSource.network.model.DayWithTimeSlotsDto
@@ -8,20 +7,21 @@ import com.example.vetclinic.data.remoteSource.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
 import com.example.vetclinic.domain.repository.TimeSlotsRepository
 import jakarta.inject.Inject
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
 class TimeSlotsRepositoryImpl @Inject constructor(
     private val supabaseApiService: SupabaseApiService,
-    private val dayWithTimeSlotsMapper: DayWithTimeSlotsMapper
+    private val dayWithTimeSlotsMapper: DayWithTimeSlotsMapper,
 ) : TimeSlotsRepository {
 
 
     override suspend fun generateAndSaveTimeSlots(
         doctorId: String,
         serviceId: String,
-        duration: String
+        duration: String,
     ): Result<Unit> = runCatching {
 
         val existingDataResult = getExistingDaysAndTimeSlots(doctorId, serviceId)
@@ -41,13 +41,11 @@ class TimeSlotsRepositoryImpl @Inject constructor(
                 dayWithTimeSlotsMapper.dayWithTimeSlotsDtoListToDayDtoList(newDays)
             )
             if (!daysResponse.isSuccessful) {
-                Log.e(
-                    TAG,
-                    "Failed to insert days: ${daysResponse.code()} ${daysResponse.message()}"
-                )
+                Timber.tag(TAG)
+                    .e("Failed to insert days: ${daysResponse.code()} ${daysResponse.message()}")
                 throw Exception("Failed to add days to SupabaseDb")
             }
-            Log.d(TAG, "${newDays.size} new days added.")
+            Timber.tag(TAG).d("${newDays.size} new days added.")
         }
 
         val updatedDayWithTimeSlotsDtoList = dayWithTimeSlotsDtoList.map { day ->
@@ -78,22 +76,20 @@ class TimeSlotsRepositoryImpl @Inject constructor(
         if (timeSlotsForDays.isNotEmpty()) {
             val timeSlotsResponse = supabaseApiService.insertTimeSlots(timeSlotsForDays)
             if (!timeSlotsResponse.isSuccessful) {
-                Log.e(
-                    TAG,
-                    "Failed to insert time slots: ${timeSlotsResponse.code()} ${timeSlotsResponse.message()}"
-                )
+                Timber.tag(TAG).e("Failed to insert time slots: ${timeSlotsResponse.code()}" +
+                            " ${timeSlotsResponse.message()}")
                 throw Exception("Failed to add new time slots to SupabaseDb")
             }
-            Log.d(TAG, "${timeSlotsForDays.size} new time slots added.")
+            Timber.tag(TAG).d("${timeSlotsForDays.size} new time slots added.")
         }
     }
         .onFailure { e ->
-            Log.e(TAG, "Error while adding days and timeslots to SupabaseDb", e)
+            Timber.tag(TAG).e(e, "Error while adding days and timeslots to SupabaseDb")
         }
 
     override suspend fun getAvailableDaysAndTimeSlots(
         doctorId: String,
-        serviceId: String
+        serviceId: String,
     ): Result<List<DayWithTimeSlots>> =
         kotlin.runCatching {
 
@@ -128,7 +124,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             }
         }
             .onFailure { e ->
-                Log.e(TAG, "Error while getting days and timeslots from SupabaseDb", e)
+                Timber.tag(TAG).e(e, "Error while getting days and timeslots from SupabaseDb")
 
             }
 
@@ -137,7 +133,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
         newTimeSlots: List<TimeSlotDto>,
         dayWithTimeSlotsDtoList: List<DayWithTimeSlotsDto>,
         doctorId: String,
-        serviceId: String
+        serviceId: String,
     ): List<TimeSlotDto> {
 
         return newTimeSlots.mapNotNull { timeSlot ->
@@ -172,7 +168,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
     private fun generateDaysWithTimeSlotsForTwoWeeks(
         doctorId: String,
         serviceId: String,
-        duration: Int
+        duration: Int,
     ): List<DayWithTimeSlotsDto> {
 
         val today = LocalDate.now()
@@ -201,7 +197,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
         dayId: String,
         doctorId: String,
         serviceId: String,
-        duration: Int
+        duration: Int,
     ): List<TimeSlotDto> {
 
         val startTime = LocalTime.of(10, 0)
@@ -234,7 +230,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
 
     private suspend fun getExistingDaysAndTimeSlots(
         doctorId: String,
-        serviceId: String
+        serviceId: String,
     ): Result<List<DayWithTimeSlotsDto>> {
         return try {
 
@@ -258,8 +254,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
 
                 Result.success(existingDaysWithTimeSlots)
             } else {
-                Log.e(
-                    TAG,
+                Timber.tag(TAG).e(
                     "Failed to fetch existing days and time slots: ${response.code()}" +
                             " ${response.message()}"
                 )
@@ -295,7 +290,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             }
         }
             .onFailure { e ->
-                Log.e(TAG, "Failed to update timeSlot status $e", e)
+                Timber.tag(TAG).e(e, "Failed to update timeSlot status $e")
             }
 
     companion object {

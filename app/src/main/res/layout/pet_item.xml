@@ -18,7 +18,6 @@
         android:orientation="vertical">
 
 
-
         <LinearLayout
             android:id="@+id/petNameInfo"
             android:weightSum="5"
@@ -33,16 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/cat_statues_svgrepo_com"/>
-
-            <EditText
-                android:id="@+id/etPetName"
-                android:layout_weight="4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:hint="Введите имя питомца"
-                android:visibility="gone" />
+                android:src="@drawable/cat_statues"/>
 
 
             <LinearLayout
@@ -57,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:paddingTop="8dp"
-                    android:text="Имя питомца"
+                    android:text="@string/pets_name"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -110,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_weight="0.5"
-                android:src="@drawable/pet_14_svgrepo_com" />
+                android:src="@drawable/pet_paw" />
 
 
 
@@ -168,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_weight="0.5"
-                android:src="@drawable/pet_14_svgrepo_com" />
+                android:src="@drawable/pet_paw" />
 
 
 
@@ -225,16 +215,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/baseline_cake_24"/>
-
-            <EditText
-                android:id="@+id/etPetBday"
-                android:layout_weight="4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:hint="Введите дату рождения питомца"
-                android:visibility="gone" />
+                android:src="@drawable/birthday_cake"/>
 
 
             <LinearLayout
@@ -275,11 +256,6 @@
                 android:text="@string/change_data"
                 android:textColor="@color/dark_blue" />
         </LinearLayout>
-
-
-
-
-
 
 
     </LinearLayout>

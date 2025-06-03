@@ -1,6 +1,5 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -22,7 +21,6 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
         accessToken: String,
         refreshToken: String,
     ) {
-        Log.d("UserDataStore", "Saving userId: $userId")
         dataStore.edit { preferences ->
             preferences[KEY_USER_ID] = userId
             preferences[KEY_ACCESS_TOKEN] = accessToken
@@ -54,7 +52,6 @@ class UserDataStoreImpl @Inject constructor(@UserPrefs private val dataStore: Da
     override suspend fun saveUserRole(userRole: String) {
         dataStore.edit { preferences ->
             preferences[KEY_USER_ROLE] = userRole
-            Log.d("UserDataStore", "savedUserRole: $userRole")
         }
     }
 

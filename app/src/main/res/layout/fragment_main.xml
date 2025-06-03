@@ -53,7 +53,7 @@
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="32dp"
             android:backgroundTint="@color/blue"
-            android:src="@drawable/baseline_add_24"
+            android:src="@drawable/add_button"
             app:elevation="6dp"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_anchor="@+id/bottomNavigationView"

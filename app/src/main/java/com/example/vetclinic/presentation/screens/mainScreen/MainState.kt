@@ -11,5 +11,5 @@ sealed class MainState {
     ) : MainState()
 
     data class Error(val message: String) : MainState()
-    object Loading : MainState()
+    data object Loading : MainState()
 }

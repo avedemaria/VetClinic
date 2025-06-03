@@ -24,8 +24,8 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="50dp"
-                android:contentDescription="Логотип компании"
-                android:src="@drawable/modern_pet_veterinary_clinic" />
+                android:contentDescription="@string/company_logo"
+                android:src="@drawable/pet_veterinary_logo" />
 
 
             <TextView

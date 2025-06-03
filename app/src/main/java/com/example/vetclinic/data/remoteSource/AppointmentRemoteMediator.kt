@@ -1,12 +1,11 @@
 package com.example.vetclinic.data.remoteSource
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import com.example.vetclinic.data.localSource.database.models.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.localSource.database.VetClinicDao
+import com.example.vetclinic.data.localSource.database.models.AppointmentWithDetailsDbModel
 import com.example.vetclinic.data.mapper.AppointmentMapper
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
 import com.example.vetclinic.data.remoteSource.network.model.AppointmentWithDetailsDto
@@ -15,6 +14,7 @@ import jakarta.inject.Inject
 import kotlinx.io.IOException
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class AppointmentRemoteMediator @Inject constructor(
@@ -22,7 +22,7 @@ class AppointmentRemoteMediator @Inject constructor(
     private val supabaseApiService: SupabaseApiService,
     private val appointmentMapper: AppointmentMapper,
     private val vetClinicDao: VetClinicDao,
-    private val ageUtils: AgeUtils
+    private val ageUtils: AgeUtils,
 ) : RemoteMediator<Int, AppointmentWithDetailsDbModel>() {
 
     private var pageIndex = 0
@@ -32,32 +32,28 @@ class AppointmentRemoteMediator @Inject constructor(
         state: PagingState<Int, AppointmentWithDetailsDbModel>,
     ): MediatorResult {
         return try {
-            Log.d(
-                TAG,
-                ">>> Load triggered: loadType = $loadType, state = ${state.anchorPosition}"
-            )
+            Timber.tag(TAG)
+                .d(">>> Load triggered: loadType = $loadType, state = ${state.anchorPosition}")
             val pageIndex = getPageIndex(loadType) ?: return MediatorResult.Success(
                 endOfPaginationReached = true
             )
             val limit = state.config.pageSize
             val offset = pageIndex * limit
 
-            Log.d(
-                TAG,
-                "Requesting page with offset = $offset, limit = $limit, date = $selectedDate"
-            )
+            Timber.tag(TAG)
+                .d("Requesting page with offset = $offset, limit = $limit, date = $selectedDate")
 
             val response = fetchAppointments(offset, limit, selectedDate)
 
             val appointmentsDto = response.body().orEmpty()
-            Log.d(TAG, "Fetched ${appointmentsDto.size} appointments from API")
+            Timber.tag(TAG).d("Fetched ${appointmentsDto.size} appointments from API")
 
             val appointmentsDb = calculatePetAgeAndFetchAppointments(appointmentsDto)
             if (loadType == LoadType.REFRESH) {
 
                 vetClinicDao.refresh(appointmentsDb)
-                Log.d(
-                    TAG, "clearing and " +
+                Timber.tag(TAG).d(
+                    "clearing and " +
                             "Inserting ${appointmentsDb.size} appointments into DB"
                 )
             } else {
@@ -102,7 +98,7 @@ class AppointmentRemoteMediator @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "com.example.vetclinic.data.remoteSource.AppointmentRemoteMediator"
+        private const val TAG = "AppointmentRemoteMediator"
     }
 
 

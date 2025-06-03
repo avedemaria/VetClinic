@@ -1,100 +1,77 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import android.util.Log
-import com.example.vetclinic.data.localSource.database.VetClinicDao
+import com.example.vetclinic.data.localSource.interfaces.UserLocalDataSource
 import com.example.vetclinic.data.mapper.UserMapper
-import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
+import com.example.vetclinic.data.remoteSource.interfaces.UserRemoteDataSource
 import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.repository.UserRepository
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class UserRepositoryImpl @Inject constructor(
-    private val supabaseApiService: SupabaseApiService,
+    private val userRemoteDataSource: UserRemoteDataSource,
+    private val userLocalDataSource: UserLocalDataSource,
     private val userMapper: UserMapper,
-    private val vetClinicDao: VetClinicDao,
+) : UserRepository {
 
-    ) : UserRepository {
 
-    override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> = runCatching {
+    override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> {
+        return userRemoteDataSource.getUserById(userId)
+            .onSuccess { userDto ->
+                userDto?.let {
+                    val userDbModel = userMapper.userDtoToUserDbModel(it)
+                    userLocalDataSource.addUser(userDbModel).getOrThrow()
+                }
+            }
+            .map { userDto ->
+                userDto?.let { userMapper.userDtoToUserEntity(it) }
+            }
+    }
 
-        val idWithParameter = "eq.$userId"
-        val response = supabaseApiService.getUserFromSupabaseDbById(idWithParameter)
-
-        if (!response.isSuccessful) {
-            throw Exception("Server error: ${response.code()} - ${response.errorBody()?.string()}")
+    override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
+        return runCatching {
+            val userDto = userMapper.userEntityToUserDto(user)
+            userRemoteDataSource.addUser(userDto).getOrThrow()
         }
-
-        val userDtos = response.body() ?: emptyList()
-        val userDto = userDtos.find { it.uid == userId }
-
-        if (userDto != null) {
-            val user = userMapper.userDtoToUserDbModel(userDto)
-            vetClinicDao.insertUser(user)
-        }
-
-        return@runCatching userDto?.let { userMapper.userDtoToUserEntity(it) }
-    }.onFailure { e ->
-        Log.e(TAG, "Error fetching User: ${e.message}", e)
     }
 
 
-    override suspend fun addUserToSupabaseDb(user: User): Result<Unit> =
-        RepositoryUtils.addDataToSupabaseDb(
-            entity = user,
-            apiCall = { userDto -> supabaseApiService.addUser(userDto) },
-            mapper = { userMapper.userEntityToUserDto(user) }
-        )
-
-    override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> =
-        kotlin.runCatching {
-
-            val userIdWithParam = "eq.$userId"
-            val updatedUserDto = userMapper.userEntityToUserDto(updatedUser)
-            val response = supabaseApiService.updateUser(userIdWithParam, updatedUserDto)
-
-            if (response.isSuccessful) {
-                Log.d(TAG, "Successfully updated user in Supabase DB")
-                updateUserInRoom(updatedUser)
-                Unit
-            } else {
-                val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Failed to update User. Error: $errorBody")
-                throw Exception("Failed to update User. ${response.code()} - $errorBody")
-            }
+    override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> {
+        return runCatching {
+            val userDto = userMapper.userEntityToUserDto(updatedUser)
+            userRemoteDataSource.updateUser(userId, userDto).getOrThrow()
+                .also {
+                    updateUserInRoom(updatedUser)
+                }
         }
-            .onFailure { error ->
-                Log.e(TAG, "Error while updating User in Supabase DB", error)
-            }
-
-
-    override suspend fun updateUserInRoom(user: User): Result<Unit> = kotlin.runCatching {
-
-        val userDbModel = userMapper.userEntityToUserDbModel(user)
-        vetClinicDao.updateUser(userDbModel)
-        Log.d(TAG, "User updated successfully in Room")
-        Unit
     }
-        .onFailure { error ->
-            Log.e(TAG, "Error updating user in Room", error)
+
+
+    override suspend fun updateUserInRoom(user: User): Result<Unit> {
+        return runCatching {
+            val userDbModel = userMapper.userEntityToUserDbModel(user)
+            userLocalDataSource.updateUser(userDbModel).getOrThrow()
         }
+    }
 
 
-    override suspend fun getCurrentUserFromRoom(userId: String): Result<User> =
-        runCatching {
-            withContext(Dispatchers.IO) {
-                val userDbModel = vetClinicDao.getUserById(userId)
-                    ?: throw NoSuchElementException("User with ID $userId not found in Room")
+    override suspend fun getCurrentUserFromRoom(userId: String): Result<User> {
+        return userLocalDataSource.getCurrentUser(userId)
+            .mapCatching { userDbModel ->
+                userDbModel ?: throw NoSuchElementException("User with ID $userId not found")
+            }
+            .map { userDbModel ->
                 userMapper.userDbModelToUserEntity(userDbModel)
             }
-        }.onFailure {
-            Log.e(TAG, "Error while getting user from Room", it)
-        }
-
+            .onFailure {
+                Timber.tag(TAG).e(it, "Error getting user from Room")
+            }
+    }
 
     companion object {
         private const val TAG = "UserRepositoryImpl"
     }
+
+
 }
 

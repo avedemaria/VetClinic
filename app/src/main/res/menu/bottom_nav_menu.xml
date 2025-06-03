@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/homeFragment"
     android:title="Главная"
-    android:icon="@drawable/baseline_cottage_24"
+    android:icon="@drawable/cottage"
     />
 
     <item android:id="@+id/doctorsFragment"
@@ -11,7 +11,7 @@
 
     <item android:id="@+id/appointmentFragment"
         android:title="Приёмы"
-        android:icon="@drawable/baseline_assignment_24"/>
+        android:icon="@drawable/assignment"/>
 
 
 </menu>

@@ -4,9 +4,10 @@ import android.net.Uri
 import android.util.Log
 import com.example.vetclinic.domain.repository.UserDataStore
 import jakarta.inject.Inject
+import timber.log.Timber
 
 class HandleDeepLinkUseCase @Inject constructor(
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
 ) {
     suspend fun handleDeepLink(uri: Uri): Result<Unit> {
         return try {
@@ -18,8 +19,8 @@ class HandleDeepLinkUseCase @Inject constructor(
                 val refreshToken = fullUri.substringAfter("refresh_token=")
                     .substringBefore("&")
 
-                Log.d(TAG, "Extracted token: $token")
-                Log.d(TAG, "Extracted refresh token: $refreshToken")
+                Timber.tag(TAG).d("Extracted token: $token")
+                Timber.tag(TAG).d("Extracted refresh token: $refreshToken")
 
                 if (token.isNotBlank() && refreshToken.isNotBlank()) {
                     saveTokensToDataStore(token, refreshToken)

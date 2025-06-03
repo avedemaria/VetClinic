@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.mainScreen.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment">
+    tools:context=".presentation.screens.mainScreen.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment">
 
 
     <FrameLayout

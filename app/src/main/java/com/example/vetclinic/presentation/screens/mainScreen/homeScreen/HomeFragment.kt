@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
@@ -56,6 +57,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         component.inject(this)
 
         observeViewModel()
@@ -72,8 +74,6 @@ class HomeFragment : Fragment() {
         binding.cardViewServices.setOnClickListener {
             launchServicesFragment()
         }
-
-        Log.d("HomeFragment", "onViewCreated")
 
         viewModel.getUserIdAndLoadUserName()
 
@@ -148,8 +148,7 @@ class HomeFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Показ уведомлений за час до приёма")
             .setMessage(
-                "Чтобы получать напоминания за час до приёма, отключите оптимизацию батареи для приложения.\n\n" +
-                        "Нажмите \"Перейти в настройки\", затем найдите пункт \"Аккумулятор\" и отключите ограничение."
+                getString(R.string.battery_optimization_message)
             )
             .setPositiveButton("Перейти в настройки", null)
             .setNegativeButton("Отмена", null)

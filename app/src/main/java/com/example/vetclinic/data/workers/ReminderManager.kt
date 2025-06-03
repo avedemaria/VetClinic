@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.work.WorkManager
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class ReminderManager @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ) {
 
 
@@ -16,15 +17,15 @@ class ReminderManager @Inject constructor(
         when (role.lowercase()) {
             "admin" -> {
                 cancelReminderWorkers()
-                Log.d(TAG, "Admin login detected, reminders cancelled")
+                Timber.tag(TAG).d("Admin login detected, reminders cancelled")
             }
 
             "user" -> {
-                Log.d(TAG, "User login detected, reminders allowed")
+                Timber.tag(TAG).d("User login detected, reminders allowed")
             }
 
             else -> {
-                Log.d(TAG, "Unknown role: $role, no action taken")
+                Timber.tag(TAG).d("Unknown role: $role, no action taken")
             }
         }
     }

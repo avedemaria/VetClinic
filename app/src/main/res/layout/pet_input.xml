@@ -18,7 +18,7 @@
                             android:id="@+id/et_pet_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Имя питомца"/>
+                            android:hint="@string/pets_name"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -32,7 +32,7 @@
                             android:id="@+id/auto_pet_type"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Выберите тип питомца"/>
+                            android:hint="@string/choose_pet_type"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -46,7 +46,7 @@
                             android:id="@+id/auto_pet_gender"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Выберите пол питомца"/>
+                            android:hint="@string/choose_pet_gender"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -60,7 +60,7 @@
                             android:id="@+id/et_bday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Дата рождения"
+                            android:hint="@string/birthday_date"
                             android:focusable="false"
                             android:cursorVisible="false"
                             android:clickable="true"

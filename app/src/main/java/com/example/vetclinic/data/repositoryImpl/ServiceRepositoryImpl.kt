@@ -1,6 +1,7 @@
 package com.example.vetclinic.data.repositoryImpl
 
 import android.util.Log
+import com.example.vetclinic.data.RepositoryUtils
 import com.example.vetclinic.data.mapper.ServiceMapper
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
 import com.example.vetclinic.domain.entities.service.Service

@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/dark_blue"
-            android:text="Добавить"
+            android:text="@string/add"
             android:textColor="@color/white" />
 
     </LinearLayout>

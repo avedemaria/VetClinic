@@ -1,11 +1,11 @@
 package com.example.vetclinic.data.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import jakarta.inject.Inject
+import timber.log.Timber
 import javax.inject.Provider
 
 
@@ -15,8 +15,9 @@ class AppointmentReminderWorkerFactory @Inject constructor(
 ) : WorkerFactory() {
 
     init {
-        Log.d("AppointmentReminderWorkerFactory", "WorkerProviders: $workerProviders")
+        Timber.tag(TAG).d("WorkerProviders: $workerProviders")
     }
+
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
@@ -31,5 +32,10 @@ class AppointmentReminderWorkerFactory @Inject constructor(
 
             else -> null
         }
+    }
+
+
+    companion object {
+        private const val TAG = "AppointmentReminderWorkerFactory"
     }
 }

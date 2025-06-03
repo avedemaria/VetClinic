@@ -4,16 +4,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.example.vetclinic.R
 import jakarta.inject.Inject
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import timber.log.Timber
 
 class AppointmentReminderWorker(
     private val appContext: Context, workerParams: WorkerParameters,
@@ -22,45 +19,48 @@ class AppointmentReminderWorker(
 
     override suspend fun doWork(): Result {
 
-        val doctorName = inputData.getString(DOCTOR_NAME) ?: return Result.failure()
-        val serviceName = inputData.getString(SERVICE_NAME) ?: return Result.failure()
-        val petName = inputData.getString(PET_NANE) ?: return Result.failure()
-        val appointmentId = inputData.getString(APPOINTMENT_ID) ?: return Result.failure()
-        val appointmentDateTimeString =
-            inputData.getString("appointmentDateTime") ?: return Result.failure()
+        return try {
+            val appointmentData = extractAppointmentData() ?: return Result.failure()
 
-        val appointmentDateTime =
-            parseAppointmentDateTime(appointmentDateTimeString) // твоя функция
-        val reminderTime = appointmentDateTime.minusHours(1)
-        val now = LocalDateTime.now()
+            createNotificationChannel(appContext)
 
-        if (now.isAfter(reminderTime.plus(Duration.ofMinutes(1)))) {
-            Log.d("ReminderWorker", "It's too late for reminder — $appointmentId")
-            return Result.success()
+            sendReminderNotification(appointmentData)
+
+            Timber.tag(TAG).d("Notification sent for appointment: ${appointmentData.appointmentId}")
+            Result.success()
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to send reminder notification")
+            Result.failure()
         }
+    }
 
+    private fun extractAppointmentData(): AppointmentData? {
+        val doctorName = inputData.getString(DOCTOR_NAME)
+        val serviceName = inputData.getString(SERVICE_NAME)
+        val petName = inputData.getString(PET_NAME)
+        val appointmentId = inputData.getString(APPOINTMENT_ID)
 
-        createNotificationChannel(appContext)
-        sendReminderNotification(petName, doctorName, serviceName, appointmentId)
-        Log.d("AppointmentReminderWorker", "Notification sent for appointment: $appointmentId")
-
-        return Result.success()
+        return if (doctorName != null && serviceName != null &&
+            petName != null && appointmentId != null
+        ) {
+            AppointmentData(doctorName, serviceName, petName, appointmentId)
+        } else {
+            Timber.tag(TAG).w("Missing appointment data in worker input")
+            null
+        }
     }
 
 
     private fun sendReminderNotification(
-        petName: String,
-        doctorName: String,
-        serviceName: String,
-        appointmentId: String,
+        data: AppointmentData,
     ) {
         val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.modern_pet_veterinary_clinic).setContentTitle(TITLE)
+            .setSmallIcon(R.drawable.pet_veterinary_logo).setContentTitle(TITLE)
             .setStyle(
                 NotificationCompat.BigTextStyle()
                     .bigText(
-                        "Прием состоится через час!\nВрач: $doctorName\nУслуга:" +
-                                " $serviceName\nПитомец: $petName"
+                        "Прием состоится через час!\nВрач: ${data.doctorName}\nУслуга:" +
+                                " ${data.serviceName}\nПитомец: ${data.petName}"
                     )
             ).setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -69,8 +69,8 @@ class AppointmentReminderWorker(
 
         val notificationManager =
             appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(appointmentId.hashCode(), notification)
-        Log.d("AppointmentReminderWorker", "notification was sent for ${appointmentId.hashCode()}")
+        notificationManager.notify(data.appointmentId.hashCode(), notification)
+        Timber.tag(TAG).d("notification was sent for ${data.appointmentId.hashCode()}")
     }
 
 
@@ -91,9 +91,13 @@ class AppointmentReminderWorker(
     }
 
 
-    private fun parseAppointmentDateTime(datetimeStr: String): LocalDateTime {
-        return LocalDateTime.parse(datetimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-    }
+    private data class AppointmentData(
+        val doctorName: String,
+        val serviceName: String,
+        val petName: String,
+        val appointmentId: String,
+    )
+
 
     class Factory @Inject constructor() : ChildWorkerFactory {
         override fun create(
@@ -110,7 +114,8 @@ class AppointmentReminderWorker(
         private const val TITLE = "Напоминание о приёме"
         private const val DOCTOR_NAME = "doctorName"
         private const val SERVICE_NAME = "serviceName"
-        private const val PET_NANE = "petName"
+        private const val PET_NAME = "petName"
         private const val APPOINTMENT_ID = "appointmentId"
+        private const val TAG = "ReminderWorker"
     }
 }

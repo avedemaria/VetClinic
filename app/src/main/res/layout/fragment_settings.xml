@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".presentation.screens.mainScreen.homeScreen.profileFragment.userComposeFragment.settingsFragment.SettingsComposeFragment">
+    tools:context=".presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment">
 
 
 
@@ -25,13 +25,13 @@
             android:layout_height="70dp"
             android:contentDescription="@string/back_button"
             android:padding="16dp"
-            android:src="@drawable/arrow_back_double_svgrepo_com" />
+            android:src="@drawable/arrow_back_double" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Настройка профиля"
+            android:text="@string/profile_settings"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -74,7 +74,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_delete_forever_24"/>
+            android:src="@drawable/delete_forever_red"/>
 
         <TextView
             android:layout_width="wrap_content"

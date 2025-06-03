@@ -1,4 +1,4 @@
-<!-- res/layout/date_picker_dialog.xml -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -6,7 +6,6 @@
     android:padding="16dp"
     android:gravity="center">
 
-    <!-- Контейнер для дня -->
     <LinearLayout
         android:id="@+id/day_container"
         android:orientation="vertical"
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
         <TextView
-            android:text="День"
+            android:text="@string/day"
             android:textColor="@color/dark_blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <!-- Контейнер для месяца -->
     <LinearLayout
         android:id="@+id/month_container"
         android:orientation="vertical"
@@ -33,7 +31,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
         <TextView
-            android:text="Месяц"
+            android:text="@string/month"
             android:textColor="@color/dark_blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +42,6 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <!-- Контейнер для года -->
     <LinearLayout
         android:id="@+id/year_container"
         android:orientation="vertical"
@@ -52,7 +49,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
         <TextView
-            android:text="Год"
+            android:text="@string/year"
             android:textColor="@color/dark_blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -6,17 +6,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.room.Room
 import com.example.vetclinic.BuildConfig
 import com.example.vetclinic.data.localSource.database.VetClinicDao
 import com.example.vetclinic.data.localSource.database.VetClinicDatabase
-import com.example.vetclinic.data.remoteSource.network.HeaderInterceptor
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiFactory
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
 import com.example.vetclinic.data.remoteSource.network.model.AuthInterceptor
 import com.example.vetclinic.di.qualifiers.DialogPrefs
 import com.example.vetclinic.di.qualifiers.UserPrefs
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -62,19 +59,6 @@ class DataModule {
     }
 
 
-//    @Provides
-//    @Singleton
-//    fun provideVetClinicDatabase(context: Context): VetClinicDatabase {
-//        return Room.databaseBuilder(
-//            context,
-//            VetClinicDatabase::class.java,
-//            "VetClinicDb"
-//        )
-//            .fallbackToDestructiveMigration()
-//            .build()
-//    }
-
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -105,5 +89,7 @@ class DataModule {
             produceFile = { application.preferencesDataStoreFile("dialog_prefs") }
         )
     }
+
+
 
 }

@@ -2,7 +2,6 @@ package com.example.vetclinic.data.localSource.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.impl.Migration_1_2
 
 object VetClinicMigrations {
 

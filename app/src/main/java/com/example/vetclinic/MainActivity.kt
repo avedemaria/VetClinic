@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.vetclinic.domain.usecases.HandleDeepLinkUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleDeepLink(intent: Intent?) {
         intent?.data?.let { uri ->
-            Log.d(TAG, "Received URI: $uri")
+            Timber.tag(TAG).d("Received URI: $uri")
 
             lifecycleScope.launch {
                 val result = deepLinkUseCase.handleDeepLink(uri)
@@ -66,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                         R.id.updatePasswordFragment,
                     )
                 } else {
-                    Log.d(TAG, "Error processing deep link: ${result.exceptionOrNull()?.message}")
+                    Timber.tag(TAG)
+                        .d("Error processing deep link: ${result.exceptionOrNull()?.message}")
                 }
             }
         }

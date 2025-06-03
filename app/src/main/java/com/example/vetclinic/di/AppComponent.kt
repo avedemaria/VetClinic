@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.vetclinic.MainActivity
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.di.modules.DataModule
+import com.example.vetclinic.di.modules.DataSourceModule
 import com.example.vetclinic.di.modules.DomainModule
 import com.example.vetclinic.di.modules.UtilsModule
 import com.example.vetclinic.di.modules.ViewModelModule
@@ -38,7 +39,7 @@ import jakarta.inject.Singleton
 @Singleton
 @Component(
     modules = [DataModule::class, DomainModule::class, ViewModelModule::class,
-        WorkerBindsModule::class, UtilsModule::class]
+        WorkerBindsModule::class, UtilsModule::class, DataSourceModule::class]
 )
 interface AppComponent {
 

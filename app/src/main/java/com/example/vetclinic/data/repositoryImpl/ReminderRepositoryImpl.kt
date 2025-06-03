@@ -11,6 +11,7 @@ import com.example.vetclinic.domain.repository.ReminderRepository
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.repository.UserDataStore
 import jakarta.inject.Inject
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -18,18 +19,16 @@ import java.util.concurrent.TimeUnit
 
 class ReminderRepositoryImpl @Inject constructor(
     private val context: Context,
-    private val userDataStore:UserDataStore
+    private val userDataStore: UserDataStore,
 ) : ReminderRepository {
 
     override suspend fun scheduleReminder(appointments: List<AppointmentWithDetails>) {
 
         val now = LocalDateTime.now()
 
-
         val userRole = userDataStore.getUserRole()
-
         if (userRole == ADMIN) {
-            Log.d("ReminderRepository", "User is admin — skipping scheduling reminders")
+            Timber.tag(TAG).d("User is admin — skipping scheduling reminders")
             return
         }
 
@@ -46,7 +45,7 @@ class ReminderRepositoryImpl @Inject constructor(
                         workDataOf(
                             DOCTOR_NAME to appointment.doctorName,
                             SERVICE_NAME to appointment.serviceName,
-                            PET_NANE to appointment.petName,
+                            PET_NAME to appointment.petName,
                             APPOINTMENT_ID to appointment.id,
                             DATE_TIME to appointment.dateTime
                         )
@@ -59,7 +58,9 @@ class ReminderRepositoryImpl @Inject constructor(
                     "appointment_${appointment.id}",
                     ExistingWorkPolicy.REPLACE, workRequest
                 )
-                Log.d("ReminderRepository", "Scheduled reminder for appointment ${appointment.id} in ${timeUntilReminder.toMinutes()} minutes")
+                Timber.tag(TAG)
+                    .d("Scheduled reminder for appointment ${appointment.id} in " +
+                            "${timeUntilReminder.toMinutes()} minutes")
             }
         }
     }
@@ -74,10 +75,11 @@ class ReminderRepositoryImpl @Inject constructor(
     companion object {
         private const val DOCTOR_NAME = "doctorName"
         private const val SERVICE_NAME = "serviceName"
-        private const val PET_NANE = "petName"
+        private const val PET_NAME = "petName"
         private const val APPOINTMENT_ID = "appointmentId"
         private const val ADMIN = "admin"
         private const val DATE_TIME = "appointmentDateTime"
+        private const val TAG = "ReminderRepository"
 
     }
 }

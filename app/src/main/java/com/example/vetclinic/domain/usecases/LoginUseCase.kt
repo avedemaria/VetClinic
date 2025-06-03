@@ -8,8 +8,6 @@ import jakarta.inject.Inject
 class LoginUseCase @Inject constructor(private val authRepository: AuthRepository,
                                        private val localDataCleaner: LocalDataCleaner) {
 
-
-
     suspend fun loginUser(email: String, password: String): Result<UserSession> {
         return authRepository.loginUser(email, password)
     }

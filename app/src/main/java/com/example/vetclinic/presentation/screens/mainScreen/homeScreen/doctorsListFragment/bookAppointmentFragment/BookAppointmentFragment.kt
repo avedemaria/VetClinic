@@ -1,6 +1,5 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment
 
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -20,19 +19,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentBookAppointmentBinding
-import com.example.vetclinic.domain.entities.timeSlot.Day
 import com.example.vetclinic.domain.entities.doctor.Doctor
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.service.Service
+import com.example.vetclinic.domain.entities.timeSlot.Day
 import com.example.vetclinic.domain.entities.timeSlot.TimeSlot
-import com.example.vetclinic.utils.formatDateTime
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.DaysAdapter
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnDayClickedListener
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.OnTimeSlotClickedListener
 import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.TimeSlotAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.utils.formatDateTime
 import com.example.vetclinic.utils.toFormattedString
 import jakarta.inject.Inject
 
@@ -42,6 +41,7 @@ class BookAppointmentFragment : Fragment() {
 
     private lateinit var daysAdapter: DaysAdapter
     private lateinit var timeSlotAdapter: TimeSlotAdapter
+    private var isPetSpinnerInitialized = false
 
     private val args by navArgs<BookAppointmentFragmentArgs>()
 
@@ -64,11 +64,6 @@ class BookAppointmentFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +76,8 @@ class BookAppointmentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        component.inject(this)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -127,11 +124,15 @@ class BookAppointmentFragment : Fragment() {
                 }
 
                 is BookAppointmentState.Success -> {
+
                     binding.progressBar.visibility = View.GONE
                     binding.layoutContent.visibility = View.VISIBLE
 
-                    setUpPetSpinner(state.pets)
 
+                    if (!isPetSpinnerInitialized) {
+                        setUpPetSpinner(state.pets)
+                        isPetSpinnerInitialized = true
+                    }
 
 
                     val updatedDays = state.daysWithTimeSlots.map { it.day }.map { day ->
@@ -148,8 +149,6 @@ class BookAppointmentFragment : Fragment() {
                         }
 
                     timeSlotAdapter.submitList(updatedTimeSlots)
-
-
 
 
                     binding.btnCreateAppointment.setOnClickListener {
@@ -314,7 +313,7 @@ class BookAppointmentFragment : Fragment() {
 
         binding.spinnerPets.adapter = spinnerAdapter
 
-        binding.spinnerPets.setSelection(0)
+//        binding.spinnerPets.setSelection(0)
 
     }
 
