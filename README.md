@@ -17,6 +17,7 @@
 - Хранение пользовательских данных с помощью **DataStore**
 - Частичное покрытие unit-тестами с использованием **JUnit** и **MockK**
 - Ограничения доступа к данным реализованы через **RLS (Row-Level Security)** в Supabase
+- Смена статуса приёма с помощью **Supabase Realtime (Websocket)** и **Cron**
 
 ---
 
@@ -39,7 +40,8 @@
     - Перенаправление на экран приёмов
 - **Экран приёмов:**
     - Актуальные и архивные приёмы
-    - Статусы приёмов
+    - Возможность отменить приём
+    - Статус приёма обновляется автоматически на стороне сервера с помощью **Cron** и **Supabase Realtime (WebSocket)**
 
 > *Временные слоты генерируются на клиенте (в демонстрационных целях). В реальных условиях рекомендуется генерировать их на серверной стороне.*
 
@@ -50,6 +52,7 @@
 - Возможность выбрать дату (через DatePickerDialog)
 - Пагинация через **Paging 3** + **RemoteMediator**
 - Отображение списка приёмов с использованием **RecyclerView**
+- Возможность изменения статуса приёма на подтвержденный/неподтвержденный
 
 ---
 
@@ -58,12 +61,12 @@
 ### Архитектура и принципы:
 - MVVM
 - Clean Architecture (presentation/domain/data)
-- Dependency Injection: Hilt
+- Dependency Injection: Dagger2
 
 ### UI и навигация:
 - Fragment-based UI
 - Navigation Component
-- RecyclerView, GridLayoutManager
+- RecyclerView
 - BottomNavigationView
 
 ### Сетевой и локальный доступ:
@@ -76,7 +79,7 @@
 ### Тестирование:
 - Unit-тесты: JUnit
 - Моки: MockK
-- 
+
 ---
 
 ## TODO
@@ -101,11 +104,11 @@
    SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_ANON_KEY=eyJhbGciOi... #твой ключ
    ```
-3. Откройте проект в Android Studio.
+3. Откройте проект в Android Studio. 
 
-4.Убедитесь, что установлены необходимые зависимости и SDK:
+4. Убедитесь, что установлены необходимые зависимости и SDK:
 
-5.Запустите приложение на устройстве или эмуляторе.
+5. Запустите приложение на устройстве или эмуляторе.
 
 ---
 
@@ -123,39 +126,31 @@
 
 ## Скриншоты
 
-<p align="center">
-  <b>Главная страница</b><br>
-  <img src="assets/screenshot_home_page.jpg" width="300" alt="Главная страница">
-</p>
+### Главная и профиль пользователя
 
 <p align="center">
-  <b>Список врачей</b><br>
-  <img src="assets/screenshot_doctors.jpg" width="300" alt="Список врачей">
+  <img src="assets/screenshot_home_page.jpg" width="45%" alt="Главная страница">
+  <img src="assets/screenshot_profile.jpg" width="45%" alt="Профиль пользователя">
 </p>
 
-<p align="center">
-  <b>Информация о враче</b><br>
-  <img src="assets/screenshot_doctor_detailed_info.jpg" width="300" alt="Детальная информация о враче">
-</p>
+### Список врачей и детальная информация
 
 <p align="center">
-  <b>Формирование записи</b><br>
-  <img src="assets/screenshot_book_appointment.jpg" width="300" alt="Формирование записи">
+  <img src="assets/screenshot_doctors.jpg" width="45%" alt="Список врачей">
+  <img src="assets/screenshot_doctor_detailed_info.jpg" width="45%" alt="Детальная информация о враче">
 </p>
 
-<p align="center">
-  <b>Список приёмов</b><br>
-  <img src="assets/screenshot_appointments.jpg" width="300" alt="Список приёмов">
-</p>
+### Запись к врачу и список приёмов
 
 <p align="center">
-  <b>Профиль пользователя </b><br>
-  <img src="assets/screenshot_profile.jpg" width="300" alt="Профиль пользователя>
+  <img src="assets/screenshot_book_appointment.jpg" width="45%" alt="Формирование записи">
+  <img src="assets/screenshot_appointments.jpg" width="45%" alt="Список приёмов">
 </p>
 
+### Питомцы пользователя
+
 <p align="center">
-  <b>Питомцы пользователя</b><br>
-  <img src="assets/screenshot_pets.jpg" width="300" alt="Питомцы">
+  <img src="assets/screenshot_pets.jpg" width="40%" alt="Питомцы пользователя">
 </p>
 
 ---
