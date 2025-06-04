@@ -1,4 +1,4 @@
-package com.example.vetclinic.loginScreen.registrationScreen
+package com.example.vetclinic.presentation.loginScreen.registrationScreen
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.vetclinic.domain.entities.pet.Pet

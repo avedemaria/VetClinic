@@ -25,7 +25,7 @@ class PetRemoteDataSourceImpl @Inject constructor(private val supabaseApiService
     }
 
     override suspend fun addPetToSupabaseDb(pet: PetDto): Result<Unit> {
-        return DataSourceUtils.executeApiCall {
+        return DataSourceUtils.executeUnitApiCall {
             supabaseApiService.addPet(pet)
         }
     }

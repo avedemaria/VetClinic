@@ -1,7 +1,6 @@
 package com.example.vetclinic.data.localSource.interfaces
 
 import com.example.vetclinic.data.localSource.database.models.UserDbModel
-import com.example.vetclinic.domain.entities.user.User
 
 interface UserLocalDataSource {
 

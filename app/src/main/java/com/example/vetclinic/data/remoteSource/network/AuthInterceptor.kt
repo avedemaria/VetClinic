@@ -1,4 +1,4 @@
-package com.example.vetclinic.data.remoteSource.network.model
+package com.example.vetclinic.data.remoteSource.network
 
 import android.util.Log
 import com.example.vetclinic.BuildConfig

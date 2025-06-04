@@ -1,7 +1,6 @@
 package com.example.vetclinic.data.remoteSource.network
 
 import com.example.vetclinic.BuildConfig
-import com.example.vetclinic.data.remoteSource.network.model.AuthInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient

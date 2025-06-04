@@ -1,8 +1,8 @@
-package com.example.vetclinic.domain.repository
+package com.example.vetclinic.data.remoteSource.interfaces
 
 import io.github.jan.supabase.auth.user.UserSession
 
-interface AuthRepository {
+interface AuthRemoteSource {
 
     suspend fun loginUser(email: String, password: String): Result<UserSession>
 

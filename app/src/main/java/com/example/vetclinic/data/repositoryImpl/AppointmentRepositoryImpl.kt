@@ -1,219 +1,125 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import com.example.vetclinic.data.remoteSource.AppointmentRemoteMediator
-import android.util.Log
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.vetclinic.data.localSource.database.VetClinicDao
+import com.example.vetclinic.data.localSource.interfaces.AppointmentLocalSource
 import com.example.vetclinic.data.mapper.AppointmentMapper
-import com.example.vetclinic.data.remoteSource.network.AppointmentQuery
-import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
-import com.example.vetclinic.data.remoteSource.network.model.AppointmentDto
-import com.example.vetclinic.domain.repository.AppointmentRepository
+import com.example.vetclinic.data.remoteSource.interfaces.AppointmentRemoteSource
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
-import com.example.vetclinic.utils.AgeUtils
-import com.squareup.moshi.Moshi
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.realtime.PostgresAction
+import com.example.vetclinic.domain.repository.AppointmentRepository
 import io.github.jan.supabase.realtime.RealtimeChannel
-import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.postgresChangeFlow
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 class AppointmentRepositoryImpl @Inject constructor(
-    private val supabaseApiService: SupabaseApiService,
-    private val supabaseClient: SupabaseClient,
-    private val vetClinicDao: VetClinicDao,
-    private val appointmentMapper: AppointmentMapper,
-    private val moshi: Moshi,
-    private val ageUtils: AgeUtils
+    private val remoteSource: AppointmentRemoteSource,
+    private val localSource: AppointmentLocalSource,
+    private val appointmentMapper: AppointmentMapper
 ) : AppointmentRepository {
 
-
     private var subscription: RealtimeChannel? = null
-
-    private val jsonAdapter = moshi.adapter(AppointmentDto::class.java)
-
 
     override suspend fun subscribeToAppointmentChanges(
         callback: (Appointment) -> Unit,
     ) {
-        val channel = supabaseClient.channel("appointments")
-        val changeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-            table = "appointments"
-        }
-        subscription = channel
-        channel.subscribe()
-        Log.d(TAG, "Supabase channel subscribed successfully")
-
-        Log.d(TAG, "Starting to collect changes from Supabase")
-        changeFlow
-            .retry { e ->
-                e is java.net.SocketException || e is java.io.IOException
+        remoteSource.observeAppointmentChanges()
+            .map { dto ->
+                appointmentMapper.appointmentDtoToAppointmentEntity(dto)
             }
-            .catch { e ->
-                Log.e(TAG, "Error in WebSocket flow after retry: ${e.message}")
-            }
-            .collect { updatedValue ->
-                val updatedRecord = updatedValue.record.toString()
-                Log.d(TAG, "updated value^ $updatedRecord")
-                try {
-                    val appointmentDto = jsonAdapter.fromJson(updatedRecord)
-                    appointmentDto?.let { dto ->
-                        callback(appointmentMapper.appointmentDtoToAppointmentEntity(dto))
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Ошибка парсинга JSON: ${e.message}")
-                }
-
-
+            .collect { appointment ->
+                callback(appointment)
             }
     }
 
 
     override suspend fun unsubscribeFromAppointmentChanges() {
         subscription?.unsubscribe()
-        Log.d(TAG, "unsubscribed")
+        Timber.tag(TAG).d("unsubscribed")
         subscription = null
     }
 
 
     override suspend fun addAppointmentToSupabaseDb(appointment: Appointment): Result<Unit> =
-        kotlin.runCatching {
-
-            val appointmentDto = appointmentMapper.appointmentEntityToAppointmentDto(appointment)
-
-            val response = supabaseApiService.addAppointment(appointmentDto)
-            if (response.isSuccessful) {
-                Log.d(TAG, "Successfully added appointment to Supabase DB")
-                Unit
-            } else {
-                throw Exception(
-                    "Failed to add appointment ${response.code()} " +
-                            "- ${response.errorBody()}"
-                )
-            }
+        appointmentMapper.appointmentEntityToAppointmentDto(appointment).let {
+            remoteSource.addAppointment(it)
         }
             .onFailure { e ->
-                Log.e(TAG, "Error while adding appointment to Supabase $e", e)
+                Timber.tag(TAG).e(e, "Error while adding appointment")
             }
 
 
     override suspend fun getAppointmentsByUserId(
         userId: String,
     ): Result<List<AppointmentWithDetails>> =
-        kotlin.runCatching {
 
-            val query = AppointmentQuery(userId = userId)
-            val response = supabaseApiService.getAppointmentWithDetails(query)
-
-            if (response.isSuccessful) {
-                val appointmentDtos = response.body() ?: emptyList()
-
-                val appointmentsWithDetails = appointmentDtos.map {
-                    appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(it)
-                }
-
-                val appointmentWithDetailsDbModels = appointmentsWithDetails.map {
+        remoteSource.getAppointmentsByUserId(userId).map { dtoList ->
+            dtoList.map { dto ->
+                appointmentMapper.appointmentWithDetailsDtoToAppointmentWithDetails(dto)
+            }
+        }.onSuccess { domainList ->
+            withContext(Dispatchers.IO) {
+                val dbModels = domainList.map {
                     appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(it)
                 }
-                withContext(Dispatchers.IO) {
-                    vetClinicDao.insertAppointments(appointmentWithDetailsDbModels)
-                }
-                appointmentsWithDetails
-            } else {
-                throw Exception(
-                    "Error fetching appointments: ${response.code()} " +
-                            "- ${response.message()}"
-                )
-            }
-        }.onFailure { e ->
-            Log.e(TAG, "Error while fetching appointments", e)
-            emptyList<AppointmentWithDetails>()
-        }
-
-
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getAppointmentsByDate(
-        date: String
-    ): Flow<PagingData<AppointmentWithDetails>> {
-        Log.d(TAG, "Getting appointments for date: $date")
-        val pagingSourceFactory = { vetClinicDao.observeAppointmentsPaging(date) }
-
-        val pager = Pager(
-            config = PagingConfig(pageSize = 15),
-            remoteMediator = AppointmentRemoteMediator(
-                selectedDate = date,
-                supabaseApiService = supabaseApiService,
-                appointmentMapper = appointmentMapper,
-                vetClinicDao = vetClinicDao,
-                ageUtils = ageUtils
-
-            ),
-            pagingSourceFactory = pagingSourceFactory
-        )
-        Log.d(TAG, "Created pager for date: $date")
-        return pager.flow.map { pagingData ->
-            Log.d(TAG, "Mapping paging data")
-            pagingData.map { dbModel ->
-                appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
+                localSource.addAppointments(dbModels)
             }
         }
-    }
+            .onFailure { e ->
+                Timber.tag(TAG).e(e, "Error while fetching appointments")
+            }
 
-
-    override fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {
-        return vetClinicDao.observeAppointmentsByUserId(userId).map { list ->
-            list.map { appointmentMapper.appointmentWithDetailsDbModelToEntity(it) }
-        }
-    }
 
     override suspend fun updateAppointmentStatus(
         updatedAppointment: AppointmentWithDetails,
     ): Result<Unit> =
-        kotlin.runCatching {
-
-            val appointmentIdWithParam = "eq.{${updatedAppointment.id}}"
-
-            val appointmentDto =
-                appointmentMapper.appointmentWithDetailsEntityToAppointmentDto(updatedAppointment)
-            val response =
-                supabaseApiService.updateAppointmentStatus(appointmentIdWithParam, appointmentDto)
-
-            if (!response.isSuccessful) {
-                throw Exception("Error while updating appointment status in Supabase")
+        appointmentMapper.appointmentWithDetailsEntityToAppointmentDto(updatedAppointment)
+            .let {
+                remoteSource.updateAppointmentStatus(it)
+                    .onSuccess {
+                        updateAppointmentStatusInRoom(updatedAppointment).getOrThrow()
+                    }
+            }
+            .onFailure { e ->
+                Timber.tag(TAG).e(e, "Error while updating appointment status")
             }
 
-            updateAppointmentStatusInRoom(updatedAppointment).getOrThrow()
 
-        }.onFailure { e ->
-            Log.e(TAG, e.message.toString())
-        }
+    override fun getAppointmentsByDate(
+        date: String,
+    ): Flow<PagingData<AppointmentWithDetails>> {
+        return localSource.getAppointmentsByDate(date)
+            .map { pagingData ->
+                pagingData.map { dbModel ->
+                    appointmentMapper.appointmentWithDetailsDbModelToEntity(dbModel)
+                }
+            }
+    }
+
+
+    override fun observeAppointmentsFromRoom(userId: String): Flow<List<AppointmentWithDetails>> {
+        return localSource.observeAppointmentsFromRoom(userId)
+            .map { list ->
+                list.map {
+                    appointmentMapper.appointmentWithDetailsDbModelToEntity(it)
+                }
+            }
+    }
 
 
     override suspend fun updateAppointmentStatusInRoom(updatedAppointment: AppointmentWithDetails): Result<Unit> =
-        kotlin.runCatching {
-            vetClinicDao.updateAppointment(
-                appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(
-                    updatedAppointment
-                )
-            )
-        }
-            .onFailure { e ->
-                Log.d(TAG, e.message.toString())
+        appointmentMapper.appointmentWithDetailsToAppointmentWithDetailsDbModel(
+            updatedAppointment
+        ).let {
+            localSource.updateAppointmentStatusInRoom(it)
+        }.onFailure { e ->
+                Timber.tag(TAG).d(e.message.toString())
             }
-
 
 
     companion object {

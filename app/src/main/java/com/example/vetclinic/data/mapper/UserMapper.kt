@@ -1,5 +1,6 @@
 package com.example.vetclinic.data.mapper
 
+import android.util.Log
 import com.example.vetclinic.data.localSource.database.models.UserDbModel
 import com.example.vetclinic.data.remoteSource.network.model.UserDto
 import com.example.vetclinic.domain.entities.user.User
@@ -9,7 +10,7 @@ class UserMapper @Inject constructor() {
 
     fun userEntityToUserDto(entity: User): UserDto {
 
-        return UserDto(
+       val dto = UserDto(
             uid = entity.uid,
             userName = entity.userName,
             userLastName = entity.userLastName,
@@ -17,6 +18,8 @@ class UserMapper @Inject constructor() {
             email = entity.email,
             role = entity.role
         )
+        return dto
+        Log.d("UpdateDebug", "UserEntity mapped to UserDto: $dto")
     }
 
     fun userDtoToUserDbModel(dto: UserDto): UserDbModel {

@@ -18,7 +18,7 @@ interface PetRepository {
 
     suspend fun getPetsFromRoom(userId: String): Result<List<Pet>>
 
-    suspend fun deletePetFromRoom(pet: Pet)
+    suspend fun deletePetFromRoom(pet: Pet): Result<Unit>
 
 
 }

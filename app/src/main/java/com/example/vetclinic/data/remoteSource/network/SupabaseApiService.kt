@@ -3,6 +3,7 @@ package com.example.vetclinic.data.remoteSource.network
 
 import com.example.vetclinic.data.remoteSource.network.model.AppointmentDto
 import com.example.vetclinic.data.remoteSource.network.model.AppointmentWithDetailsDto
+import com.example.vetclinic.data.remoteSource.network.model.CanBookTimeSlotParams
 import com.example.vetclinic.data.remoteSource.network.model.DayDto
 import com.example.vetclinic.data.remoteSource.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.remoteSource.network.model.DepartmentDto
@@ -114,7 +115,6 @@ interface SupabaseApiService {
 
     @GET("rest/v1/time_slots")
     suspend fun getTimeSlotById(@Query("id") timeSlotId: String): List<TimeSlotDto>
-
 
     @PATCH("rest/v1/appointments")
     suspend fun updateAppointmentStatus(

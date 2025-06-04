@@ -12,7 +12,7 @@ class TimeSlotsUseCase @Inject constructor(private val repository: TimeSlotsRepo
 
     suspend fun getTimeSlots(
         doctorId: String,
-        serviceId: String
+        serviceId: String,
     ): Result<List<DayWithTimeSlots>> {
         return repository.getAvailableDaysAndTimeSlots(doctorId, serviceId)
     }
@@ -20,8 +20,9 @@ class TimeSlotsUseCase @Inject constructor(private val repository: TimeSlotsRepo
     suspend fun addTimeSlots(
         doctorId: String,
         serviceId: String,
-        duration: String
+        duration: String,
     ): Result<Unit> {
         return repository.generateAndSaveTimeSlots(doctorId, serviceId, duration)
     }
+
 }

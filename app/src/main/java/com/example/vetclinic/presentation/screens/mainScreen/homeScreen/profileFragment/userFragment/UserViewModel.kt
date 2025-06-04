@@ -104,9 +104,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = sessionUseCase.getUserId()?:""
             val updatedResult = userUseCase.updateUserInSupabaseDb(userId, updatedUser)
-
             if (updatedResult.isSuccess) {
-
                 _userState.value = UserUiState.Success(updatedUser)
             } else {
                 _userState.value = UserUiState.Error("Не получилось обновить данные на сервере")

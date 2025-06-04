@@ -2,6 +2,7 @@ package com.example.vetclinic.data.repositoryImpl
 
 import com.example.vetclinic.data.mapper.DayWithTimeSlotsMapper
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
+import com.example.vetclinic.data.remoteSource.network.model.CanBookTimeSlotParams
 import com.example.vetclinic.data.remoteSource.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.remoteSource.network.model.TimeSlotDto
 import com.example.vetclinic.domain.entities.timeSlot.DayWithTimeSlots
@@ -9,7 +10,10 @@ import com.example.vetclinic.domain.repository.TimeSlotsRepository
 import jakarta.inject.Inject
 import timber.log.Timber
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class TimeSlotsRepositoryImpl @Inject constructor(
@@ -280,6 +284,7 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             val existingTimeSlot = timeSlots.firstOrNull()
                 ?: throw Exception("No time slot found with ID: $timeSlotId")
 
+
             val updatedTimeSlot = existingTimeSlot.copy(isBooked = true)
 
             val response =
@@ -292,6 +297,8 @@ class TimeSlotsRepositoryImpl @Inject constructor(
             .onFailure { e ->
                 Timber.tag(TAG).e(e, "Failed to update timeSlot status $e")
             }
+
+
 
     companion object {
         private const val TAG = "TimeSlotsRepositoryImpl"

@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class UserLocalDataSourceImpl @Inject constructor(
-    private val vetClinicDao: VetClinicDao,
+    private val vetClinicDao: VetClinicDao
 ) : UserLocalDataSource {
 
     override suspend fun updateUser(user: UserDbModel): Result<Unit> {

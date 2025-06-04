@@ -1,147 +1,50 @@
 package com.example.vetclinic.data.repositoryImpl
 
-import android.util.Log
-import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
+import com.example.vetclinic.data.remoteSource.interfaces.AuthRemoteSource
 import com.example.vetclinic.domain.repository.AuthRepository
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.OtpType
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.withTimeout
-import kotlinx.serialization.json.put
+import timber.log.Timber
 
 class AuthRepositoryImpl @Inject constructor(
-    private val supabaseClient: SupabaseClient,
-    private val supabaseApiService: SupabaseApiService,
+    private val remoteSource: AuthRemoteSource
 ) : AuthRepository {
 
     override suspend fun loginUser(email: String, password: String): Result<UserSession> {
-        return try {
-
-            val deferred = CompletableDeferred<UserSession>()
-
-            Email.login(
-                supabaseClient,
-                onSuccess = { session ->
-                    Log.d(TAG, "$session")
-                    deferred.complete(session)
-                }
-            ) {
-                this.email = email
-                this.password = password
-            }
-            Result.success(deferred.await())
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return remoteSource.loginUser(email, password)
     }
-
 
     override suspend fun registerUser(email: String, password: String): Result<UserSession> {
-        return try {
-
-            var session: UserSession? = null
-
-            Email.signUp(
-                supabaseClient,
-                onSuccess = { userSession ->
-                    session = userSession
-                }
-            ) {
-                this.email = email
-                this.password = password
-            }
-
-            Result.success(requireNotNull(session))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return remoteSource.registerUser(email, password)
     }
 
 
-    override suspend fun logOut(): Result<Unit> = kotlin.runCatching {
+    override suspend fun logOut(): Result<Unit> =
+        remoteSource.logOut()
+            .onSuccess { Timber.tag(TAG).d("User signed out") }
+            .onFailure { Timber.tag(TAG).e("Sign out failed: ${it.message}") }
 
-        supabaseClient.auth.signOut()
-        Log.d(TAG, "User has been signed out successfully")
-        Unit
-    }
-        .onFailure { e ->
-            Log.d(TAG, "Error while signing out user")
-        }
 
     override suspend fun resetPasswordWithEmail(email: String): Result<Unit> =
-        kotlin.runCatching {
-            val resetPasswordUrl = "vetclinic://reset-password"
-            supabaseClient.auth.resetPasswordForEmail(email, resetPasswordUrl)
-            Log.d(TAG, "The reset password link has been sent to $email")
-            Unit
-        }
-            .onFailure { e ->
-                Log.d(TAG, "Error while sending the reset link to $email")
-            }
+        remoteSource.resetPasswordWithEmail(email)
 
 
     override suspend fun updatePassword(newPassword: String, token: String, refreshToken: String)
             : Result<Unit> =
-        kotlin.runCatching {
-
-            if (token.isBlank()) {
-                throw IllegalArgumentException("Token is empty")
-            }
-
-            supabaseClient.auth.importSession(
-                session = UserSession(
-                    accessToken = token,
-                    refreshToken = refreshToken,
-                    expiresIn = 2000,
-                    tokenType = "Bearer",
-                    user = null
-                )
-            )
-
-            supabaseClient.auth.updateUser(updateCurrentUser = false) {
-                password = newPassword
-            }
-            Log.d(
-                TAG,
-                "The password has been successfully updated for " +
-                        "${supabaseClient.auth.currentUserOrNull()}"
-            )
-            Unit
-        }
-
+        remoteSource.updatePassword(newPassword, token, refreshToken)
             .onFailure { e ->
-                Log.d(TAG, "Error while updating password $e")
+                Timber.tag(TAG).e(e, "Failed to update password: ${e.message}")
             }
 
 
-
-    override suspend fun deleteUserAccount(): Result<Unit> = kotlin.runCatching {
-        val response = supabaseApiService.deleteUser()
-        if (response.isSuccessful) {
-            logOut().getOrThrow()
-        } else {
-            throw Exception(
-                "Failed to delete user: ${response.code()} ${
-                    response.errorBody()?.string()
-                }"
-            )
-        }
-    }.onFailure { e ->
-        Log.d(TAG, "Error while deleting user account $e")
-    }
-
-
-    override suspend fun checkUserSession(): Boolean {
-        return try {
-            supabaseClient.auth.currentUserOrNull() != null
-        } catch (e: Exception) {
-            false
-        }
-    }
+    override suspend fun deleteUserAccount(): Result<Unit> =
+        remoteSource.deleteUserAccount()
+            .onSuccess {
+                Timber.tag(TAG).d("User account deleted and logged out successfully")
+            }
+            .onFailure { e ->
+                Timber.tag(TAG).e(e, "Error while deleting user account: ${e.message}")
+            }
 
 
     companion object {

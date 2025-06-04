@@ -69,7 +69,6 @@ class BookAppointmentViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-
                 addTimeSlotsToSupabaseDb(doctorId, serviceId, duration)
 
                 val result = timeSlotsUseCase.getTimeSlots(doctorId, serviceId)
@@ -171,9 +170,7 @@ class BookAppointmentViewModel @Inject constructor(
 
 
     private suspend fun getPets(userId: String) {
-
         _bookAppointmentState.value = BookAppointmentState.Loading
-
         val result = petUseCase.getPetsFromSupabaseDb(userId)
         if (result.isSuccess) {
             pets = result.getOrNull() ?: emptyList()

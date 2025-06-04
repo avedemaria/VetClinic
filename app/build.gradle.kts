@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -137,7 +138,9 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.core.testing)
 
-    implementation ("com.jakewharton.timber:timber:5.0.1")
+    implementation (libs.jakewharton.timber)
+
+    debugImplementation (libs.leakcanary.android)
 }
 
 fun getProperties(): Properties {

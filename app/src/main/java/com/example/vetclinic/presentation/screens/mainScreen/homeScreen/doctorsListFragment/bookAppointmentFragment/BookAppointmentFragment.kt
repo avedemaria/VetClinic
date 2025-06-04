@@ -33,6 +33,7 @@ import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.TimeSlotAdapt
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.utils.formatDateTime
 import com.example.vetclinic.utils.toFormattedString
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 
 
@@ -67,7 +68,7 @@ class BookAppointmentFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentBookAppointmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -108,26 +109,26 @@ class BookAppointmentFragment : Fragment() {
         viewModel.bookAppointmentState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is BookAppointmentState.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "An error has occurred: ${state.message}",
-                        Toast.LENGTH_SHORT
+                    Snackbar.make(
+                        binding.root,
+                        "Ошибка: ${state.message}",
+                        Snackbar.LENGTH_SHORT
                     ).show()
 
                     binding.progressBar.visibility = View.GONE
-                    binding.layoutContent.visibility = View.GONE
+                    binding.layoutContent.visibility = View.VISIBLE
                 }
 
                 is BookAppointmentState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.layoutContent.visibility = View.GONE
+
                 }
 
                 is BookAppointmentState.Success -> {
 
                     binding.progressBar.visibility = View.GONE
                     binding.layoutContent.visibility = View.VISIBLE
-
 
                     if (!isPetSpinnerInitialized) {
                         setUpPetSpinner(state.pets)
@@ -201,7 +202,7 @@ class BookAppointmentFragment : Fragment() {
         doctor: Doctor,
         selectedDay: Day?,
         selectedTimeSlot: TimeSlot?,
-        pets: List<Pet>
+        pets: List<Pet>,
     ) {
 
         val selectedPetIndex = binding.spinnerPets.selectedItemPosition
@@ -235,7 +236,6 @@ class BookAppointmentFragment : Fragment() {
             .setPositiveButton("Подтверждаю") { dialog, _ ->
                 val dateTime =
                     selectedDay.date.formatDateTime(selectedTimeSlot.startTime)
-                Log.d(TAG, "dateTime: $dateTime")
                 viewModel.bookAppointment(selectedPet.petId, service.id, doctor.uid, dateTime)
                 dialog.dismiss()
             }
@@ -313,16 +313,15 @@ class BookAppointmentFragment : Fragment() {
 
         binding.spinnerPets.adapter = spinnerAdapter
 
-//        binding.spinnerPets.setSelection(0)
-
     }
-
 
     private fun launchAppointmentFragment() {
         findNavController().navigate(
             BookAppointmentFragmentDirections.actionBookAppointmentFragmentToAppointmentFragment()
         )
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

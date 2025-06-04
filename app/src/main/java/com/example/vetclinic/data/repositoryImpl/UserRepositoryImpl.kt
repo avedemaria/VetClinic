@@ -17,33 +17,39 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserFromSupabaseDb(userId: String): Result<User?> {
         return userRemoteDataSource.getUserById(userId)
-            .onSuccess { userDto ->
+            .mapCatching { userDto ->
                 userDto?.let {
                     val userDbModel = userMapper.userDtoToUserDbModel(it)
                     userLocalDataSource.addUser(userDbModel).getOrThrow()
+                    userMapper.userDtoToUserEntity(it)
                 }
             }
-            .map { userDto ->
-                userDto?.let { userMapper.userDtoToUserEntity(it) }
+            .onFailure {
+                Timber.tag(TAG).e(it, "Failed to get user from Supabase")
             }
     }
+
 
     override suspend fun addUserToSupabaseDb(user: User): Result<Unit> {
         return runCatching {
             val userDto = userMapper.userEntityToUserDto(user)
             userRemoteDataSource.addUser(userDto).getOrThrow()
+        }.onFailure {
+            Timber.tag(TAG).e(it, "Failed to add user to Supabase")
         }
     }
 
 
     override suspend fun updateUserInSupabaseDb(userId: String, updatedUser: User): Result<Unit> {
-        return runCatching {
-            val userDto = userMapper.userEntityToUserDto(updatedUser)
-            userRemoteDataSource.updateUser(userId, userDto).getOrThrow()
-                .also {
-                    updateUserInRoom(updatedUser)
-                }
+        return userMapper.userEntityToUserDto(updatedUser).let {
+            userRemoteDataSource.updateUser(userId, it)
         }
+            .mapCatching {
+                updateUserInRoom(updatedUser).getOrThrow()
+            }
+            .onFailure {
+                Timber.tag(TAG).e(it, "Update failed: ${it.message}")
+            }
     }
 
 
@@ -51,6 +57,9 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val userDbModel = userMapper.userEntityToUserDbModel(user)
             userLocalDataSource.updateUser(userDbModel).getOrThrow()
+        }.onFailure {
+            Timber.tag(TAG).e(it, "Room update failed: ${it.message}")
+
         }
     }
 
@@ -60,9 +69,7 @@ class UserRepositoryImpl @Inject constructor(
             .mapCatching { userDbModel ->
                 userDbModel ?: throw NoSuchElementException("User with ID $userId not found")
             }
-            .map { userDbModel ->
-                userMapper.userDbModelToUserEntity(userDbModel)
-            }
+            .map { userMapper.userDbModelToUserEntity(it) }
             .onFailure {
                 Timber.tag(TAG).e(it, "Error getting user from Room")
             }

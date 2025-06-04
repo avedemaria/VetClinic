@@ -20,13 +20,13 @@ class UserRemoteDataSourceImpl @Inject constructor
     }
 
     override suspend fun addUser(user: UserDto): Result<Unit> {
-        return DataSourceUtils.executeApiCall {
+        return DataSourceUtils.executeUnitApiCall {
             supabaseApiService.addUser(user)
         }
     }
 
     override suspend fun updateUser(userId: String, updatedUser: UserDto): Result<Unit> {
-        return DataSourceUtils.executeApiCall {
+        return DataSourceUtils.executeUnitApiCall {
             supabaseApiService.updateUser("eq.$userId", updatedUser)
         }
     }

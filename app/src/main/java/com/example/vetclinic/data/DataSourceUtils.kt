@@ -23,5 +23,15 @@ object DataSourceUtils {
                 throw Exception("HTTP ${response.code()}: $error")
             }
         }
+
+    suspend fun executeUnitApiCall(call: suspend () -> Response<Unit>): Result<Unit> =
+        runCatching { call() }.mapCatching { response ->
+            if (response.isSuccessful) {
+                Unit
+            } else {
+                val error = response.errorBody()?.string()
+                throw Exception("HTTP ${response.code()}: $error")
+            }
+        }
 }
 

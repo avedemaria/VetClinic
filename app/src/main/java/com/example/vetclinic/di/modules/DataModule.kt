@@ -11,7 +11,7 @@ import com.example.vetclinic.data.localSource.database.VetClinicDao
 import com.example.vetclinic.data.localSource.database.VetClinicDatabase
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiFactory
 import com.example.vetclinic.data.remoteSource.network.SupabaseApiService
-import com.example.vetclinic.data.remoteSource.network.model.AuthInterceptor
+import com.example.vetclinic.data.remoteSource.network.AuthInterceptor
 import com.example.vetclinic.di.qualifiers.DialogPrefs
 import com.example.vetclinic.di.qualifiers.UserPrefs
 import com.squareup.moshi.Moshi
