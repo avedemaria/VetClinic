@@ -35,6 +35,8 @@ import com.example.vetclinic.utils.formatDateTime
 import com.example.vetclinic.utils.toFormattedString
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 class BookAppointmentFragment : Fragment() {
@@ -143,6 +145,13 @@ class BookAppointmentFragment : Fragment() {
                         )
                     }
                     daysAdapter.submitList(updatedDays)
+
+                    state.selectedDay?.date?.let { date ->
+                        val monthName = date.month.getDisplayName(TextStyle.FULL, Locale("ru"))
+                        binding.tvMonth.text =
+                            monthName.replaceFirstChar { it.titlecase(Locale("ru")) }
+                    }
+
 
                     val updatedTimeSlots =
                         state.filteredTimeSlots.map { timeSlot ->
@@ -320,7 +329,6 @@ class BookAppointmentFragment : Fragment() {
             BookAppointmentFragmentDirections.actionBookAppointmentFragmentToAppointmentFragment()
         )
     }
-
 
 
     override fun onDestroyView() {
