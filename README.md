@@ -94,12 +94,13 @@
 1. Клонировать репозиторий:
    ```bash
    git clone https://github.com/your-username/vet-clinic-app.git
-
+   ```
 2. Создайте файл local.properties в корне проекта:
 
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOi... (твой ключ)
-
+   ```bash
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_ANON_KEY=eyJhbGciOi... #твой ключ
+   ```
 3. Откройте проект в Android Studio.
 
 4.Убедитесь, что установлены необходимые зависимости и SDK:
@@ -112,12 +113,52 @@ SUPABASE_ANON_KEY=eyJhbGciOi... (твой ключ)
 
 Для демонстрационного запуска приложения вы можете использовать встроенные значения:
 
-SUPABASE_URL=https://shuxcjnbzcrpkrtszccr.supabase.co
-SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNodXhjam5iemNycGtydHN6Y2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NDU0MjgsImV4cCI6MjA1NTEyMTQyOH0.f0c1YOXkqUHm9IoEA7MqoQP3GzI3MZZGcdnTQob3Ju8
-
+   ```bash
+   SUPABASE_URL=https://shuxcjnbzcrpkrtszccr.supabase.co
+   SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNodXhjam5iemNycGtydHN6Y2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NDU0MjgsImV4cCI6MjA1NTEyMTQyOH0.f0c1YOXkqUHm9IoEA7MqoQP3GzI3MZZGcdnTQob3Ju8
+   ```
 Внимание: Этот ключ предназначен только для демонстрационных целей. Все доступы ограничены RLS-политиками на стороне Supabase. В продакшене следует использовать серверные токены и защищённые механизмы.
 
 --- 
+
+## Скриншоты
+
+<p align="center">
+  <b>Главная страница</b><br>
+  <img src="assets/screenshot_home_page.jpg" width="300" alt="Главная страница">
+</p>
+
+<p align="center">
+  <b>Список врачей</b><br>
+  <img src="assets/screenshot_doctors.jpg" width="300" alt="Список врачей">
+</p>
+
+<p align="center">
+  <b>Информация о враче</b><br>
+  <img src="assets/screenshot_doctor_detailed_info.jpg" width="300" alt="Детальная информация о враче">
+</p>
+
+<p align="center">
+  <b>Формирование записи</b><br>
+  <img src="assets/screenshot_book_appointment.jpg" width="300" alt="Формирование записи">
+</p>
+
+<p align="center">
+  <b>Список приёмов</b><br>
+  <img src="assets/screenshot_appointments.jpg" width="300" alt="Список приёмов">
+</p>
+
+<p align="center">
+  <b>Профиль пользователя </b><br>
+  <img src="assets/screenshot_profile.jpg" width="300" alt="Профиль пользователя>
+</p>
+
+<p align="center">
+  <b>Питомцы пользователя</b><br>
+  <img src="assets/screenshot_pets.jpg" width="300" alt="Питомцы">
+</p>
+
+---
 
 ## Лицензия
 
