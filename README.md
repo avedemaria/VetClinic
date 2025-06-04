@@ -64,6 +64,7 @@
 - MVVM
 - Clean Architecture (presentation/domain/data)
 - Dependency Injection: Dagger2
+- Kotlin Coroutines, Flow
 
 ### UI и навигация:
 - Fragment-based UI
