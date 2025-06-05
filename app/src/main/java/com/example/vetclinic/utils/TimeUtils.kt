@@ -12,6 +12,19 @@ fun String.extractTime(): String {
 }
 
 
+fun String.formatStringDate(): String {
+    return try {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val date = LocalDate.parse(this, inputFormatter)
+        date.format(outputFormatter)
+    } catch (e: Exception) {
+        this
+    }
+
+}
+
+
 fun LocalDate.formatDateTime(timeSlot: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 

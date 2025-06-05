@@ -3,6 +3,7 @@ package com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.vetclinic.R
 import com.example.vetclinic.domain.entities.appointment.AppointmentStatus
@@ -56,6 +57,7 @@ object AdminAppointmentBindingHelper {
                 context = root.context,
                 status = appointment.status
             )
+            Log.d("APPOINTMENT_BIND", "Binding id=${appointment.id}, isConfirmed=${appointment.isConfirmed}")
 
             ivBell.isSelected = appointment.isConfirmed
 

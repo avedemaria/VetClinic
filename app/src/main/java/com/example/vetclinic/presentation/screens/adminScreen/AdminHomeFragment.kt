@@ -21,6 +21,9 @@ import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.utils.formatAppointmentDateTime
+import com.example.vetclinic.utils.formatStringDate
+import com.example.vetclinic.utils.toLocalDateDefault
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
@@ -158,7 +161,9 @@ class AdminHomeFragment : Fragment() {
             emptyAppointmentsVisible = false
         )
 
-        Log.d(TAG, "appointments: ${state.appointments}")
+
+        binding.tvDate.text = state.selectedDate.formatStringDate()
+
         appointmentsAdapter.submitData(viewLifecycleOwner.lifecycle, state.appointments)
     }
 
