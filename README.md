@@ -157,8 +157,8 @@
 ### Питомцы пользователя и экран администратора
 
 <p align="center">
-  <img src="assets/screenshot_pets.jpg" width="40%" alt="Питомцы пользователя">
-     <img src="assets/screenshot_admin_home.jpg" width="45%" alt="Экран администратора">
+  <img src="assets/screenshot_pets.jpg" width="45%" alt="Питомцы пользователя">
+  <img src="assets/screenshot_admin_home.jpg" width="45%" alt="Экран администратора">
 </p>
 
 ---
