@@ -6,6 +6,8 @@
 
 Приложение реализовано с соблюдением принципов архитектуры MVVM с разделением на слои `presentation`, `domain`, `data`. Используется современный стек Android-разработки с фокусом на модульность, читаемость и тестируемость кода.
 
+Актуальный код в ветке **develop**.
+
 ---
 
 ## Функциональные возможности
@@ -62,12 +64,14 @@
 - MVVM
 - Clean Architecture (presentation/domain/data)
 - Dependency Injection: Dagger2
+- Kotlin Coroutines, Flow
 
 ### UI и навигация:
 - Fragment-based UI
 - Navigation Component
 - RecyclerView
 - BottomNavigationView
+- ViewPager2
 
 ### Сетевой и локальный доступ:
 - API: Retrofit
@@ -80,8 +84,6 @@
 - Unit-тесты: JUnit
 - Моки: MockK
 
----
-
 ## TODO
 
 Проект находится в активной разработке и рефакторинге. В планах:
@@ -91,6 +93,7 @@
 - Расширить покрытие тестами.
 - Внедрить UI-улучшения и анимации для лучшего UX.
 
+---
 
 ## Установка и запуск
 
@@ -121,6 +124,10 @@
    SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNodXhjam5iemNycGtydHN6Y2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NDU0MjgsImV4cCI6MjA1NTEyMTQyOH0.f0c1YOXkqUHm9IoEA7MqoQP3GzI3MZZGcdnTQob3Ju8
    ```
 Внимание: Этот ключ предназначен только для демонстрационных целей. Все доступы ограничены RLS-политиками на стороне Supabase. В продакшене следует использовать серверные токены и защищённые механизмы.
+
+Чтобы войти на страницу администратора необходимо ввести следующие логин и пароль: 
+**Логин:** admin_test@mail.ru
+**Пароль:** 123456
 
 --- 
 
