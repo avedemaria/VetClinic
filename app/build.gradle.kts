@@ -140,7 +140,8 @@ dependencies {
 
     implementation (libs.jakewharton.timber)
 
-    debugImplementation (libs.leakcanary.android)
+
+
 }
 
 fun getProperties(): Properties {

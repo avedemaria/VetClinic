@@ -1,6 +1,5 @@
 package com.example.vetclinic.domain.usecases
 
-import android.util.Log
 import androidx.paging.PagingData
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails

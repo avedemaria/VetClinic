@@ -11,6 +11,8 @@ import androidx.work.WorkerParameters
 import com.example.vetclinic.R
 import jakarta.inject.Inject
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class AppointmentReminderWorker(
     private val appContext: Context, workerParams: WorkerParameters,
@@ -21,9 +23,17 @@ class AppointmentReminderWorker(
 
         return try {
             val appointmentData = extractAppointmentData() ?: return Result.failure()
+            val appointmentDateTimeStr = inputData.getString(DATE_TIME) ?: return Result.failure()
+
+            val appointmentDateTime = parseAppointmentDateTime(appointmentDateTimeStr)
+            val now = LocalDateTime.now()
+
+            if (appointmentDateTime.isBefore(now)) {
+                Timber.tag(TAG).w("Appointment ${appointmentData.appointmentId} is in the past — skipping notification")
+                return Result.success()
+            }
 
             createNotificationChannel(appContext)
-
             sendReminderNotification(appointmentData)
 
             Timber.tag(TAG).d("Notification sent for appointment: ${appointmentData.appointmentId}")
@@ -91,6 +101,13 @@ class AppointmentReminderWorker(
     }
 
 
+
+    private fun parseAppointmentDateTime(dateTimeStr: String): LocalDateTime {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        return LocalDateTime.parse(dateTimeStr, formatter)
+    }
+
+
     private data class AppointmentData(
         val doctorName: String,
         val serviceName: String,
@@ -115,6 +132,7 @@ class AppointmentReminderWorker(
         private const val DOCTOR_NAME = "doctorName"
         private const val SERVICE_NAME = "serviceName"
         private const val PET_NAME = "petName"
+        private const val DATE_TIME = "appointmentDateTime"
         private const val APPOINTMENT_ID = "appointmentId"
         private const val TAG = "ReminderWorker"
     }
