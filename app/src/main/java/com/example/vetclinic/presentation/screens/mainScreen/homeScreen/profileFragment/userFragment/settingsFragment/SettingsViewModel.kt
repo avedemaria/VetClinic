@@ -8,7 +8,10 @@ import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.DeleteAccountUseCase
 import com.example.vetclinic.domain.usecases.LoginUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class SettingsViewModel @Inject constructor(
@@ -19,6 +22,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _settingsState = MutableLiveData<SettingsState>()
     val settingsState: LiveData<SettingsState> get() = _settingsState
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
 
     fun logOut() {
@@ -32,7 +38,8 @@ class SettingsViewModel @Inject constructor(
                 _settingsState.value = SettingsState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                _settingsState.value = SettingsState.Error(errorMessage)
+                _settingsState.value = SettingsState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(errorMessage))
             }
         }
     }
@@ -49,7 +56,8 @@ class SettingsViewModel @Inject constructor(
                 _settingsState.value = SettingsState.LoggedOut
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                _settingsState.value = SettingsState.Error(errorMessage)
+                _settingsState.value = SettingsState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(errorMessage))
             }
         }
     }

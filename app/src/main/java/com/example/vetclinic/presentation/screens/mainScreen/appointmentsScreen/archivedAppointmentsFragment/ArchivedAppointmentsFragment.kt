@@ -22,10 +22,12 @@ import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointm
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsState
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.utils.toLocalDateOrNull
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Calendar
@@ -67,11 +69,9 @@ class ArchivedAppointmentsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
-        Log.d(TAG, "OnCreateView")
         setUpListeners()
         setUpAdapter()
         observeViewModel()
-        Log.d(TAG, "$viewModel")
 
     }
 
@@ -80,7 +80,6 @@ class ArchivedAppointmentsFragment : Fragment() {
 
 
         binding.btnCalendar.setOnClickListener {
-            Log.d(TAG, "calendarClicked")
             showDatePickerDialog()
         }
     }
@@ -90,7 +89,7 @@ class ArchivedAppointmentsFragment : Fragment() {
 
         appointmentsAdapter = AppointmentsAdapter(object : OnAppointmentMenuClickListener {
             override fun onAppointmentMenuClicked(appointment: AppointmentWithDetails) {
-                Log.d(TAG, "заглушка для listener")
+                Timber.tag(TAG).d("заглушка для listener")
             }
         })
 
@@ -106,14 +105,14 @@ class ArchivedAppointmentsFragment : Fragment() {
 
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
 
-
-
+    private fun handleState () {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
-
-                    Log.d(TAG, "received state: $state")
                     when (state) {
                         SharedAppointmentsState.Empty -> {
                             binding.rvArchivedAppointments.visibility = View.GONE
@@ -124,11 +123,6 @@ class ArchivedAppointmentsFragment : Fragment() {
                         is SharedAppointmentsState.Error -> {
                             binding.archivedAppointmentContent.isEnabled = false
                             binding.progressBar.visibility = View.GONE
-
-                            Snackbar.make(binding.root,
-                                "Oшибка: ${state.message}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
                         }
 
                         SharedAppointmentsState.Loading -> {
@@ -138,9 +132,6 @@ class ArchivedAppointmentsFragment : Fragment() {
                         }
 
                         is SharedAppointmentsState.Success -> {
-                            Log.d(TAG, "tvEmptyAppointments visibility: ${binding.tvEmptyAppointments.visibility}")
-                            Log.d(TAG, "archivedAppointmentContent visibility: ${binding.archivedAppointmentContent.visibility}")
-
                             binding.progressBar.visibility = View.GONE
                             binding.archivedAppointmentContent.isEnabled = true
                             binding.archivedAppointmentContent.visibility = View.VISIBLE
@@ -163,7 +154,6 @@ class ArchivedAppointmentsFragment : Fragment() {
                                 binding.tvEmptyAppointments.visibility = View.GONE
                                 binding.btnCalendar.visibility = View.VISIBLE
                             }
-                            Log.d(TAG, "filtered archived appointments: $filteredAppointments")
 
                             appointmentsAdapter.submitList(filteredAppointments)
 
@@ -174,73 +164,21 @@ class ArchivedAppointmentsFragment : Fragment() {
         }
     }
 
-
-//    private fun handleEmptyState() {
-//        setVisibility(
-//            progressBarVisible = false,
-//            rvArchivedAppointmentsVisible = false,
-//            tvEmptyAppointmentsVisible = true,
-//            archivedAppointmentsContentEnabled = true
-//        )
-//    }
-//
-//
-//    private fun handleLoadingState() {
-//        setVisibility(
-//            progressBarVisible = true,
-//            rvArchivedAppointmentsVisible = false,
-//            tvEmptyAppointmentsVisible = false,
-//            archivedAppointmentsContentEnabled = false
-//        )
-//    }
-//
-//    private fun handleSuccessState(state: SharedAppointmentsState.Success) {
-//
-//        val selectedDate = state.selectedDate
-//        val appointments = state.appointments
-//
-//        val filteredAppointments =
-//            filterAppointments(appointments, selectedDate)
-//
-//        val isListEmpty = filteredAppointments.isEmpty()
-//
-//        setVisibility(
-//            progressBarVisible = false,
-//            archivedAppointmentsContentEnabled = !isListEmpty,
-//            rvArchivedAppointmentsVisible = isListEmpty,
-//            tvEmptyAppointmentsVisible = false
-//        )
-//
-//        appointmentsAdapter.submitList(filteredAppointments)
-//    }
-//
-//
-//    private fun handleErrorState(state: SharedAppointmentsState.Error) {
-//        setVisibility(
-//            progressBarVisible = false,
-//            rvArchivedAppointmentsVisible = false,
-//            tvEmptyAppointmentsVisible = false,
-//            archivedAppointmentsContentEnabled = false
-//        )
-//        Snackbar.make(binding.root, "${state.message}", Snackbar.LENGTH_SHORT).show()
-//    }
-//
-//
-//    private fun setVisibility(
-//        progressBarVisible: Boolean,
-//        rvArchivedAppointmentsVisible: Boolean,
-//        tvEmptyAppointmentsVisible: Boolean,
-//        archivedAppointmentsContentEnabled: Boolean,
-//    ) {
-//
-//        binding.progressBar.visibility = if (progressBarVisible) View.VISIBLE else View.GONE
-//        binding.rvArchivedAppointments.visibility =
-//            if (rvArchivedAppointmentsVisible) View.VISIBLE else View.GONE
-//        binding.tvEmptyAppointments.visibility =
-//            if (tvEmptyAppointmentsVisible) View.VISIBLE else View.GONE
-//        binding.archivedAppointmentContent.isEnabled = archivedAppointmentsContentEnabled
-//
-//    }
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
 
 
     private fun filterAppointments(
@@ -263,7 +201,6 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
-        Log.d(TAG, "showDatePickerDialog called")
 
         val lastCompletedDate = viewModel.getLastCompletedAppointmentDate()
 
@@ -304,7 +241,6 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "OnDestroyView")
         _binding = null
     }
 

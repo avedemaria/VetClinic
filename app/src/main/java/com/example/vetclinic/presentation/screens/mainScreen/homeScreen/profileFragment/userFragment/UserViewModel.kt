@@ -7,19 +7,25 @@ import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.utils.FieldValidator
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class UserViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
     private val sessionUseCase: SessionUseCase,
-    private val fieldValidator: FieldValidator
+    private val fieldValidator: FieldValidator,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
     private val _userState = MutableLiveData<UserUiState>()
     val userState: LiveData<UserUiState> get() = _userState
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
 
     private var currentUser: User? = null
@@ -43,7 +49,8 @@ class UserViewModel @Inject constructor(
                     _userState.value = UserUiState.Success(user)
                 }
                 .onFailure { error ->
-                    _userState.value = UserUiState.Error(error.message ?: "Неизвестная ошибка")
+                    _userState.value = UserUiState.Error
+                    _uiEvent.emit(UiEvent.ShowSnackbar(error.message.toString()))
                 }
         }
     }
@@ -66,25 +73,25 @@ class UserViewModel @Inject constructor(
             val currentUser = this@UserViewModel.currentUser
 
             if (currentUser == null) {
-                _userState.value = UserUiState.Error("Нет данных о пользователе")
+                _uiEvent.emit(UiEvent.ShowSnackbar("Нет данных о пользователе"))
                 return@launch
             }
 
             if (newValue.isBlank()) {
-                _userState.value = UserUiState.Error("Поле не может быть пустым")
+                _uiEvent.emit(UiEvent.ShowSnackbar("Поле не может быть пустым"))
                 return@launch
             }
 
 
             validateField(field, newValue)?.let {
-                _userState.value = UserUiState.Error(it)
+                _userState.value = UserUiState.Error
                 return@launch
             }
 
             val updatedUser = when (field) {
                 UserField.PHONE_NUMBER.name -> currentUser.copy(phoneNumber = newValue)
                 else -> {
-                    _userState.value = UserUiState.Error("Неверное поле")
+                    _uiEvent.emit(UiEvent.ShowSnackbar("Неверное поле"))
                     return@launch
                 }
             }
@@ -102,17 +109,16 @@ class UserViewModel @Inject constructor(
         _userState.value = UserUiState.Loading
 
         viewModelScope.launch {
-            val userId = sessionUseCase.getUserId()?:""
+            val userId = sessionUseCase.getUserId() ?: ""
             val updatedResult = userUseCase.updateUserInSupabaseDb(userId, updatedUser)
             if (updatedResult.isSuccess) {
                 _userState.value = UserUiState.Success(updatedUser)
             } else {
-                _userState.value = UserUiState.Error("Не получилось обновить данные на сервере")
+                _uiEvent.emit(UiEvent.ShowSnackbar("Не получилось обновить данные на сервере"))
+
             }
         }
     }
-
-
 
 
     private fun validateField(field: String, value: String): String? {

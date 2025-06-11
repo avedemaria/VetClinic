@@ -21,6 +21,7 @@ import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.AdminAppointmentsAdapter
 import com.example.vetclinic.presentation.adapter.adminAppointmentsAdapter.OnBellClickListener
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.utils.formatAppointmentDateTime
 import com.example.vetclinic.utils.formatStringDate
 import com.example.vetclinic.utils.toLocalDateDefault
@@ -67,6 +68,8 @@ class AdminHomeFragment : Fragment() {
         component.inject(this)
 
         setUpAdapter()
+        handleEvent()
+
         observingJob = observeViewModel()
 
         binding.btnAdminLogOut.setOnClickListener {
@@ -97,12 +100,11 @@ class AdminHomeFragment : Fragment() {
         return viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.adminState.collect { state ->
-                    Log.d(TAG, "Received state: $state")
                     when (state) {
                         is AdminHomeState.Empty -> handleEmptyState()
 
                         is AdminHomeState.Error -> {
-                            handeErrorState(state)
+                            handeErrorState()
                         }
 
                         is AdminHomeState.Loading ->
@@ -121,6 +123,7 @@ class AdminHomeFragment : Fragment() {
             }
         }
 
+
     }
 
 
@@ -138,6 +141,18 @@ class AdminHomeFragment : Fragment() {
             )
             adapter = appointmentsAdapter
             itemAnimator = null
+        }
+    }
+
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> showSnackbar(event.message)
+                    }
+                }
+            }
         }
     }
 
@@ -168,7 +183,7 @@ class AdminHomeFragment : Fragment() {
     }
 
 
-    private fun handeErrorState(state: AdminHomeState.Error) {
+    private fun handeErrorState() {
         binding.swipeRefreshLayout.isRefreshing = false
         setVisibility(
             progressBarVisible = false,
@@ -176,8 +191,6 @@ class AdminHomeFragment : Fragment() {
             appointmentContentEnabled = false,
             emptyAppointmentsVisible = false
         )
-
-        showSnackbar(state.message)
     }
 
     private fun handleLoadingState() {
@@ -205,8 +218,9 @@ class AdminHomeFragment : Fragment() {
 
 
     private fun showSnackbar(message: String) {
-        Snackbar.make(binding.root,
-            "Oшибка: $message",
+        Snackbar.make(
+            binding.root,
+            message,
             Snackbar.LENGTH_SHORT
         ).show()
     }
@@ -218,7 +232,8 @@ class AdminHomeFragment : Fragment() {
         val currentDate = viewModel.getCurrentDate()
 
         if (currentDate == null) {
-            Snackbar.make(binding.root,
+            Snackbar.make(
+                binding.root,
                 "Приёмы не найдены",
                 Snackbar.LENGTH_SHORT
             ).show()
@@ -236,7 +251,6 @@ class AdminHomeFragment : Fragment() {
             { _, year, month, day ->
                 val selectedDate = LocalDate.of(year, month + 1, day)
                 viewModel.setUpSelectedDate(selectedDate)
-                Log.d(TAG, "selectedDate: $selectedDate")
             },
 
             calendar.get(Calendar.YEAR),

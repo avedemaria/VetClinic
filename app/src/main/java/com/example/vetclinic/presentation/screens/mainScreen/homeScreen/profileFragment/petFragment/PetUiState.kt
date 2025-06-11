@@ -6,6 +6,6 @@ sealed class PetUiState {
 
     data object Loading : PetUiState()
     data class Success(val pets: List<Pet>) : PetUiState()
-    data class Error(val message: String) : PetUiState()
+    data object Error : PetUiState()
 
 }

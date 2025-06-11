@@ -2,7 +2,6 @@ package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profile
 
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +10,20 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.vetclinic.R
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentUserBinding
 import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment
-import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsViewModel
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -70,12 +73,16 @@ class UserFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState() {
         viewModel.userState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UserUiState.Error ->   Snackbar.make(binding.root,
-                    "Oшибка: ${state.message}",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                is UserUiState.Error -> Timber.tag(TAG)
+                    .d("UserUiState.Error - заглушка для теста")
 
                 is UserUiState.Loading -> Timber.tag(TAG)
                     .d("UserUiState.Loading - заглушка для теста")
@@ -113,9 +120,24 @@ class UserFragment : Fragment() {
     }
 
 
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+
     private fun setUpListeners() {
-
-
         binding.btnEditPhone.setOnClickListener {
             viewModel.startEditingField(UserUiState.FieldType.PHONE)
         }

@@ -4,5 +4,5 @@ sealed class SettingsState {
 
     data object Loading : SettingsState()
     data object LoggedOut : SettingsState()
-    data class Error(val message: String) : SettingsState()
+    data object Error : SettingsState()
 }

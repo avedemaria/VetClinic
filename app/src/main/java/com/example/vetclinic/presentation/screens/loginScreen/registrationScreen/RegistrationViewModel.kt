@@ -12,9 +12,13 @@ import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.utils.Validator
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -32,21 +36,25 @@ class RegistrationViewModel @Inject constructor(
     private val _registrationState = MutableLiveData<RegistrationState>()
     val registrationState: LiveData<RegistrationState> = _registrationState
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
+
     fun registerUser() {
 
         val currentState = _registrationState.value as? RegistrationState.Result
         val userInputData = currentState?.userdata
         val petInputData = currentState?.petData
 
-        validateInputs(userInputData, petInputData)?.let {
-            _registrationState.value = RegistrationState.Error(it)
-            return
-        }
 
-        _registrationState.value = RegistrationState.Loading
+        viewModelScope.launch {
+            validateInputs(userInputData, petInputData)?.let {
+                _registrationState.value = RegistrationState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(it))
+                return@launch
+            }
+            _registrationState.value = RegistrationState.Loading
 
-        viewModelScope.launch()
-        {
             userInputData?.let {
                 registerUserUseCase.registerUser(it.email, it.password)
             }?.onSuccess { userSession ->
@@ -54,12 +62,11 @@ class RegistrationViewModel @Inject constructor(
                 handleSuccessfulRegistration(userSession, userInputData, petInputData!!)
             }
                 ?.onFailure { error ->
-                    Timber.e(TAG, "Failed to register", error)
-                    _registrationState.value = RegistrationState.Error(error.message)
-                    Timber.d(TAG, " state set to ${_registrationState.value}")
+                    _registrationState.value = RegistrationState.Error
+                    _uiEvent.emit(UiEvent.ShowSnackbar(error.message.toString()))
                 }
-
         }
+
     }
 
 
@@ -80,7 +87,10 @@ class RegistrationViewModel @Inject constructor(
             addAndFetchPetFromSupabaseDb(pet, user).getOrThrow()
         }.fold(
             onSuccess = { _registrationState.value = RegistrationState.Success },
-            onFailure = { error -> _registrationState.value = RegistrationState.Error(error.message) }
+            onFailure = { error ->
+                _registrationState.value = RegistrationState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(error.message.toString()))
+            }
         )
     }
 
@@ -91,7 +101,6 @@ class RegistrationViewModel @Inject constructor(
             userUseCase.getUserFromSupabaseDb(user.uid).getOrThrow()
             Result.success(Unit)
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "Failed to add or fetch user from Supabase")
             Result.failure(e)
         }
     }
@@ -103,7 +112,6 @@ class RegistrationViewModel @Inject constructor(
             petUseCase.getPetsFromSupabaseDb(user.uid).getOrThrow()
             Result.success(Unit)
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "Failed to add or fetch user from Supabase")
             Result.failure(e)
         }
     }
@@ -113,17 +121,16 @@ class RegistrationViewModel @Inject constructor(
         accessToken: String,
         refreshToken: String,
     ): Result<Unit> {
-       return try {
-           sessionUseCase.saveUserSession(
-               userId,
-               accessToken,
-               refreshToken
-           )
-           Result.success(Unit)
-       } catch (e:Exception) {
-           Timber.tag(TAG).e(e, "Failed to save user session to datastore")
-           Result.failure(e)
-       }
+        return try {
+            sessionUseCase.saveUserSession(
+                userId,
+                accessToken,
+                refreshToken
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     private fun createUserAfterRegistration(
@@ -166,18 +173,12 @@ class RegistrationViewModel @Inject constructor(
 
     private fun validateInputs(
         userInputData: UserInputData?,
-        petInputData: PetInputData?
+        petInputData: PetInputData?,
     ): String? {
         userValidator.validate(userInputData)?.let { return it }
         petValidator.validate(petInputData)?.let { return it }
         return null
     }
-
-//
-//    private fun showError(message: String) {
-//        _registrationState.value = RegistrationState.Error(message)
-//    }
-
 
 
     companion object {

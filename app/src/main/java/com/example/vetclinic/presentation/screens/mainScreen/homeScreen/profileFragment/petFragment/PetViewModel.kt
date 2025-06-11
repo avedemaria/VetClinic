@@ -1,17 +1,14 @@
 package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vetclinic.domain.entities.pet.Pet
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
-import com.example.vetclinic.utils.AgeUtils
+import com.example.vetclinic.presentation.screens.UiEvent
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,14 +17,15 @@ import kotlinx.coroutines.launch
 
 class PetViewModel @Inject constructor(
     private val petUseCase: PetUseCase,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCase: SessionUseCase,
 ) : ViewModel() {
 
     private val _petState = MutableStateFlow<PetUiState>(PetUiState.Loading)
     val petState: StateFlow<PetUiState> get() = _petState.asStateFlow()
 
-    private val _toastEvent = MutableSharedFlow<String>()
-    val toastEvent: SharedFlow<String> get() = _toastEvent.asSharedFlow()
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
 
     init {
         getPetsData()
@@ -43,11 +41,12 @@ class PetViewModel @Inject constructor(
                         _petState.value = PetUiState.Success(pets)
                     },
                     onFailure = { e ->
-                        _petState.value = PetUiState.Error(e.message ?: "Неизвестная ошибка")
+                        _petState.value = PetUiState.Error
+                        _uiEvent.emit(UiEvent.ShowSnackbar(e.message.toString()))
                     }
                 )
             } ?: run {
-                _petState.value = PetUiState.Error("Пользователь не найден")
+                _petState.value = PetUiState.Error
             }
         }
     }
@@ -63,7 +62,8 @@ class PetViewModel @Inject constructor(
 
                 petUseCase.updatePetInSupabaseDb(petId, updatedPet).onFailure { e ->
                     _petState.value = PetUiState.Success(currentState.pets)
-                    _petState.value = PetUiState.Error(e.message ?: "Ошибка обновления питомца")
+                    _petState.value = PetUiState.Error
+                    _uiEvent.emit(UiEvent.ShowSnackbar(e.message.toString()))
                 }
             }
         }
@@ -78,12 +78,13 @@ class PetViewModel @Inject constructor(
 
                 petUseCase.deletePetFromSupabaseDb(pet).fold(
                     onSuccess = {
-                        _toastEvent.emit("Питомец удален")
-                        Log.d(TAG, "deleted pet from room and supabase successfully")
+                        _uiEvent.emit(UiEvent.ShowSnackbar("Питомец удален"))
+
                     },
                     onFailure = { e ->
                         _petState.value = PetUiState.Success(currentState.pets)
-                        _petState.value = PetUiState.Error(e.message ?: "Ошибка удаления питомца")
+                        _petState.value = PetUiState.Error
+                        _uiEvent.emit(UiEvent.ShowSnackbar(e.message.toString()))
                     }
                 )
             }

@@ -6,7 +6,7 @@ sealed class UserUiState {
 
     data object Loading : UserUiState()
     data class Success(val user: User) : UserUiState()
-    data class Error(val message: String) : UserUiState()
+    data object Error : UserUiState()
     data class EditingField(val field: FieldType) : UserUiState()
 
     enum class FieldType {
