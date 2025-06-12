@@ -21,6 +21,8 @@ import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.ProfileFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment
+import com.example.vetclinic.presentation.screens.updatePasswordScreen.PasswordUpdateMode
+import com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -46,7 +48,6 @@ class UserFragment : Fragment() {
         get() = _binding ?: throw RuntimeException(
             "FragmentUserBinding is null"
         )
-
 
 
     override fun onCreateView(
@@ -158,14 +159,18 @@ class UserFragment : Fragment() {
         }
 
         binding.llChangePassword.setOnClickListener {
-            Snackbar.make(binding.root, "Раздел находится в разработке", Snackbar.LENGTH_SHORT)
-                .show()
+            parentFragmentManager.beginTransaction().apply {
+                replace(R.id.fragmentContainer,
+                    UpdatePasswordFragment.newInstance(PasswordUpdateMode.FROM_ACCOUNT))
+                addToBackStack(null)
+                commit()
+
+            }
         }
     }
 
 
     private fun changeUserNameDialog(user: User) {
-
 
         val etName = EditText(requireContext()).apply {
             setText(user.userName)
@@ -215,7 +220,8 @@ class UserFragment : Fragment() {
                             userLastName = newLastName.replaceFirstChar { it.uppercase() })
                     viewModel.updateUser(updatedUser)
                 } else {
-                    Snackbar.make(binding.root,
+                    Snackbar.make(
+                        binding.root,
                         "Пожалуйста, заполните все поля",
                         Snackbar.LENGTH_SHORT
                     ).show()
@@ -237,10 +243,10 @@ class UserFragment : Fragment() {
     }
 
 
-        companion object {
-            private const val TAG = "UserFragment"
-        }
+    companion object {
+        private const val TAG = "UserFragment"
     }
+}
 
 
 

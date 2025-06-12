@@ -123,7 +123,19 @@ class AdminHomeFragment : Fragment() {
             }
         }
 
+    }
 
+
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> showSnackbar(event.message)
+                    }
+                }
+            }
+        }
     }
 
 
@@ -144,17 +156,7 @@ class AdminHomeFragment : Fragment() {
         }
     }
 
-    private fun handleEvent() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEvent.collect { event ->
-                    when (event) {
-                        is UiEvent.ShowSnackbar -> showSnackbar(event.message)
-                    }
-                }
-            }
-        }
-    }
+
 
 
     private fun handleEmptyState() {

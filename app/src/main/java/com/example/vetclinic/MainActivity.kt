@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.vetclinic.domain.usecases.HandleDeepLinkUseCase
+import com.example.vetclinic.presentation.screens.updatePasswordScreen.PasswordUpdateMode
+import com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -63,9 +65,14 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val result = deepLinkUseCase.handleDeepLink(uri)
                 if (result.isSuccess) {
-                    navController.navigate(
-                        R.id.updatePasswordFragment,
+                    val updatePasswordFragment = UpdatePasswordFragment.newInstance(
+                        PasswordUpdateMode.FROM_DEEPLINK
                     )
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_container, updatePasswordFragment)
+                        .addToBackStack(null)
+                        .commit()
                 } else {
                     Timber.tag(TAG)
                         .d("Error processing deep link: ${result.exceptionOrNull()?.message}")

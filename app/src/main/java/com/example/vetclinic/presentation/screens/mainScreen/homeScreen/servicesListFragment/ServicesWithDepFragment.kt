@@ -1,27 +1,26 @@
-package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment
+package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.servicesListFragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentServicesBinding
 import com.example.vetclinic.domain.entities.service.Service
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.servicesAdapter.DepAndServiceItemList
 import com.example.vetclinic.presentation.adapter.servicesAdapter.OnServiceClickListener
 import com.example.vetclinic.presentation.adapter.servicesAdapter.ServicesWithDepAdapter
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import timber.log.Timber
 
 
 class ServicesWithDepFragment : Fragment() {
@@ -52,7 +51,7 @@ class ServicesWithDepFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentServicesBinding.inflate(inflater, container, false)
         return binding.root
@@ -66,7 +65,7 @@ class ServicesWithDepFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()  // Возврат к предыдущему фрагменту
+                    findNavController().navigateUp()
                 }
             })
 
@@ -101,17 +100,15 @@ class ServicesWithDepFragment : Fragment() {
         viewModel.serviceState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ServiceWithDepUiState.Empty ->
-                    Log.d(TAG, "ServiceWithDepUiState.Empty-заглушка для теста")
+                    Timber.tag(TAG).d("ServiceWithDepUiState.Empty-заглушка для теста")
 
                 is ServiceWithDepUiState.Error ->   Snackbar.make(binding.root,
                     "Oшибка: ${state.message}",
                     Snackbar.LENGTH_SHORT
                 ).show()
 
-                is ServiceWithDepUiState.Loading -> Log.d(
-                    TAG,
-                    "ServiceWithDepUiState.Loading - заглушка для теста"
-                )
+                is ServiceWithDepUiState.Loading -> Timber.tag(TAG)
+                    .d("ServiceWithDepUiState.Loading - заглушка для теста")
 
                 is ServiceWithDepUiState.Success -> {
                     val serviceItems = state.services.flatMap { departmentWithServices ->
@@ -132,7 +129,7 @@ class ServicesWithDepFragment : Fragment() {
 
 
     private fun launchDetailedServiceInfoFragment() {
-        Log.d(TAG, "fragment launched")
+        Timber.tag(TAG).d("fragment launched")
     }
 
 

@@ -9,6 +9,7 @@ import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.RegisterUserUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationState
 import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen.RegistrationViewModel
 import com.example.vetclinic.utils.Validator
@@ -22,6 +23,8 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -278,14 +281,23 @@ class RegistrationViewModelTest {
 
         every { petValidator.validate(petData) } returns null
 
+
+        val eventDeferred = async {
+            viewModel.uiEvent.first()
+        }
+
         viewModel.registerUser()
 
+        advanceUntilIdle()
+
         val state = viewModel.registrationState.getValue()
+        val event = eventDeferred.await()
+
         assertTrue(state is RegistrationState.Error)
-        assertEquals(
-            "Данные пользователя не должны быть пустыми",
-            (state as RegistrationState.Error).message
-        )
+        assertTrue(event is UiEvent.ShowSnackbar)
+
+        assertEquals("Данные пользователя не должны быть пустыми",
+            (event as UiEvent.ShowSnackbar).message)
     }
 
     @Test
@@ -298,14 +310,21 @@ class RegistrationViewModelTest {
         every { userValidator.validate(null) } returns "Данные пользователя не должны быть пустыми"
         every { petValidator.validate(createPetData()) } returns null
 
+        val eventDeferred = async {
+            viewModel.uiEvent.first()
+        }
+
         viewModel.registerUser()
 
+        advanceUntilIdle()
+
         val state = viewModel.registrationState.value
+        val event = eventDeferred.await()
+
         assertTrue(state is RegistrationState.Error)
-        assertEquals(
-            "Данные пользователя не должны быть пустыми",
-            (state as RegistrationState.Error).message
-        )
+        assertTrue(event is UiEvent.ShowSnackbar)
+        assertEquals("Данные пользователя не должны быть пустыми",
+            (event as UiEvent.ShowSnackbar).message)
     }
 
 
@@ -320,14 +339,21 @@ class RegistrationViewModelTest {
         every { petValidator.validate(null) } returns "Данные питомца не должны быть пустыми"
 
 
+        val eventDeferred = async {
+            viewModel.uiEvent.first()
+        }
+
         viewModel.registerUser()
 
+        advanceUntilIdle()
+
         val state = viewModel.registrationState.value
+        val event = eventDeferred.await()
+
         assertTrue(state is RegistrationState.Error)
-        assertEquals(
-            "Данные питомца не должны быть пустыми",
-            (state as RegistrationState.Error).message
-        )
+        assertTrue(event is UiEvent.ShowSnackbar)
+        assertEquals("Данные питомца не должны быть пустыми",
+            (event as UiEvent.ShowSnackbar).message)
     }
 
     private fun testUseCaseError(

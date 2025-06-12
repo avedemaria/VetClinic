@@ -143,7 +143,6 @@ class SettingsFragment : Fragment() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         requireActivity().startActivity(intent)
         requireActivity().finish()
-
     }
 
 

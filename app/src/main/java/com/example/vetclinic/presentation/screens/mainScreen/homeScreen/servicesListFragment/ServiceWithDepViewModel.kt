@@ -1,6 +1,5 @@
-package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment
+package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.servicesListFragment
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import com.example.vetclinic.domain.usecases.ServiceUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ServiceWithDepViewModel @Inject constructor(
     private val serviceUseCase: ServiceUseCase,
@@ -50,8 +50,7 @@ class ServiceWithDepViewModel @Inject constructor(
                 val error = servicesResult.exceptionOrNull()?.message
                     ?: departmentsResult.exceptionOrNull()?.message ?: "Неизвестная ошибка"
 
-                Log.e(
-                    "ServiceWithDepViewModel", "Error while fetching" +
+                Timber.tag("ServiceWithDepViewModel").e("Error while fetching" +
                             " services and departments: $error"
                 )
 
