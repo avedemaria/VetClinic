@@ -21,5 +21,6 @@ interface AppointmentRemoteSource {
 
     suspend fun observeAppointmentChanges(): Flow<AppointmentDto>
 
+    suspend fun unsubscribeFromAppointmentChanges()
 
 }

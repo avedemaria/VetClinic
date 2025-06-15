@@ -23,7 +23,6 @@ class AppointmentRepositoryImpl @Inject constructor(
     private val appointmentMapper: AppointmentMapper
 ) : AppointmentRepository {
 
-    private var subscription: RealtimeChannel? = null
 
     override suspend fun subscribeToAppointmentChanges(
         callback: (Appointment) -> Unit,
@@ -39,9 +38,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
 
     override suspend fun unsubscribeFromAppointmentChanges() {
-        subscription?.unsubscribe()
-        Timber.tag(TAG).d("unsubscribed")
-        subscription = null
+       remoteSource.unsubscribeFromAppointmentChanges()
     }
 
 

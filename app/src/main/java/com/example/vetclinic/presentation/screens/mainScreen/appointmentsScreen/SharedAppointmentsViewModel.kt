@@ -1,9 +1,7 @@
 package com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.AppointmentUseCase

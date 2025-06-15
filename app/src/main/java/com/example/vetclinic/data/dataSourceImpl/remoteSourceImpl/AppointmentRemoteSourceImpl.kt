@@ -10,6 +10,7 @@ import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.squareup.moshi.Moshi
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import jakarta.inject.Inject
@@ -26,6 +27,8 @@ class AppointmentRemoteSourceImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val moshi: Moshi,
 ) : AppointmentRemoteSource {
+
+    private var subscription: RealtimeChannel? = null
 
 
     override suspend fun addAppointment(appointment: AppointmentDto): Result<Unit> {
@@ -70,6 +73,7 @@ class AppointmentRemoteSourceImpl @Inject constructor(
 
         val channel = supabaseClient.channel(CHANNEL_ID)
         channel.subscribe()
+        subscription = channel
 
         return channel
             .postgresChangeFlow<PostgresAction.Update>(schema = "public") {
@@ -91,11 +95,17 @@ class AppointmentRemoteSourceImpl @Inject constructor(
                 Timber.e(e, "Error in appointment change flow: ${e.message}")
             }
 
+    }
 
+    override suspend fun unsubscribeFromAppointmentChanges() {
+        subscription?.unsubscribe()
+        subscription = null
+        Timber.tag(TAG).d("unsubscribed")
     }
 
 
     companion object {
         private const val CHANNEL_ID = "appointments"
+        private const val TAG = "AppointmentRemoteSourceImpl"
     }
 }
