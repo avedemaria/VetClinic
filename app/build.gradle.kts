@@ -85,6 +85,7 @@ dependencies {
     implementation (libs.androidx.swiperefreshlayout)
     implementation(libs.material.v130alpha03)
     implementation (libs.materialdatetimepicker)
+    implementation (libs.material)
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
@@ -140,7 +141,8 @@ dependencies {
 
     implementation (libs.jakewharton.timber)
 
-    debugImplementation (libs.leakcanary.android)
+
+
 }
 
 fun getProperties(): Properties {

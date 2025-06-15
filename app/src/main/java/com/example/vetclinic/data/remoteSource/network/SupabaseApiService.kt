@@ -3,7 +3,6 @@ package com.example.vetclinic.data.remoteSource.network
 
 import com.example.vetclinic.data.remoteSource.network.model.AppointmentDto
 import com.example.vetclinic.data.remoteSource.network.model.AppointmentWithDetailsDto
-import com.example.vetclinic.data.remoteSource.network.model.CanBookTimeSlotParams
 import com.example.vetclinic.data.remoteSource.network.model.DayDto
 import com.example.vetclinic.data.remoteSource.network.model.DayWithTimeSlotsDto
 import com.example.vetclinic.data.remoteSource.network.model.DepartmentDto

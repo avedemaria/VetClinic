@@ -6,6 +6,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import com.example.vetclinic.di.DaggerAppComponent
+import timber.log.Timber
 import javax.inject.Inject
 
 class VetClinicApplication : Application(), Configuration.Provider {
@@ -27,8 +28,11 @@ class VetClinicApplication : Application(), Configuration.Provider {
         super.onCreate()
         component.inject(this)
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+
         if (!WorkManager.isInitialized()) {
-            // Инициализируем WorkManager вручную
             WorkManager.initialize(this, workManagerConfiguration)
         }
     }

@@ -17,6 +17,7 @@ import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.TimeSlotsUseCase
 import jakarta.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -41,8 +42,7 @@ class BookAppointmentViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = sessionUseCase.getUserId() ?: ""
-            Log.d(TAG, "Received userId: $userId")
+            val userId = sessionUseCase.getUserId().orEmpty()
             getPets(userId)
         }
     }
@@ -53,8 +53,7 @@ class BookAppointmentViewModel @Inject constructor(
         serviceId: String,
         duration: String,
     ) {
-        _bookAppointmentState.value = BookAppointmentState.Loading
-        val result = timeSlotsUseCase.addTimeSlots (doctorId, serviceId, duration)
+        val result = timeSlotsUseCase.addTimeSlots(doctorId, serviceId, duration)
 
         if (!result.isSuccess) {
             _bookAppointmentState.value =
@@ -72,16 +71,13 @@ class BookAppointmentViewModel @Inject constructor(
                 addTimeSlotsToSupabaseDb(doctorId, serviceId, duration)
 
                 val result = timeSlotsUseCase.getTimeSlots(doctorId, serviceId)
-
                 if (result.isSuccess) {
-                    allDaysWithTimeSlots = result.getOrNull() ?: emptyList()
 
-                    selectedDay =
-                        allDaysWithTimeSlots.firstOrNull()?.day
-                            ?.copy(isSelected = true)
-                    Log.d(TAG, "timeslots were retrieved from Supabase")
+                    allDaysWithTimeSlots = result.getOrNull()?: emptyList()
+
+                    selectedDay = allDaysWithTimeSlots.firstOrNull()?.day?.copy(isSelected = true)
+
                     applyDayFilter()
-
                     updateSuccessState()
                 } else {
                     setErrorState(result)
@@ -95,7 +91,6 @@ class BookAppointmentViewModel @Inject constructor(
 
     fun bookAppointment(petId: String, serviceId: String, doctorId: String, dateTime: String) {
         _bookAppointmentState.value = BookAppointmentState.Loading
-
 
         viewModelScope.launch {
             val userId = sessionUseCase.getUserId() ?: ""
@@ -136,16 +131,9 @@ class BookAppointmentViewModel @Inject constructor(
 
     private fun applyDayFilter() {
         if (selectedDay != null) {
-            Log.d(TAG, "Selected Day ID: ${selectedDay?.id}")
-            Log.d(TAG, "Total Days with TimeSlots: ${allDaysWithTimeSlots.size}")
-
             val matchingDayWithTimeSlots = allDaysWithTimeSlots
                 .find { it.day.id == selectedDay?.id }
-
-            Log.d(TAG, "Matching Day Found: ${matchingDayWithTimeSlots != null}")
-
             filteredTimeSlots = matchingDayWithTimeSlots?.timeSlots ?: emptyList()
-            Log.d(TAG, "Filtered TimeSlots Count: ${filteredTimeSlots.size}")
         }
     }
 
@@ -182,6 +170,7 @@ class BookAppointmentViewModel @Inject constructor(
 
 
     private fun updateSuccessState() {
+        if (allDaysWithTimeSlots.isEmpty()) return
         _bookAppointmentState.value =
             BookAppointmentState.Success(
                 allDaysWithTimeSlots,

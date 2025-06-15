@@ -8,13 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.vetclinic.R
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentAddPetBinding
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.PetFragment
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class AddPetFragment : Fragment() {
@@ -82,13 +88,25 @@ class AddPetFragment : Fragment() {
 
 
     private fun observeViewModel() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
         viewModel.addPetState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AddPetUiState.Error -> Snackbar.make(binding.root,
-                    "Возникла ошибка: ${state.message}",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                AddPetUiState.Loading -> Log.d(TAG, "Заглушка для AddPetUiState.Loading")
+                is AddPetUiState.Error -> Timber.tag(TAG).d("Заглушка для error")
+                AddPetUiState.Loading -> Timber.tag(TAG).d("Заглушка для AddPetUiState.Loading")
                 AddPetUiState.Success -> parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, PetFragment())
                     .addToBackStack(null)

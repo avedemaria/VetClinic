@@ -20,6 +20,10 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
+
+        Log.d("SupabaseCheck", "BASE URL: ${BuildConfig.SUPABASE_URL}")
+        Log.d("SupabaseCheck", "API KEY: ${BuildConfig.SUPABASE_KEY}")
+
         val original = chain.request()
         val token = runBlocking {
             getValidAccessToken()
@@ -48,6 +52,7 @@ class AuthInterceptor @Inject constructor(
                     }
 
                     val newAccessToken = newSession.accessToken
+                    Log.d("SupabaseCheck", "NEW ACCESS TOKEN: ${newSession.accessToken}")
                     if (newAccessToken.isNotEmpty()) {
                         userDataStore.saveAccessToken(newAccessToken)
                         userDataStore.saveRefreshToken(newSession.refreshToken)

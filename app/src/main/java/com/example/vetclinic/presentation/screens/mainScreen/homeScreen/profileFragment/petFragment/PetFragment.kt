@@ -2,7 +2,6 @@ package com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profile
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,22 +17,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vetclinic.presentation.widgets.CustomDatePicker
 import com.example.vetclinic.R
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentPetBinding
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.presentation.PetParameter
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.adapter.petAdapter.OnEditClickListener
 import com.example.vetclinic.presentation.adapter.petAdapter.PetAdapter
-import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetFragment
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
+import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetFragment
+import com.example.vetclinic.presentation.widgets.CustomDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.Period
-import java.time.format.DateTimeFormatter
 
 class PetFragment : Fragment() {
 
@@ -114,24 +112,17 @@ class PetFragment : Fragment() {
 
 
     private fun observeViewModel() {
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.toastEvent.collect { event ->
-                Toast.makeText(requireContext(), event, Toast.LENGTH_SHORT).show()
-            }
-        }
+        handleEvent()
+        handleState()
+    }
 
 
+    private fun handleState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.petState.collect { state ->
                     when (state) {
                         is PetUiState.Error -> {
-                            Snackbar.make(binding.root,
-                                "Oшибка: ${state.message}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-
                             binding.petContent.isEnabled = false
                             binding.progressBar.visibility = View.GONE
                         }
@@ -147,6 +138,23 @@ class PetFragment : Fragment() {
                             petsAdapter.submitList(state.pets)
                         }
 
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -199,7 +207,7 @@ class PetFragment : Fragment() {
 
 
     private fun showDeleteConfirmationDialog(pet: Pet, position: Int) {
-        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Удалить питомца")
             .setMessage(
                 "Вы уверены, что хотите удалить данные о питомце?" +
@@ -228,7 +236,7 @@ class PetFragment : Fragment() {
             addView(editText)
         }
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Введите новое имя")
             .setView(container)
             .setPositiveButton("ОК") { dialog, _ ->
@@ -249,7 +257,7 @@ class PetFragment : Fragment() {
     private fun showPetTypeDialog(pet: Pet) {
         val petTypes = arrayOf("Кот", "Собака", "Грызун")
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Выберите тип питомца")
             .setItems(petTypes) { dialog, which ->
                 val selectedType = petTypes[which]
@@ -275,7 +283,7 @@ class PetFragment : Fragment() {
     private fun showPetGenderDialog(pet: Pet) {
         val genders = arrayOf("Мальчик", "Девочка")
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Выберите пол питомца")
             .setItems(genders) { dialog, which ->
                 val selectedGender = genders[which]
@@ -291,8 +299,6 @@ class PetFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 
 
 }

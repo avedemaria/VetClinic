@@ -7,7 +7,7 @@ sealed class AdminHomeState {
 
     data object Empty : AdminHomeState()
     data object Loading : AdminHomeState()
-    data class Error(val message: String) : AdminHomeState()
+    data object Error: AdminHomeState()
     data class Success(
         val appointments: PagingData<AppointmentWithDetails>,
         val selectedDate: String,

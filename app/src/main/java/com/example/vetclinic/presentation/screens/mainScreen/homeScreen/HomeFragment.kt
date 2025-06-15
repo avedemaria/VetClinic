@@ -20,6 +20,8 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentHomeBinding
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -93,7 +95,6 @@ class HomeFragment : Fragment() {
 
     private fun setupDialogFlow() {
         viewModel.showDialogEvent.onEach {
-            Log.d(TAG, "received event: $it")
             showBatteryOptimizationDialog()
         }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -103,9 +104,9 @@ class HomeFragment : Fragment() {
         viewModel.homeState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is HomeState.Error -> {
-                    Toast.makeText(
-                        requireContext(), "An error has occurred: ${state.message}",
-                        Toast.LENGTH_SHORT
+                    Snackbar.make(
+                        binding.root, "An error has occurred: ${state.message}",
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
 
@@ -145,7 +146,7 @@ class HomeFragment : Fragment() {
 
 
     private fun showBatteryOptimizationDialog() {
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Показ уведомлений за час до приёма")
             .setMessage(
                 getString(R.string.battery_optimization_message)

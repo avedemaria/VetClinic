@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-  >
-        <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
+            android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_pet_name"
                             android:layout_width="match_parent"
@@ -26,8 +22,7 @@
                     android:id="@+id/til_type"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content">
                         <AutoCompleteTextView
                             android:id="@+id/auto_pet_type"
                             android:layout_width="match_parent"
@@ -40,8 +35,7 @@
                     android:id="@+id/til_gender"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content">
                         <AutoCompleteTextView
                             android:id="@+id/auto_pet_gender"
                             android:layout_width="match_parent"
@@ -55,7 +49,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                   >
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_bday"
                             android:layout_width="match_parent"
@@ -67,5 +61,9 @@
                             android:inputType="none"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
-</merge>
+</LinearLayout>
+
+
+
+
+

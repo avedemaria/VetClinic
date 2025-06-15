@@ -1,21 +1,24 @@
 package com.example.vetclinic.presentation.screens.loginScreen
 
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentLoginBinding
 import com.example.vetclinic.di.AppComponent
-import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
@@ -35,10 +38,6 @@ class LoginFragment : Fragment() {
         (requireActivity().application as VetClinicApplication).component
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        component.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -50,6 +49,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        component.inject(this)
 
         observeViewModel()
 
@@ -86,16 +87,17 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState() {
         viewModel.loginState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is LoginState.Error -> {
                     binding.progressIndicator.visibility = View.GONE
                     binding.btnLogin.isEnabled = true
-
-                    Snackbar.make(binding.root,
-                        "Возникла ошибка: ${state.message}",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
                 }
 
                 is LoginState.Result -> {
@@ -119,6 +121,22 @@ class LoginFragment : Fragment() {
         }
     }
 
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun launchAdminFragment() {
         findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAdminHomeFragment())
@@ -129,6 +147,8 @@ class LoginFragment : Fragment() {
             LoginFragmentDirections.actionLoginFragmentToMainFragment()
         )
     }
+
+
 
     private fun launchRegistrationFragment() {
         findNavController().navigate(

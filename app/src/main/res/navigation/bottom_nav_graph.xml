@@ -77,7 +77,7 @@
         tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/servicesWithDepFragment"
-        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment"
+        android:name="com.example.vetclinic.presentation.screens.mainScreen.homeScreen.servicesListFragment.ServicesWithDepFragment"
         android:label="ServicesWithDepFragment" />
     <fragment
         android:id="@+id/bookAppointmentFragment"

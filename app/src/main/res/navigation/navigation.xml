@@ -21,13 +21,8 @@
             app:destination="@id/sendResetLinkFragment" />
         <action
             android:id="@+id/action_loginFragment_to_adminHomeFragment"
-            app:destination="@id/adminHomeComposeFragment" />
-        <action
-            android:id="@+id/action_loginFragment_self"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_loginFragment_self2"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/adminHomeFragment" />
+
     </fragment>
 
 
@@ -61,25 +56,20 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
+<!--    <fragment
         android:id="@+id/updatePasswordFragment"
         android:name="com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment"
         android:label="Update Password"
         tools:layout="@layout/fragment_update_password">
         <argument
-            android:name="token"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="refresh_token"
-            app:argType="string"
-            app:nullable="false" />
-<!--        <deepLink-->
-<!--            app:uri= "vetclinic://reset-password?token={token}"/>-->
+            android:name="mode"
+            app:argType="com.example.vetclinic.presentation.screens.updatePasswordScreen.PasswordUpdateMode"
+            android:defaultValue="FROM_DEEPLINK"
+            />
         <action
             android:id="@+id/action_updatePasswordFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
-    </fragment>
+    </fragment>-->
     <fragment
         android:id="@+id/loadingFragment"
         android:name="com.example.vetclinic.presentation.screens.loginScreen.LoadingFragment"
@@ -93,10 +83,10 @@
             app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_loadingFragment_to_adminHomeFragment"
-            app:destination="@id/adminHomeComposeFragment" />
+            app:destination="@id/adminHomeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/adminHomeComposeFragment"
+        android:id="@+id/adminHomeFragment"
         android:name="com.example.vetclinic.presentation.screens.adminScreen.AdminHomeFragment"
         android:label="AdminHomeFragment" >
         <action

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vetclinic.domain.repository.UserDataStore
 import com.example.vetclinic.domain.entities.pet.Pet
 import com.example.vetclinic.domain.entities.user.User
 import com.example.vetclinic.domain.usecases.AppointmentReminderUseCase
@@ -13,7 +12,10 @@ import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -32,6 +34,8 @@ class MainViewModel @Inject constructor(
     private val _mainState = MutableLiveData<MainState>()
     val mainState: LiveData<MainState> get() = _mainState
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     private var storedUser: User? = null
     private var storedPets: List<Pet> = emptyList()
@@ -39,7 +43,7 @@ class MainViewModel @Inject constructor(
 
     fun getUserIdAndFetchData() {
         viewModelScope.launch {
-            val userId = sessionUseCase.getUserId() ?: return@launch
+            val userId =  sessionUseCase.getUserId() ?: return@launch
             Log.d(TAG, "userId1 $userId")
             getUserAndPet(userId)
             observeAppointmentsByUserId(userId)
@@ -67,50 +71,29 @@ class MainViewModel @Inject constructor(
     }
 
 
+
     private suspend fun getUserAndPet(userId: String) {
         _mainState.value = MainState.Loading
 
-        val userResult = userUseCase.getUserFromSupabaseDb(userId)
-        if (userResult.isSuccess) {
-            storedUser = userResult.getOrNull()
-            fetchAndProcessPetData(userId, storedUser)
-        } else {
-            _mainState.value = MainState.Error(
-                "Ошибка загрузки пользователя: " +
-                        "${userResult.exceptionOrNull()?.message}"
-            )
-        }
-    }
-
-
-    private suspend fun fetchAndProcessPetData(userId: String, user: User?) {
-
-        if (user == null) {
-            _mainState.value = MainState.Error("User is null")
-            return
-        }
-
-        val petResult = petUseCase.getPetsFromSupabaseDb(userId)
-
-        when {
-            petResult.isSuccess -> {
-                val pets = petResult.getOrNull()
-                if (!pets.isNullOrEmpty()) {
-                    Log.d("MainViewModel", "pets: $pets")
-                    storedPets = pets
-                    updateResultState()
-                } else {
-                    _mainState.value = MainState.Error("No pets found")
-                }
+        val user = userUseCase.getUserFromSupabaseDb(userId)
+            .onFailure {
+                _mainState.value = MainState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar("Ошибка загрузки пользователя: ${it.message}"))
             }
+            .getOrNull() ?: return
 
-            petResult.isFailure -> {
-                _mainState.value = MainState.Error(
-                    "Ошибка загрузки питомца: " +
-                            "${petResult.exceptionOrNull()?.message}"
-                )
+        storedUser = user
+
+        val pets = petUseCase.getPetsFromSupabaseDb(userId)
+            .onFailure {
+                _mainState.value = MainState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar("Ошибка загрузки питомцев: ${it.message}"))
             }
-        }
+            .getOrNull()
+            .orEmpty()
+
+        storedPets = pets
+        updateResultState()
     }
 
 

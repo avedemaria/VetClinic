@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.adapter.appointmentsAdapter.OnAppointm
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsState
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -66,10 +67,8 @@ class CurrentAppointmentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
 
-
         setUpAdapter()
         observeViewModel()
-
 
     }
 
@@ -79,7 +78,6 @@ class CurrentAppointmentsFragment : Fragment() {
         appointmentsAdapter = AppointmentsAdapter(object : OnAppointmentMenuClickListener {
             override fun onAppointmentMenuClicked(appointment: AppointmentWithDetails) {
                 showCancelAppointmentDialog(appointment)
-
             }
         })
 
@@ -117,6 +115,12 @@ class CurrentAppointmentsFragment : Fragment() {
 
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState () {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appointmentsState.collect { state ->
@@ -131,11 +135,6 @@ class CurrentAppointmentsFragment : Fragment() {
                             binding.currentAppointmentContent.isEnabled = false
                             binding.tvEmptyAppointments.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
-
-                            Snackbar.make(binding.root,
-                                "Oшибка: ${state.message}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
                         }
 
                         SharedAppointmentsState.Loading -> {
@@ -166,7 +165,23 @@ class CurrentAppointmentsFragment : Fragment() {
                             appointmentsAdapter.submitList(filteredAppointments)
                         }
                     }
+                }
+            }
+        }
+    }
 
+
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }

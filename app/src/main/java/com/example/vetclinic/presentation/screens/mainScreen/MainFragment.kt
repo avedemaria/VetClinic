@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -18,8 +21,11 @@ import com.example.vetclinic.R
 import com.example.vetclinic.databinding.FragmentMainBinding
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
@@ -60,7 +66,6 @@ class MainFragment : Fragment() {
             })
 
 
-
         val navHostFragment = childFragmentManager.findFragmentById(R.id.mainNavHostFragment)
                 as NavHostFragment
         val navController = navHostFragment.navController
@@ -87,7 +92,7 @@ class MainFragment : Fragment() {
                     R.id.homeFragment,
                     null,
                     NavOptions.Builder()
-                        .setPopUpTo(navController.graph.startDestinationId, true) 
+                        .setPopUpTo(navController.graph.startDestinationId, true)
                         .build()
                 )
                 true
@@ -96,16 +101,16 @@ class MainFragment : Fragment() {
             }
         }
 
-            binding.fab.setOnClickListener {
-                val currentDestination = navController.currentDestination?.id
-                if (currentDestination != R.id.doctorsFragment) {
-                    val navOptions = NavOptions.Builder()
-                        .setLaunchSingleTop(true)
-                        .setPopUpTo(navController.graph.startDestinationId, false)
-                        .build()
+        binding.fab.setOnClickListener {
+            val currentDestination = navController.currentDestination?.id
+            if (currentDestination != R.id.doctorsFragment) {
+                val navOptions = NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setPopUpTo(navController.graph.startDestinationId, false)
+                    .build()
 
-                    navController.navigate(R.id.doctorsFragment, null, navOptions)
-                }
+                navController.navigate(R.id.doctorsFragment, null, navOptions)
+            }
         }
 
 
@@ -135,23 +140,54 @@ class MainFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState() {
         viewmodel.mainState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is MainState.Error -> Log.d(TAG, "Заглушка для MainState.Error")
+                is MainState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.coordinatorLayout.visibility = View.GONE
+                    binding.errorLayout.visibility = View.VISIBLE
+
+                    binding.retryButton.setOnClickListener {
+                        viewmodel.getUserIdAndFetchData()
+                    }
+                }
+
                 MainState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.coordinatorLayout.visibility = View.GONE
+                    binding.errorLayout.visibility = View.GONE
                 }
 
                 is MainState.Result -> {
                     binding.progressBar.visibility = View.GONE
                     binding.coordinatorLayout.visibility = View.VISIBLE
-
+                    binding.errorLayout.visibility = View.GONE
                 }
             }
         }
     }
 
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
 
     companion object {
         private const val TAG = "MainFragment"

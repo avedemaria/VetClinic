@@ -8,7 +8,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
 
         <LinearLayout
@@ -80,7 +80,9 @@
                 android:visibility="gone"
                 app:indicatorSize="24dp"
                 app:trackThickness="4dp"
-                app:indicatorColor="@color/light_grey"/>
+                android:indeterminate="true"
+                app:indicatorColor="@color/light_blue"
+                />
 
 
 

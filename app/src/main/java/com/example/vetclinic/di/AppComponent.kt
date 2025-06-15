@@ -19,7 +19,7 @@ import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.archivedAppointmentsFragment.ArchivedAppointmentsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.HomeFragment
-import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment.ServicesWithDepFragment
+import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.servicesListFragment.ServicesWithDepFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.DoctorsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment.BookAppointmentFragment
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.detailedDoctorInfoFragment.DetailedDoctorInfoFragment

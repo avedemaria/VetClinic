@@ -10,6 +10,6 @@ sealed class SharedAppointmentsState {
         val selectedDate: LocalDate? = null,
     ) : SharedAppointmentsState()
 
-    data class Error(val message: String) : SharedAppointmentsState()
+    data object Error : SharedAppointmentsState()
     data object Empty : SharedAppointmentsState()
 }

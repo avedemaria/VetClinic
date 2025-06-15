@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.example.vetclinic.R
 import com.example.vetclinic.databinding.PetInputBinding
 import com.example.vetclinic.domain.entities.pet.PetInputData
@@ -14,7 +15,7 @@ class CustomPetInput @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val binding: PetInputBinding
 

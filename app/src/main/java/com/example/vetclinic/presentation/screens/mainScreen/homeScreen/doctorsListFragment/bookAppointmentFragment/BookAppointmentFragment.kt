@@ -33,6 +33,7 @@ import com.example.vetclinic.presentation.adapter.timeSlotsAdapter.TimeSlotAdapt
 import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.utils.formatDateTime
 import com.example.vetclinic.utils.toFormattedString
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import java.time.format.TextStyle
@@ -224,9 +225,8 @@ class BookAppointmentFragment : Fragment() {
             ).show()
             return
         }
-        Log.d(TAG, "selectedDay: ${selectedDay.date}")
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Подтвердите приём: ")
             .setMessage(
                 createBoldSpannableString(

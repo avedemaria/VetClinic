@@ -1,11 +1,9 @@
 package com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,12 +14,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.vetclinic.R
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.databinding.FragmentAppointmentsBinding
+import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.archivedAppointmentsFragment.ArchivedAppointmentsFragment
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.currentAppointmentsFragment.CurrentAppointmentsFragment
-import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class AppointmentsFragment : Fragment() {
@@ -57,7 +57,7 @@ class AppointmentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
 
-        binding.toggleGroup.addOnButtonCheckedListener { toggleButtonGroup, checkedId, isChecked ->
+        binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
 
             if (isChecked) {
                 when (checkedId) {
@@ -89,22 +89,22 @@ class AppointmentsFragment : Fragment() {
 
 
     private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.appointmentsState.collect { state ->
-                    Log.d(TAG, "currentState: $state")
                     when (state) {
                         is SharedAppointmentsState.Error -> {
                             binding.fragmentContent.isEnabled = false
                             binding.toggleGroup.isEnabled = false
                             binding.fragmentContent.visibility = View.VISIBLE
                             binding.progressBar.visibility = View.GONE
-
-                            Snackbar.make(binding.root,
-                                "Oшибка: ${state.message}",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
                         }
 
                         SharedAppointmentsState.Loading -> {
@@ -125,10 +125,26 @@ class AppointmentsFragment : Fragment() {
                         }
 
                         SharedAppointmentsState.Empty -> {
-                            Log.d(TAG, "Your appointment list is empty.")
                             binding.progressBar.visibility = View.GONE
                             binding.fragmentContent.visibility = View.VISIBLE
                         }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -140,13 +156,13 @@ class AppointmentsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "OnDestroyView")
+        Timber.tag(TAG).d("OnDestroyView")
         _binding = null
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "unsubscribed")
+        Timber.tag(TAG).d("unsubscribed")
         viewModel.unsubscribeFromChanges()
     }
 

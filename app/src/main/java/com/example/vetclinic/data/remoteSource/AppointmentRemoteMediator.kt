@@ -101,8 +101,6 @@ class AppointmentRemoteMediator @Inject constructor(
         private const val TAG = "AppointmentRemoteMediator"
     }
 
-
-
 }
 
 

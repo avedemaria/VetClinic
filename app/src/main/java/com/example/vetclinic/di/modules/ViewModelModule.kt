@@ -9,7 +9,7 @@ import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen
 import com.example.vetclinic.presentation.screens.mainScreen.MainViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.appointmentsScreen.SharedAppointmentsViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.HomeViewModel
-import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.ServicesListFragment.ServiceWithDepViewModel
+import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.servicesListFragment.ServiceWithDepViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.DoctorViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.bookAppointmentFragment.BookAppointmentViewModel
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.doctorsListFragment.detailedDoctorInfoFragment.DetailedDoctorInfoViewModel

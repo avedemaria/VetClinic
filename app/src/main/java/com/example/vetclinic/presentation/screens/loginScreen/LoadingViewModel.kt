@@ -12,7 +12,9 @@ import com.example.vetclinic.presentation.screens.loginScreen.registrationScreen
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class LoadingViewModel @Inject constructor(
@@ -25,9 +27,10 @@ class LoadingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = sessionUseCase.getUserId() ?: ""
+
+            val userId = withContext(Dispatchers.IO) { sessionUseCase.getUserId().orEmpty() }
             Log.d(TAG, "userId: $userId")
-            val userRole = sessionUseCase.getUserRole() ?: ""
+            val userRole = withContext(Dispatchers.IO){sessionUseCase.getUserRole().orEmpty()}
             Log.d(TAG, "userRole: $userRole")
             _loadingState.value = LoadingState.Result(userId, userRole)
 
@@ -46,7 +49,7 @@ class LoadingViewModel @Inject constructor(
 
 
     companion object {
-        private const val TAG = "LoadingFragment"
+        private const val TAG = "LoadingViewModel"
     }
 
 

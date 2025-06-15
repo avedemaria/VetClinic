@@ -10,8 +10,12 @@ import com.example.vetclinic.domain.usecases.LoginUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import io.github.jan.supabase.auth.user.UserSession
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -28,13 +32,16 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableLiveData<LoginState>()
     val loginState: LiveData<LoginState> get() = _loginState
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     fun loginUser(email: String, password: String) {
         _loginState.value = LoginState.Loading
         viewModelScope.launch {
             authorizeUser(email, password).fold(
                 onSuccess = { userSession ->
-                    val userId = userSession.user?.id ?: return@launch showError("ID пользователя не найден")
+                    val userId =
+                        userSession.user?.id ?: return@launch showError("ID пользователя не найден")
 
                     getAndSaveUserRole(userId)?.let { role ->
                         handleRoleWhileLogin(role, userId)
@@ -42,6 +49,7 @@ class LoginViewModel @Inject constructor(
                     }
                 },
                 onFailure = { error ->
+                    _loginState.value = LoginState.Error
                     showError(error.message ?: "Ошибка авторизации")
                 }
             )
@@ -103,15 +111,15 @@ class LoginViewModel @Inject constructor(
             }
 
             else -> {
-                _loginState.value = LoginState.Error("Неизвестная роль")
+                _loginState.value = LoginState.Error
                 return
             }
         }
     }
 
 
-    private fun showError(message: String) {
-        _loginState.value = LoginState.Error(message)
+    private suspend fun showError(message: String) {
+        _uiEvent.emit(UiEvent.ShowSnackbar(message))
     }
 
     companion object {

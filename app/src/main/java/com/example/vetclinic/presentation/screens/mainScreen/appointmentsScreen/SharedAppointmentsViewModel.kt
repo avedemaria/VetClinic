@@ -8,29 +8,35 @@ import com.example.vetclinic.domain.entities.appointment.Appointment
 import com.example.vetclinic.domain.entities.appointment.AppointmentWithDetails
 import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.utils.toLocalDateOrNull
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 
 class SharedAppointmentsViewModel @Inject constructor(
     private val appointmentUseCase: AppointmentUseCase,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCase: SessionUseCase,
 ) : ViewModel() {
 
     private val _appointmentsState =
         MutableStateFlow<SharedAppointmentsState>(SharedAppointmentsState.Loading)
     val appointmentsState: MutableStateFlow<SharedAppointmentsState> get() = _appointmentsState
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
 
     init {
         viewModelScope.launch {
             val userId = sessionUseCase.getUserId().orEmpty()
-            Log.d(TAG, "userId: $userId")
             getAppointmentsByUserId(userId)
             observeAppointmentsByUserId(userId)
             subscribeToAppointmentChanges()
@@ -52,7 +58,7 @@ class SharedAppointmentsViewModel @Inject constructor(
             appointments.maxByOrNull { it.dateTime }
         lastCompletedAppointmentDate =
             lastCompletedAppointment?.dateTime?.toLocalDateOrNull("yyyy-MM-dd'T'HH:mm:ss")
-        Log.d(TAG, "lastCompletedAppointmentDate: $lastCompletedAppointmentDate")
+        Timber.tag(TAG).d("lastCompletedAppointmentDate: $lastCompletedAppointmentDate")
     }
 
 
@@ -80,9 +86,8 @@ class SharedAppointmentsViewModel @Inject constructor(
                     selectedDate = lastCompletedAppointmentDate
 
                 }
-            }.catch { e ->
-                _appointmentsState.value =
-                    SharedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
+            }.catch { e -> _appointmentsState.value = SharedAppointmentsState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(e.message.toString()))
             }.launchIn(viewModelScope)
     }
 
@@ -90,17 +95,14 @@ class SharedAppointmentsViewModel @Inject constructor(
     fun updateAppointmentStatus(updatedAppointment: AppointmentWithDetails) {
         viewModelScope.launch {
             val result = appointmentUseCase.updateAppointmentStatus(updatedAppointment)
-            if (!result.isSuccess) {
-                _appointmentsState.value =
-                    SharedAppointmentsState.Error(result.exceptionOrNull()?.message.toString())
+            if (!result.isSuccess) { _appointmentsState.value = SharedAppointmentsState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar("Ошибка обновления статуса"))
             }
         }
     }
 
    private fun subscribeToAppointmentChanges() {
-        Log.d(TAG, "subscribed to changes in viewmodel")
         viewModelScope.launch {
-
             appointmentUseCase.subscribeToAppointmentChanges() { updatedAppointment ->
                 _appointmentsState.value = _appointmentsState.value.let { currentState ->
                     when (currentState) {
@@ -119,12 +121,7 @@ class SharedAppointmentsViewModel @Inject constructor(
 
                             updateAppointmentInRoom(updatedList, updatedAppointment)
 
-
-                            Log.d(TAG, "state success $updatedList")
-                            SharedAppointmentsState.Success(
-                                updatedList,
-                                selectedDate
-                            )
+                            SharedAppointmentsState.Success(updatedList, selectedDate)
                         }
 
                         else -> currentState
@@ -142,8 +139,8 @@ class SharedAppointmentsViewModel @Inject constructor(
                 _appointmentsState.value = SharedAppointmentsState.Success(appointments)
             },
             onFailure = { e ->
-                _appointmentsState.value =
-                    SharedAppointmentsState.Error(e.message ?: "Неизвестная ошибка")
+                _appointmentsState.value = SharedAppointmentsState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar(e.message.toString()))
             })
     }
 
@@ -152,7 +149,7 @@ class SharedAppointmentsViewModel @Inject constructor(
         updatedAppointment: Appointment,
     ) {
         val updatedAppointmentWithDetails = updatedList.first { it.id == updatedAppointment.id }
-        Log.d(TAG, "updated app with details $updatedAppointmentWithDetails")
+        Timber.tag(TAG).d("updated app with details $updatedAppointmentWithDetails")
         viewModelScope.launch {
             appointmentUseCase.updateAppointmentInRoom(
                 updatedAppointmentWithDetails
@@ -168,7 +165,6 @@ class SharedAppointmentsViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG, "unsubscribed from changes")
         unsubscribeFromChanges()
     }
 
