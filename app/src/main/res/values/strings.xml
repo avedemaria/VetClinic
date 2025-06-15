@@ -96,4 +96,8 @@
     <string name="choose_pet_type">Выберите тип питомца</string>
     <string name="choose_pet_gender">Выберите пол питомца</string>
     <string name="birthday_date">Дата рождения</string>
+    <string name="surname">Фамилия</string>
+    <string name="enter_new_data">Введите новые данные:</string>
+    <string name="an_error_has_occurred">К сожалению, возникла ошибка</string>
+    <string name="retry">Повторить</string>
 </resources>

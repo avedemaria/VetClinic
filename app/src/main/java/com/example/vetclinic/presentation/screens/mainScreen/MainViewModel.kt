@@ -12,7 +12,10 @@ import com.example.vetclinic.domain.usecases.AppointmentUseCase
 import com.example.vetclinic.domain.usecases.PetUseCase
 import com.example.vetclinic.domain.usecases.SessionUseCase
 import com.example.vetclinic.domain.usecases.UserUseCase
+import com.example.vetclinic.presentation.screens.UiEvent
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,6 +34,8 @@ class MainViewModel @Inject constructor(
     private val _mainState = MutableLiveData<MainState>()
     val mainState: LiveData<MainState> get() = _mainState
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     private var storedUser: User? = null
     private var storedPets: List<Pet> = emptyList()
@@ -72,7 +77,8 @@ class MainViewModel @Inject constructor(
 
         val user = userUseCase.getUserFromSupabaseDb(userId)
             .onFailure {
-                _mainState.value = MainState.Error("Ошибка загрузки пользователя: ${it.message}")
+                _mainState.value = MainState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar("Ошибка загрузки пользователя: ${it.message}"))
             }
             .getOrNull() ?: return
 
@@ -80,15 +86,11 @@ class MainViewModel @Inject constructor(
 
         val pets = petUseCase.getPetsFromSupabaseDb(userId)
             .onFailure {
-                _mainState.value = MainState.Error("Ошибка загрузки питомцев: ${it.message}")
+                _mainState.value = MainState.Error
+                _uiEvent.emit(UiEvent.ShowSnackbar("Ошибка загрузки питомцев: ${it.message}"))
             }
             .getOrNull()
             .orEmpty()
-
-        if (pets.isEmpty()) {
-            _mainState.value = MainState.Error("У пользователя нет питомцев")
-            return
-        }
 
         storedPets = pets
         updateResultState()

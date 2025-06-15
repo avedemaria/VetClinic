@@ -28,6 +28,7 @@ import com.example.vetclinic.presentation.providers.ViewModelFactory
 import com.example.vetclinic.presentation.screens.UiEvent
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.petFragment.addPetFragment.AddPetFragment
 import com.example.vetclinic.presentation.widgets.CustomDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -206,7 +207,7 @@ class PetFragment : Fragment() {
 
 
     private fun showDeleteConfirmationDialog(pet: Pet, position: Int) {
-        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Удалить питомца")
             .setMessage(
                 "Вы уверены, что хотите удалить данные о питомце?" +
@@ -235,7 +236,7 @@ class PetFragment : Fragment() {
             addView(editText)
         }
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Введите новое имя")
             .setView(container)
             .setPositiveButton("ОК") { dialog, _ ->
@@ -256,7 +257,7 @@ class PetFragment : Fragment() {
     private fun showPetTypeDialog(pet: Pet) {
         val petTypes = arrayOf("Кот", "Собака", "Грызун")
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Выберите тип питомца")
             .setItems(petTypes) { dialog, which ->
                 val selectedType = petTypes[which]
@@ -282,7 +283,7 @@ class PetFragment : Fragment() {
     private fun showPetGenderDialog(pet: Pet) {
         val genders = arrayOf("Мальчик", "Девочка")
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Выберите пол питомца")
             .setItems(genders) { dialog, which ->
                 val selectedGender = genders[which]

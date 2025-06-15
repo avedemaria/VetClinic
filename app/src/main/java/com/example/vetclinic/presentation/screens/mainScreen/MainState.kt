@@ -10,6 +10,6 @@ sealed class MainState {
         val pets: List<Pet>
     ) : MainState()
 
-    data class Error(val message: String) : MainState()
+    data object Error : MainState()
     data object Loading : MainState()
 }

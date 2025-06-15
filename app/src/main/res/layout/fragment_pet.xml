@@ -27,7 +27,7 @@
                 tools:itemCount="1"/>
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddPet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,11 +45,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        app:indicatorColor="@color/light_blue" />
 
 </FrameLayout>

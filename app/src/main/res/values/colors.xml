@@ -17,4 +17,15 @@
     <color name="seawave_green">#64998C</color>
     <color name="light_blue">#AADBD3</color>
     <color name="dark_red">#B83030</color>
+
+    <color name="primary">#006b5f</color>
+    <color name="primary_variant">#9ff2e2</color>
+    <color name="on_primary">#d5dbd9</color>
+
+    <color name="secondary">#006b5e</color>
+    <color name="secondary_variant">#9ef2e3</color>
+    <color name="on_secondary">#f4fbf8</color>
+
+    <color name="background">#ffffff</color>
+    <color name="on_background">#f4fbf8</color>
 </resources>

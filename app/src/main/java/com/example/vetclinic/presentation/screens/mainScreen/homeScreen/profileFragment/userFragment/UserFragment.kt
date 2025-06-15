@@ -23,6 +23,7 @@ import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileF
 import com.example.vetclinic.presentation.screens.mainScreen.homeScreen.profileFragment.userFragment.settingsFragment.SettingsFragment
 import com.example.vetclinic.presentation.screens.updatePasswordScreen.PasswordUpdateMode
 import com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -202,22 +203,20 @@ class UserFragment : Fragment() {
             addView(etLastName)
         }
 
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Введите новые данные: ")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Введите новые данные:")
             .setView(container)
             .setPositiveButton("ОК") { dialog, _ ->
                 val newName = etName.text.toString().trim()
                 val newLastName = etLastName.text.toString().trim()
 
-
                 if ((newName.isNotBlank() && newName != user.userName) ||
                     (newLastName.isNotBlank() && newLastName != user.userLastName)
                 ) {
-                    val updatedUser =
-                        user.copy(
-                            userName = newName.replaceFirstChar { it.uppercase() },
-                            userLastName = newLastName.replaceFirstChar { it.uppercase() })
+                    val updatedUser = user.copy(
+                        userName = newName.replaceFirstChar { it.uppercase() },
+                        userLastName = newLastName.replaceFirstChar { it.uppercase() }
+                    )
                     viewModel.updateUser(updatedUser)
                 } else {
                     Snackbar.make(
@@ -227,15 +226,12 @@ class UserFragment : Fragment() {
                     ).show()
                 }
                 dialog.dismiss()
-
             }
             .setNegativeButton("Отмена") { dialog, _ ->
                 dialog.dismiss()
             }
-            .create()
             .show()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

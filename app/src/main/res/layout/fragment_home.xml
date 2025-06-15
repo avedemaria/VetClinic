@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                     android:padding="8dp"
                     android:textAlignment="viewStart"
                     android:textColor="@color/dark_blue"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/cardViewDoctors"
                     app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,7 @@
                     app:layout_constraintGuide_percent="0.5013193" />
 
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardViewDoctors"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -113,9 +113,9 @@
                             app:layout_constraintTop_toBottomOf="@id/IVDoctor" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardViewServices"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                             app:layout_constraintTop_toBottomOf="@id/IVService" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

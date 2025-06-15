@@ -1,18 +1,46 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:style="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:indeterminate="true"
+        app:indicatorColor="@color/light_blue"/>
+
+    <LinearLayout
+        android:id="@+id/errorLayout"
+        android:visibility="visible"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/errorText"
+            android:textSize="14sp"
+            android:text="@string/an_error_has_occurred"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/retryButton"
+            android:text="@string/retry"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/dark_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
+            />
+    </LinearLayout>
+
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -28,7 +56,6 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/bottom_nav_graph" />
-
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -58,8 +85,6 @@
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_anchor="@+id/bottomNavigationView"
             app:layout_anchorGravity="center" />
-
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
