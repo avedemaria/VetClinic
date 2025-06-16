@@ -134,6 +134,14 @@
 
 ## Скриншоты
 
+### Вход и регистрация
+
+<p align="center">
+  <img src="assets/screenshot_login.jpg" width="45%" alt="Главная страница">
+  <img src="assets/screenshot_registration.jpg" width="45%" alt="Профиль пользователя">
+</p>
+
+
 ### Главная и профиль пользователя
 
 <p align="center">
