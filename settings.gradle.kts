@@ -28,4 +28,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "VetClinic"
 include(":app")
- 
+include(":chat")
