@@ -10,12 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.vetclinic.databinding.FragmentResetPasswordWithEmailBinding
 import com.example.vetclinic.VetClinicApplication
 import com.example.vetclinic.presentation.providers.ViewModelFactory
+import com.example.vetclinic.presentation.screens.UiEvent
 import com.google.android.material.snackbar.Snackbar
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 
 class SendResetLinkFragment : Fragment() {
@@ -23,9 +29,6 @@ class SendResetLinkFragment : Fragment() {
 
     private val args by navArgs<SendResetLinkFragmentArgs>()
 
-    private val sharedPreferences: SharedPreferences by lazy {
-        requireContext().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    }
 
     private var _binding: FragmentResetPasswordWithEmailBinding? = null
     private val binding
@@ -69,7 +72,6 @@ class SendResetLinkFragment : Fragment() {
 
         binding.sendEmailButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
-            saveEmailToPreferences(email)
             viewModel.sendResetLink(email)
         }
         observeViewModel()
@@ -77,27 +79,37 @@ class SendResetLinkFragment : Fragment() {
 
     }
 
-    private fun saveEmailToPreferences(email: String) {
-        sharedPreferences.edit().apply {
-            putString("user_email", email)
-            apply()
+
+
+    private fun observeViewModel() {
+        handleState()
+        handleEvent()
+    }
+
+
+    private fun handleState () {
+        viewModel.sendResetLinkState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is SendResetLinkState.Error -> Log.d(TAG, "Заглушка для Loading")
+                SendResetLinkState.Loading -> Log.d(TAG, "Заглушка для Loading")
+                SendResetLinkState.Success ->  findNavController().popBackStack()
+            }
         }
     }
 
 
-    private fun observeViewModel() {
-        viewModel.sendResetLinkState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is SendResetLinkState.Error -> Snackbar.make(
-                    binding.root, "${state.message}",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-
-                SendResetLinkState.Loading -> Log.d(TAG, "Заглушка для Loading")
-                SendResetLinkState.Success ->   Snackbar.make(binding.root,
-                    "Ссылка для восстановления пароля была отправлена на ваш email",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+    private fun handleEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> Snackbar.make(
+                            binding.root,
+                            event.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
     }

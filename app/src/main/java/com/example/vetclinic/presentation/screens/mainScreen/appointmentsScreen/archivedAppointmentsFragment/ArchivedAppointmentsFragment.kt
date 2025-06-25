@@ -78,7 +78,6 @@ class ArchivedAppointmentsFragment : Fragment() {
 
     private fun setUpListeners() {
 
-
         binding.btnCalendar.setOnClickListener {
             showDatePickerDialog()
         }

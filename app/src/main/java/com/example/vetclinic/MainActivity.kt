@@ -1,6 +1,5 @@
 package com.example.vetclinic
 
-import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.example.vetclinic.domain.usecases.HandleDeepLinkUseCase
 import com.example.vetclinic.presentation.screens.updatePasswordScreen.PasswordUpdateMode
 import com.example.vetclinic.presentation.screens.updatePasswordScreen.UpdatePasswordFragment
@@ -20,11 +17,10 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
+
     private val component by lazy {
         (application as VetClinicApplication).component
     }
-
-    private lateinit var navController: NavController
 
     @Inject
     lateinit var deepLinkUseCase: HandleDeepLinkUseCase
@@ -41,19 +37,14 @@ class MainActivity : AppCompatActivity() {
         }
         component.inject(this)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_container) as NavHostFragment
-        navController = navHostFragment.navController
-
-
         if (savedInstanceState == null) {
             handleDeepLink(intent)
         }
     }
 
 
-    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
-        super.onNewIntent(intent, caller)
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         handleDeepLink(intent)
     }
 
